@@ -1,0 +1,50 @@
+#admin-astro {
+    .astro-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .addAstroLink{
+        text-decoration: none;
+        color: inherit;
+        border: transparent;
+        background-color: gold;
+        border-radius: 6px;
+        padding: 10px;
+        transition: all 50ms ease-in 5ms;
+        box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    .addAstroLink:hover {
+        background-color: rgba(255, 215, 0, 0.7);
+        // border: 3px solid gold;
+    }
+
+    .loading{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar {
+        min-height: 52px;
+        padding-right: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+      }
+
+      .css-t89xny-MuiDataGrid-columnHeaderTitle {
+        font-weight: bolder;
+    }
+}
+
+.infoContainer {
+    margin-left: 260px;
+    margin-top: 20px;
+    margin-right: 10px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.05) !important;
+
+}
