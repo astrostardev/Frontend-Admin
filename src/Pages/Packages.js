@@ -16,11 +16,13 @@ function Packages() {
     const navigate = useNavigate()
     const {token} = useSelector(state=>state.authState)
 
+
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/show`, {
                 method: "GET",
                 headers: {
+                    'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 },
             });
@@ -33,7 +35,6 @@ function Packages() {
         }
         fetchData();
     }, []);
-
  
 
     const rows = packages?.map((pack, index) => ({

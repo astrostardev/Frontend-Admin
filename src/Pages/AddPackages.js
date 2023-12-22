@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 
 function AddPackages() {
   const [packageName, setPackageName] = useState("");
-  const [packagePrice, setPackagePrice] = useState("");
+  const [fixedPrice, setfixedPrice] = useState("");
   const [packageDetail, setPackageDetail] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsloading] = useState(false);
@@ -25,13 +25,13 @@ function AddPackages() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const astrologerDetails = {
-        packagePrice: packagePrice,
+    const packageDetails = {
+        fixedPrice: fixedPrice,
         packageName: packageName,
         packageDetail: packageDetail,
         isActive: isActive,
       };
-      console.log(astrologerDetails);
+      console.log(packageDetails);
 try{
   const response = await fetch(
     `${process.env.REACT_APP_URL}/api/v1/package/create`,
@@ -41,7 +41,7 @@ try{
         'Content-Type': 'application/json',
       },
       method: "POST",
-      body:JSON.stringify(astrologerDetails)
+      body:JSON.stringify(packageDetails)
     }
   );
   if (response.ok === false) {
@@ -95,8 +95,8 @@ try{
                       placeholder="Price"
                       name="packagePrice"
                       required
-                      value={packagePrice}
-                      onChange={(e) => setPackagePrice(e.target.value)}
+                      value={fixedPrice}
+                      onChange={(e) => setfixedPrice(e.target.value)}
                     />
                   </FloatingLabel>
                 </div>
