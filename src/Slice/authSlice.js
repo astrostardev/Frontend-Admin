@@ -4,7 +4,8 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         loading: false,
-        isAuthenticated: false
+        isAuthenticated: false,
+        token:null
     },
     reducers: {
         loginRequest(state, action) {
@@ -18,7 +19,7 @@ const authSlice = createSlice({
                 loading: false,
                 isAuthenticated: true,
                 admin: action.payload.admin,
-                // token:action.payload.token
+                token: action.payload.data.token
             }
         },
         loginFail(state, action) {
@@ -46,7 +47,7 @@ const authSlice = createSlice({
                 loading: false,
                 isAuthenticated: true,
                 admin: action.payload.admin,
-                // token:action.payload.token
+                token:action.payload.token
             }
         },
         registerFail(state, action) {
@@ -89,3 +90,7 @@ export const {
     logoutFail
 } = actions;
 export default reducer
+
+
+
+

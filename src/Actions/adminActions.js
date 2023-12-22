@@ -15,7 +15,8 @@ export const login = (email, password) => async (dispatch) => {
 
     try {
         dispatch(loginRequest())
-        const data = await axios.post(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/admin/login`, { email, password });
+       
+        const data = await axios.post(`${process.env.REACT_APP_URL}/api/v1/admin/login`, {  email, password });
         console.log(data);
         dispatch(loginSuccess(data))
     } catch (error) {
@@ -33,7 +34,7 @@ export const register = (userData) => async (dispatch) => {
 
     try {
         dispatch(registerRequest())
-        const { data } = await axios.post(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/admin/register`, userData);
+        const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/v1/admin/register`, userData);
         dispatch(registerSuccess(data))
     } catch (error) {
         dispatch(registerFail(error.response.data.message))
@@ -45,7 +46,8 @@ export const register = (userData) => async (dispatch) => {
 export const logout =  async (dispatch) => {
 
     try {
-        dispatch(logoutSuccess())
+        const {data} = await axios.get(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/admin/logout`)
+        dispatch(logoutSuccess(data))
     } catch (error) {
         dispatch(logoutFail())
     }

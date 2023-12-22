@@ -12,10 +12,11 @@ import { useForm } from "react-hook-form";
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import moment from "moment";
-
+import { UseSelector, useSelector } from "react-redux";
 
 function EditAstrologer() {
     const [isLoading, setIsloading] = useState(false)
+    const{token} = useSelector()
     const [astrologers, setAstrologers] = useState({
         firstname: "",
         lastname: "",
@@ -110,7 +111,12 @@ function EditAstrologer() {
         const fetchData = async () => {
             try {
                 const response = await fetch(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/astrologer/getAstrologer/${id}`, {
-                    method: 'GET',
+                    headers: {
+                        'Content-type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`
+                    },      
+                method: 'GET',
+                    
                 });
 
                 if (!response.ok) {

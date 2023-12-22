@@ -14,7 +14,12 @@ import React from 'react';
 import Dashboard from './Pages/Dashboard';
 import ViewProfile from './Pages/ViewProfile';
 import ViewUserprofile from './Pages/ViewUserprofile';
+import ViewPackage from './Pages/ViewPackage'
+
 import EditAstrologer from './Pages/EditAstrologer';
+import Packages from './Pages/Packages';
+import AddPackages from './Pages/AddPackages';
+import EditPackage from './Pages/EditPackage';
 
 function App() {
   const { loading, error, isAuthenticated } = useSelector(state => state.authState)
@@ -37,9 +42,14 @@ function App() {
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
           <Route path='/astrologers' element={isAuthenticated ? <Astrologers /> : <Navigate to="/" />} />
           <Route path='/users' element={isAuthenticated ? <Users /> : <Navigate to="/" />} />
+         
           <Route path='/addastrologers' element={isAuthenticated ? <Addastrologers /> : <Navigate to="/" />} />
           <Route path='/astrologer/:id' element={isAuthenticated ? <ViewProfile /> : <Navigate to="/" />} />
           <Route path='/user/:id' element={isAuthenticated ? <ViewUserprofile /> : <Navigate to="/" />} />
+          <Route path='/packages' element={isAuthenticated ? <Packages /> : <Navigate to="/" />} />
+          <Route path='/package/:id' element={isAuthenticated ? <ViewPackage /> : <Navigate to="/" />} />
+          <Route path='/editpackage/:id' element={isAuthenticated ? <EditPackage/> : <Navigate to="/" />} />
+          <Route path='/addpackages' element={isAuthenticated ? <AddPackages /> : <Navigate to="/" />} />
 
           <Route path='/editastrologer/:id' element={isAuthenticated ? <EditAstrologer /> : <Navigate to="/" />} />
         </Routes>

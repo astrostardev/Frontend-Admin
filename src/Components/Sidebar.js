@@ -10,6 +10,7 @@ import astrologer from "../Assests/astrologer.jpg"
 import { useRef, useEffect } from "react"
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../Actions/adminActions';
+import { IoIosPricetags } from "react-icons/io";
 
 function Sidebar() {
     const dispatch = useDispatch()
@@ -59,6 +60,10 @@ function Sidebar() {
                     <Link className="side-link" to="/users">
                         <FiUsers style={{ fontSize: "20px" }} />
                         <span>Users</span>
+                    </Link>
+                    <Link className="side-link" to="/packages">
+                    <IoIosPricetags style={{fontSize:'20px'}}/>
+                        <span>Packages</span>
                     </Link>
                 </section>
                 <div className="divider"></div>

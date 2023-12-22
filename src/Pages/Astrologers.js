@@ -6,17 +6,24 @@ import { Box } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { grey } from '@mui/material/colors';
 import React from 'react';
+import {useSelector} from "react-redux";
 
 function Astrologers() {
     const [isLoading, setIsloading] = useState(true)
     const [astrologers, setAstrologers] = useState(null)
     const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
+    const {token}= useSelector(state=>state.authState)
+    // const token = auth.token
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch("https://shy-gold-sawfish-robe.cyclic.app/api/v1/astrologer/allAstrologers", {
-                method: "GET",
+            let response = await fetch("http://localhost:8000/api/v1/astrologer/allAstrologers", {
+                headers: {
+                    'Content-type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                },   
+            method: "GET",
             });
             // console.log(response);
             let data = await response.json();

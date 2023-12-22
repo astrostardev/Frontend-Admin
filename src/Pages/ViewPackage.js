@@ -5,18 +5,24 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Spinner } from "react-bootstrap"
 import dayjs from 'dayjs';
 import moment from "moment"
+import { useSelector } from "react-redux";
 
-function ViewUserprofile() {
+function ViewPackage() {
     const [isLoading, setIsloading] = useState(false)
-    const [users, setUsers] = useState(null)
+    const [packages, setPackages] = useState(null)
     const navigate = useNavigate()
     const { id } = useParams()
+    const {token} = useSelector(state=>state.authState)
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsloading(true)
-                const response = await fetch(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/user/getuser/${id}`, {
+                const response = await fetch(`http://localhost:8000/api/v1/package/getPackage/${id}`, {
                     method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
                 });
 
                 if (!response.ok) {
@@ -27,7 +33,7 @@ function ViewUserprofile() {
                     setIsloading(false)
                     const data = await response.json();
                     // console.log(data);
-                    setUsers(data)
+                    setPackages(data)
                     // console.log('astro', astrologers);
                 }
 
@@ -39,19 +45,6 @@ function ViewUserprofile() {
         fetchData();
     }, []);
 
-    async function handleDelete() {
-        setIsloading(true)
-        const res = await fetch(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/astrologer/delete/${id}`, {
-            method: "DELETE"
-        })
-        console.log(res);
-        if (res.ok) {
-            alert("successfully deleted")
-            navigate("/astrologers")
-        } else {
-            alert("Try again")
-        }
-    }
     return (
         <div className="infoContainer">
             {isLoading ?
@@ -62,7 +55,7 @@ function ViewUserprofile() {
                 <main className="card profile_container">
                     <section className="viewProfile-head">
                         <div>
-                            <h3>Profile</h3>
+                            <h3>Package</h3>
                             <div
                                 style={{
                                     height: "3px",
@@ -86,36 +79,33 @@ function ViewUserprofile() {
                      
                     
                         <div className="my-4">
-                            <h5>Name</h5>
-                            <p>{users?.user?.name}</p>
+                            <h5>Price</h5>
+                            <p>{packages?.packages?.packagePrice}</p>
                         </div>
 
                         <div className="my-4">
-                            <h5>Mobile Number</h5>
-                            <p>{users?.user?.phoneNo}</p>
+                            <h5>Package Name</h5>
+                            <p>{packages?.packages?.packageName}</p>
                         </div>
                         <div className="my-4">
-                            <h5>Register Time</h5>
-                            <p>{users?.user?.registerTime ? moment(users?.user?.registerTime).format('MMMM Do YYYY, h:mm:ss a') : ''}</p>
+                            <h5>Package Detail</h5>
+                            <p>{packages?.packages?.packageDetail}</p>
                         </div>
-                        <div className="my-4">
-                            <h5>Last Login Time</h5>
-                            <p>{users?.user?.loginTime ? moment(users?.user?.loginTime).format('MMMM Do YYYY, h:mm:ss a') : ''}</p>
+                        <div className="my-4" >
+                            <h5>Status </h5>
+                           <p><input type="checkbox" checked={packages?.packages?.isActive ? true : false} /></p> 
                         </div>
-                        <div className="my-4">
-                            <h5>Last Call Duration</h5>
-                            <p>{users?.user?.callDuration}</p>
-                        </div>
+                    
                     </article>
 
-                    {/* <div className="btnGroup">
-                        <button className="btns" onClick={() => navigate(`/edituser/${users?.user?._id}`)} disabled={isLoading}>Edit</button>
-                        <Button variant="danger" onClick={handleDelete} >Delete</Button>
-                    </div> */}
+                    <div className="btnGroup">
+                        <button className="btns" onClick={() => navigate(`/editpackage/${packages?.packages?._id}`)} disabled={isLoading}>Edit</button>
+                        {/* <Button variant="danger" onClick={handleDelete} >Delete</Button> */}
+                    </div>
                 </main>
             }
         </div>
     );
 }
 
-export default ViewUserprofile;
+export default ViewPackage;

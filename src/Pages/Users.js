@@ -8,16 +8,22 @@ import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { grey } from '@mui/material/colors';
 import React from 'react';
 import moment from 'moment'
+import { useSelector } from "react-redux";
 function Users() {
     const [isLoading, setIsloading] = useState(true)
     const [users, setUsers] = useState(null)
     const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
+    const {token} = useSelector(state=>state.authState)
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch("https://shy-gold-sawfish-robe.cyclic.app/api/v1/user/users", {
+            let response = await fetch("http://localhost:8000/api/v1/user/users", {
                 method: "GET",
+                headers: {
+                    'Content-type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                },
             });
             // console.log(response);
             let data = await response.json();
@@ -63,20 +69,31 @@ function Users() {
             align: "center"
 
         },
+        
+    
         {
             field: 'loginTime',
            
             renderCell: (params) => (params.row.loginTime ?  moment(params.row.loginTime).format('MMMM Do YYYY, h:mm:ss a'): ''),
            
             headerName: 'Last Login Time',
-            width: 500,
+            width: 400,
             sortable: false,
             headerClassName: 'super-app-theme--header',
             headerAlign: 'center',
             align: "center"
 
         },
- 
+        {
+            field: 'callDuration',
+            headerName: 'Last call duration',
+            width: 300,
+            sortable: false,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            align: "center"
+
+        },
         {
             field: 'details',
             headerName: 'Details',
