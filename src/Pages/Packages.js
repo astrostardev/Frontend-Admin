@@ -18,7 +18,7 @@ function Astrologers() {
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/allAstrologers`, {
+            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1//package/show'`, {
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
