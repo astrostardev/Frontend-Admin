@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom"
 import "../Stylesheets/Astrologers.scss"
 import { useEffect, useState, useCallback } from "react"
@@ -7,19 +6,19 @@ import { Box } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { grey } from '@mui/material/colors';
 import React from 'react';
-import moment from 'moment'
-import { useSelector } from "react-redux";
-function Packages() {
+import {useSelector} from "react-redux";
+
+function Astrologers() {
     const [isLoading, setIsloading] = useState(true)
-    const [packages, setPackages] = useState(null)
+    const [astrologers, setAstrologers] = useState(null)
     const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
-    const {token} = useSelector(state=>state.authState)
-
+    const {token}= useSelector(state=>state.authState)
+    // const token = auth.token
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/show`, {
+            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/allAstrologers`, {
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
@@ -30,71 +29,91 @@ function Packages() {
             let data = await response.json();
             console.log(data)
             setIsloading(false)
-             setPackages(data.packages)
-            console.log('usser',data.packages);
+            setAstrologers(data.astrologers)
+            console.log(astrologers);
         }
         fetchData();
     }, []);
- 
 
-    const rows = packages?.map((pack, index) => ({
-        ...pack,
+    const rows = astrologers?.map((astrologer, index) => ({
+        ...astrologer,
         serialNumber: index + 1
     }))
+
     const columns = [
         {
-          field: "serialNumber",
-          headerName: "S.No.",
-          width: 5,
-          sortable: false,
-          filterable: false,
-          headerClassName: "super-app-theme--header",
-          headerAlign: "center",
-          align: "center",
+            field: 'serialNumber', headerName: 'S.No.', width: 5, sortable: false,
+            filterable: false, headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            align: "center"
         },
-    
         {
-          field: "fixedPrice",
-          headerName: "Price",
-          width: 300,
-          editable: true,
-          headerClassName: "super-app-theme--header",
-          align: "center",
-          headerAlign: "center",
+            field: 'astrologerID', headerName: 'Astrologer ID', width: 200, headerClassName: 'super-app-theme--header',
+            align: "center",
+            headerAlign: 'center',
         },
-    
         {
-          field: "packageName",
-          headerName: "Package Name",
-          width: 300,
-          sortable: false,
-          headerClassName: "super-app-theme--header",
-          headerAlign: "center",
-          align: "center",
+            field: 'firstname',
+            headerName: 'First Name',
+            width: 200,
+            editable: true,
+            headerClassName: 'super-app-theme--header',
+            align: "center",
+            headerAlign: 'center',
         },
-    
         {
-          field: "packageDetail",
-          headerName: "Package Detail",
-          width: 500,
-          sortable: false,
-          headerClassName: "super-app-theme--header",
-          headerAlign: "center",
-          align: "center",
+            field: 'lastname',
+            headerName: 'Last Name',
+            width: 200,
+            editable: true,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            align: "center"
+
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            type: 'text',
+            width: 250,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            align: "center"
+
+        },
+        {
+            field: 'mobilePrimary',
+            headerName: 'Mobile No.',
+            width: 200,
+            sortable: false,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            align: "center"
+
+        },
+        {
+            field: 'isActive',
+            headerName: 'Status',
+            renderCell: (params) => params.row.isActive== "Yes" ? (<Badge bg="success">Active</Badge>) : (<Badge bg="danger">Inactive</Badge>),
+            width: 150,
+            headerClassName: 'super-app-theme--header',
+            headerAlign: 'center',
+            align: "center"
+
         },
         {
             field: 'details',
             headerName: 'Details',
-            renderCell: (params) => <Button variant="warning" onClick={() => navigate(`/package/${params?.row._id}`)} >
+            renderCell: (params) => <Button variant="warning" onClick={() => navigate(`/astrologer/${params?.row._id}`)} >
                 View
             </Button>,
             width: 100,
             headerClassName: 'super-app-theme--header',
             headerAlign: 'center',
             align: "center"
-    
+
         },
-      ];
+    ];
 
     const getRowSpacing = useCallback((params) => {
         return {
@@ -108,11 +127,11 @@ function Packages() {
             <main id="admin-astro">
                 <section className="astro-head">
                     <div>
-                        <h4>Packages</h4>
+                        <h4>Astrologers</h4>
                         <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
                     </div>
                     <div>
-                        <Link to="/addpackages" className="addAstroLink">Add Packages</Link>
+                        <Link to="/addastrologers" className="addAstroLink">Add Astrologers</Link>
                     </div>
                 </section>
                 {isLoading ? (
@@ -138,7 +157,7 @@ function Packages() {
                                 columns={columns}
                                 getRowId={row => row._id}
                                 initialState={{
-                                    ...packages.initialState,
+                                    ...astrologers.initialState,
                                     pagination: { paginationModel: { pageSize: 5 } },
                                 }}
                                 pageSizeOptions={[0, 5, 10, 25]}
@@ -161,4 +180,4 @@ function Packages() {
 }
 
 
-export default Packages
+export default Astrologers
