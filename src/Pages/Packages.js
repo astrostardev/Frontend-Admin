@@ -20,11 +20,11 @@ function Packages() {
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/show`, {
-                method: "GET",
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
-                },
+                },   
+            method: "GET",
             });
             // console.log(response);
             let data = await response.json();
