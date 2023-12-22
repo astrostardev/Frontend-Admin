@@ -54,7 +54,7 @@ function Packages() {
         },
     
         {
-          field: "packagePrice",
+          field: "fixedPrice",
           headerName: "Price",
           width: 300,
           editable: true,
