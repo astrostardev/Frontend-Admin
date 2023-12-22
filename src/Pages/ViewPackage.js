@@ -18,7 +18,7 @@ function ViewPackage() {
         const fetchData = async () => {
             try {
                 setIsloading(true)
-                const response = await fetch(`http://localhost:8000/api/v1/package/getPackage/${id}`, {
+                const response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/getPackage/${id}`, {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`

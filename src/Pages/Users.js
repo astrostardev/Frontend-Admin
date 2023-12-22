@@ -18,7 +18,7 @@ function Users() {
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch("http://localhost:8000/api/v1/user/users", {
+            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/user/users`, {
                 method: "GET",
                 headers: {
                     'Content-type': 'multipart/form-data',

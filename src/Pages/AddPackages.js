@@ -34,7 +34,7 @@ function AddPackages() {
       console.log(astrologerDetails);
 try{
   const response = await fetch(
-    "http://localhost:8000/api/v1/package/create",
+    `${process.env.REACT_APP_URL}/api/v1/package/create`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -18,7 +18,7 @@ function Packages() {
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch("http://localhost:8000/api/v1/package/show", {
+            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/show`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`

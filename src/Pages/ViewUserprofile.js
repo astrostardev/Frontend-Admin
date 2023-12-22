@@ -15,7 +15,7 @@ function ViewUserprofile() {
         const fetchData = async () => {
             try {
                 setIsloading(true)
-                const response = await fetch(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/user/getuser/${id}`, {
+                const response = await fetch(`${process.env.REACT_APP_URL}/api/v1/user/getuser/${id}`, {
                     method: 'GET',
                 });
 
@@ -41,7 +41,7 @@ function ViewUserprofile() {
 
     async function handleDelete() {
         setIsloading(true)
-        const res = await fetch(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/astrologer/delete/${id}`, {
+        const res = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/delete/${id}`, {
             method: "DELETE"
         })
         console.log(res);

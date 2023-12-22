@@ -20,7 +20,7 @@ function EditPackage() {
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
-        `http://localhost:8000/api/v1/package/getPackage/${id}`,
+        `${process.env.REACT_APP_URL}/api/v1/package/getPackage/${id}`,
         {
           method: "GET",
           headers: {
@@ -54,7 +54,7 @@ function EditPackage() {
         isActive: packages.isActive,
       };
     const response = await fetch(
-      `http://localhost:8000/api/v1/package/update/${id}`,
+      `${process.env.REACT_APP_URL}/api/v1/package/update/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
