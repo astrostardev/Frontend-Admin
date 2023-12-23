@@ -131,7 +131,7 @@ function Astrologers() {
                         <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
                     </div>
                     <div>
-                        <Link to="/addpackages" className="addAstroLink">Add Package</Link>
+                        <Link to="/addpackage" className="addAstroLink">Add Package</Link>
                     </div>
                 </section>
                 {isLoading ? (
