@@ -33,8 +33,8 @@ function ViewPackage() {
                     setIsloading(false)
                     const data = await response.json();
                     // console.log(data);
-                    setPackages(data)
-                    // console.log('astro', astrologers);
+                    setPackages(data.package)
+                   console.log(packages);
                 }
 
             } catch (error) {
@@ -80,26 +80,26 @@ function ViewPackage() {
                     
                         <div className="my-4">
                             <h5>Price</h5>
-                            <p>{packages?.packages?.packagePrice}</p>
+                            <p>{packages?.fixedPrice}</p>
                         </div>
 
                         <div className="my-4">
                             <h5>Package Name</h5>
-                            <p>{packages?.packages?.packageName}</p>
+                            <p>{packages?.packageName}</p>
                         </div>
                         <div className="my-4">
                             <h5>Package Detail</h5>
-                            <p>{packages?.packages?.packageDetail}</p>
+                            <p>{packages?.packageDetail}</p>
                         </div>
                         <div className="my-4" >
                             <h5>Status </h5>
-                           <p><input type="checkbox" checked={packages?.packages?.isActive ? true : false} /></p> 
+                           <p><input type="checkbox" checked={packages?.isActive ? true : false} /></p> 
                         </div>
                     
                     </article>
 
                     <div className="btnGroup">
-                        <button className="btns" onClick={() => navigate(`/editpackage/${packages?.packages?._id}`)} disabled={isLoading}>Edit</button>
+                        <button className="btns" onClick={() => navigate(`/editpackage/${packages?._id}`)} disabled={isLoading}>Edit</button>
                         {/* <Button variant="danger" onClick={handleDelete} >Delete</Button> */}
                     </div>
                 </main>

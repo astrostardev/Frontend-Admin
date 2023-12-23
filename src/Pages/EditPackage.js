@@ -32,8 +32,8 @@ function EditPackage() {
       let data = await response.json();
       console.log(data);
       setIsloading(false);
-      setPackages(data.packages);
-      console.log("usser", data.packages);
+      setPackages(data.package);
+      console.log("usser", data.package);
     }
     fetchData();
   }, []);
@@ -49,7 +49,7 @@ function EditPackage() {
     e.preventDefault();
     const requestBody = {
         packageName: packages.packageName,
-        packagePrice: packages.packagePrice,
+        fixedPrice: packages.fixedPrice,
         packageDetail: packages.packageDetail,
         isActive: packages.isActive,
       };
@@ -104,7 +104,7 @@ function EditPackage() {
                       type="text"
                       placeholder="Price"
                       name="packagePrice"
-                      value={packages?.packagePrice}
+                      value={packages?.fixedPrice}
                       onChange={handleChange}
                     />
                   </FloatingLabel>

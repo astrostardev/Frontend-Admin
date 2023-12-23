@@ -10,7 +10,7 @@ import {useSelector} from "react-redux";
 
 function Astrologers() {
     const [isLoading, setIsloading] = useState(true)
-    const [astrologers, setAstrologers] = useState(null)
+    const [packages, setPackages] = useState(null)
     const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
     const {token}= useSelector(state=>state.authState)
@@ -18,7 +18,7 @@ function Astrologers() {
 
     useEffect(() => {
         async function fetchData() {
-            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1//package/show'`, {
+            let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/show`, {
                 headers: {
                     'Content-type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
@@ -29,13 +29,13 @@ function Astrologers() {
             let data = await response.json();
             console.log(data)
             setIsloading(false)
-            setAstrologers(data.astrologers)
-            console.log(astrologers);
+            setPackages(data.packages)
+            console.log(packages);
         }
         fetchData();
     }, []);
 
-    const rows = astrologers?.map((astrologer, index) => ({
+    const rows = packages?.map((astrologer, index) => ({
         ...astrologer,
         serialNumber: index + 1
     }))
@@ -48,13 +48,13 @@ function Astrologers() {
             align: "center"
         },
         {
-            field: 'astrologerID', headerName: 'Astrologer ID', width: 200, headerClassName: 'super-app-theme--header',
+            field: 'fixedPrice', headerName: 'Price', width: 200, headerClassName: 'super-app-theme--header',
             align: "center",
             headerAlign: 'center',
         },
         {
-            field: 'firstname',
-            headerName: 'First Name',
+            field: 'packageName',
+            headerName: 'Package Name',
             width: 200,
             editable: true,
             headerClassName: 'super-app-theme--header',
@@ -62,8 +62,8 @@ function Astrologers() {
             headerAlign: 'center',
         },
         {
-            field: 'lastname',
-            headerName: 'Last Name',
+            field: 'packageDetail',
+            headerName: 'package Detail',
             width: 200,
             editable: true,
             headerClassName: 'super-app-theme--header',
@@ -71,40 +71,40 @@ function Astrologers() {
             align: "center"
 
         },
-        {
-            field: 'email',
-            headerName: 'Email',
-            type: 'text',
-            width: 250,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: 'center',
-            align: "center"
+        // {
+        //     field: 'isActive',
+        //     headerName: '',
+        //     type: 'text',
+        //     width: 250,
+        //     headerClassName: 'super-app-theme--header',
+        //     headerAlign: 'center',
+        //     align: "center"
 
-        },
-        {
-            field: 'mobilePrimary',
-            headerName: 'Mobile No.',
-            width: 200,
-            sortable: false,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: 'center',
-            align: "center"
+        // },
+        // {
+        //     field: 'mobilePrimary',
+        //     headerName: 'Mobile No.',
+        //     width: 200,
+        //     sortable: false,
+        //     headerClassName: 'super-app-theme--header',
+        //     headerAlign: 'center',
+        //     align: "center"
 
-        },
-        {
-            field: 'isActive',
-            headerName: 'Status',
-            renderCell: (params) => params.row.isActive== "Yes" ? (<Badge bg="success">Active</Badge>) : (<Badge bg="danger">Inactive</Badge>),
-            width: 150,
-            headerClassName: 'super-app-theme--header',
-            headerAlign: 'center',
-            align: "center"
+        // },
+        // {
+        //     field: 'isActive',
+        //     headerName: 'Status',
+        //     renderCell: (params) => params.row.isActive== "Yes" ? (<Badge bg="success">Active</Badge>) : (<Badge bg="danger">Inactive</Badge>),
+        //     width: 150,
+        //     headerClassName: 'super-app-theme--header',
+        //     headerAlign: 'center',
+        //     align: "center"
 
-        },
+        // },
         {
             field: 'details',
             headerName: 'Details',
-            renderCell: (params) => <Button variant="warning" onClick={() => navigate(`/astrologer/${params?.row._id}`)} >
+            renderCell: (params) => <Button variant="warning" onClick={() => navigate(`/package/${params?.row._id}`)} >
                 View
             </Button>,
             width: 100,
@@ -127,11 +127,11 @@ function Astrologers() {
             <main id="admin-astro">
                 <section className="astro-head">
                     <div>
-                        <h4>Astrologers</h4>
+                        <h4>Packages</h4>
                         <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
                     </div>
                     <div>
-                        <Link to="/addastrologers" className="addAstroLink">Add Astrologers</Link>
+                        <Link to="/addpackages" className="addAstroLink">Add Package</Link>
                     </div>
                 </section>
                 {isLoading ? (
@@ -157,7 +157,7 @@ function Astrologers() {
                                 columns={columns}
                                 getRowId={row => row._id}
                                 initialState={{
-                                    ...astrologers.initialState,
+                                    ...packages.initialState,
                                     pagination: { paginationModel: { pageSize: 5 } },
                                 }}
                                 pageSizeOptions={[0, 5, 10, 25]}
