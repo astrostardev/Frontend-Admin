@@ -217,7 +217,7 @@ function Addastrologers() {
       astrologerDetails.set("astrologerID", astroID);
       console.log(astrologerDetails);
       const response = await fetch(
-        'http://13.50.151.170:8001/api/v1/astrologer/register',
+        `${process.env.REACT_APP_URL}/api/v1/astrologer/register`,
         {
           headers: {
             "Content-type": "multipart/form-data",

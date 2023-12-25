@@ -110,7 +110,7 @@ function EditAstrologer() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://13.50.151.170:8001/api/v1/astrologer/getAstrologer/${id}`, {
+                const response = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/getAstrologer/${id}`, {
                     headers: {
                         'Content-type': 'multipart/form-data',
                         Authorization: `Bearer ${token}`
@@ -179,7 +179,7 @@ function EditAstrologer() {
                 updatedDetails.append("maxTime", astrologers.maxTime)
                 console.log('updated details', updatedDetails);
 
-                const response = await fetch(`http://13.50.151.170:8001/api/v1/astrologer/update/${id}`, {
+                const response = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/update/${id}`, {
                     method: "PATCH",
                     body: updatedDetails
 

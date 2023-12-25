@@ -15,7 +15,7 @@ function ViewProfile() {
         const fetchData = async () => {
             try {
                 setIsloading(true)
-                const response = await fetch(`http://13.50.151.170:8001/api/v1/astrologer/getAstrologer/${id}`, {
+                const response = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/getAstrologer/${id}`, {
                     method: 'GET',
                 });
 
