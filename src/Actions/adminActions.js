@@ -16,7 +16,7 @@ export const login = (email, password) => async (dispatch) => {
     try {
         dispatch(loginRequest())
        
-        const data = await axios.post(`${process.env.REACT_APP_URL}api/v1/admin/login`, {  email, password });
+        const data = await axios.post(`${process.env.REACT_APP_URL}/api/v1/admin/login`, {  email, password });
         console.log(data);
         dispatch(loginSuccess(data))
     } catch (error) {
