@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import "../Stylesheets/Addastrologer.scss";
 import { Box } from "@mui/material";
-import { FloatingLabel, Form, Spinner } from "react-bootstrap";
+import React from 'react'
+import { FloatingLabel, Form, Dropdown,ButtonGroup,Button, Spinner } from "react-bootstrap";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,20 +22,15 @@ function Addastrologers() {
   const [photoErr, setPhotoErr] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [category, setCategory] = useState("");
+  const[checked,setChecked]=useState(false)
 
   const categories = [
-    "Electronics",
-    "Mobile Phones",
-    "Laptops",
-    "Accessories",
-    "Headphones",
-    "Food",
-    "Books",
-    "Clothes/Shoes",
-    "Beauty/Health",
-    "Sports",
-    "Outdoor",
-    "Home",
+    "Nadi",
+    "Vedic",
+    "Tarot",
+    "Prasannam",
+    "Numerology",
+   
   ];
   const { token } = useSelector((state) => state.authState);
 
@@ -245,6 +241,80 @@ function Addastrologers() {
       setIsloading(false);
     }
   };
+  const handleChecked = (key, event) => {
+    categories.find().checked = event.target.checked;
+  };
+  const handleSelectAll = () => {
+    categories.forEach(i => (i.checked = true));
+  };
+  const handleSelectNone = () => {
+    categories.forEach(i => (i.checked = false));
+  };
+
+
+// const CheckboxMenu = React.forwardRef(
+//   (
+//     {
+//       categories,
+//       style,
+//       className,
+//       "aria-labelledby": labeledBy,
+//       onSelectAll,
+//       onSelectNone
+//     },
+//     ref
+//   ) => {
+//     return (
+//       <div
+//         ref={ref}
+//         style={style}
+//         className={`${className} CheckboxMenu`}
+//         aria-labelledby={labeledBy}
+//       >
+//         <div
+//           className="d-flex flex-column"
+//           style={{ maxHeight: "calc(100vh)", overflow: "none" }}
+//         >
+//           <ul
+//             className="list-unstyled flex-shrink mb-0"
+//             style={{ overflow: "auto" }}
+//           >
+//             {categories?.map((cat)=>(
+//               <>
+//               <li>{cat}</li>
+//               </>
+//             ))}
+//           </ul>
+//           <div className="dropdown-item border-top pt-2 pb-0">
+//             <ButtonGroup size="sm">
+//               <Button variant="link" onClick={onSelectAll}>
+//                 Select All
+//               </Button>
+//               <Button variant="link" onClick={onSelectNone}>
+//                 Select None
+//               </Button>
+//             </ButtonGroup>
+//           </div>
+//         </div>
+//       </div>
+//     );
+//   }
+// );
+
+// const CheckDropdownItem = React.forwardRef(
+//   ({ categories, id, checked, onChange }, ref) => {
+//     return (
+//       <Form.Group ref={ref} className="dropdown-item mb-0" controlId={id}>
+//         <Form.Check
+//           type="checkbox"
+//           label={categories}
+//           checked={checked}
+//           onChange={onChange && onChange.bind(onChange, id)}
+//         />
+//       </Form.Group>
+//     );
+//   }
+// );
   return (
     <div className="infoContainer">
       <main id="admin-addastro">
@@ -456,14 +526,7 @@ function Addastrologers() {
                 </div>
               </div>
               <div>
-                <Form.Select aria-label="Default select example">
-                  <option>Categories</option>
-                  {categories.map((cat)=>(
-                  <option value="1">cat.</option>
-
-                  ))}
                
-                </Form.Select>
               </div>
               <div className="twoCol">
                 {/* Education */}
@@ -571,7 +634,35 @@ function Addastrologers() {
             </article>
             <hr />
             <article className="astroDetails my-3">
-              <p style={{ fontSize: "16px", textDecoration: "underline"}}>
+              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+                Methodology
+              </p>
+              <div className="mb-3 oneCol">
+              <Dropdown>
+                <Dropdown.Toggle  id="dropdown-basic" >
+                  Astrology
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu
+                style={{width:"400px"}}
+             
+                >
+                  {categories.map((cat) => (
+                    <>
+                  <div style={{display:"flex",alignItems:"center",marginLeft:"5px",gap:"4px",padding:"0 3px"}}   className="customDrop">
+                      <Form.Check
+                       type="checkbox"
+                       onChange={()=>setChecked(!checked)}
+                    />  
+                    <Dropdown.Item className="customDrop">{cat}
+                    </Dropdown.Item>
+                    </div>
+                    </>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              </div>
+              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
                 Astrology related details
               </p>
 

@@ -1,15 +1,6 @@
-import { Link } from "react-router-dom";
 import "../Stylesheets/Addastrologer.scss";
-import { Box } from "@mui/material";
 import { FloatingLabel, Form, Spinner } from "react-bootstrap";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import dayjs from "dayjs";
-import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -20,6 +11,7 @@ function AddPackages() {
   const [isActive, setIsActive] = useState(true);
   const [isLoading, setIsloading] = useState(false);
   const { token } = useSelector((state) => state.authState);
+
 
 
 
@@ -114,6 +106,7 @@ try{
                     />
                   </FloatingLabel>
                 </div>
+      
 
                 <div className="mb-3">
                   <FloatingLabel
