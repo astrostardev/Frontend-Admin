@@ -26,7 +26,7 @@ function AddPackages() {
       console.log(packageDetails);
 try{
   const response = await fetch(
-    `${process.env.REACT_APP_URL}/api/v1/package/create`,
+    'http://13.50.151.170:8001/api/v1/package/create',
     {
       headers: {
         Authorization: `Bearer ${token}`,
