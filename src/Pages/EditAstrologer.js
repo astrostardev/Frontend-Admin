@@ -32,6 +32,8 @@ function EditAstrologer() {
         pincode: "",
         institute: "",
         experience: "",
+        category:"",
+        language:"",
         astrologyDescription: "",
         astrologyExperience: "",
         astrologyExpertise: "",
@@ -55,6 +57,8 @@ function EditAstrologer() {
         district: "",
         state: "",
         country: "",
+        category:"",
+        language:"",
         pincode: "",
         institute: "",
         experience: "",
@@ -113,7 +117,7 @@ function EditAstrologer() {
                 const response = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/getAstrologer/${id}`, {
                     headers: {
                         'Content-type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`
+                        // Authorization: `Bearer ${token}`
                     },      
                 method: 'GET',
                     
@@ -170,6 +174,8 @@ function EditAstrologer() {
                 updatedDetails.append("pincode", astrologers.pincode)
                 updatedDetails.append("call", astrologers.call)
                 updatedDetails.append("chat", astrologers.chat)
+                updatedDetails.append("category", astrologers.category)
+                updatedDetails.append("language", astrologers.language)
                 updatedDetails.append("institute", astrologers.institute)
                 updatedDetails.append("experience", astrologers.experience)
                 updatedDetails.append("astrologyDescription", astrologers.astrologyDescription)

@@ -18,20 +18,50 @@ function Addastrologers() {
   const [doberr, setDoberr] = useState(false);
   const [certificates, setCertificates] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [profilePhoto, setProfilePhoto] = useState([]);
   const [photoErr, setPhotoErr] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [category, setCategory] = useState("");
-  const[checked,setChecked]=useState(false)
+  const [categories, setCategories] = useState(null);
+  const[languages,setLanguages] = useState(null)
+  
 
-  const categories = [
-    "Nadi",
-    "Vedic",
-    "Tarot",
-    "Prasannam",
-    "Numerology",
-   
-  ];
+ 
+  useEffect(() => {
+    async function fetchData() {
+        let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/method/show`, {
+            headers: {
+                'Content-type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`
+            },   
+        method: "GET",
+        });
+        // console.log(response);
+        let data = await response.json();
+        console.log(data)
+        setIsloading(false)
+        setCategories(data.categories)
+        console.log(categories);
+    }
+    fetchData();
+}, []);
+useEffect(() => {
+  async function fetchData() {
+      let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/language/show`, {
+          headers: {
+              'Content-type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`
+          },   
+      method: "GET",
+      });
+      // console.log(response);
+      let data = await response.json();
+      console.log(data)
+      setIsloading(false)
+      setLanguages(data.languages)
+      console.log(languages);
+  }
+  fetchData();
+}, []);
   const { token } = useSelector((state) => state.authState);
 
   const handleFileUpload = (e) => {
@@ -103,13 +133,13 @@ function Addastrologers() {
   const {
     register,
     handleSubmit,
-    reset,
+    // reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
-  useEffect(() => {
-    reset();
-  }, [isSubmitSuccessful, reset]);
+  // useEffect(() => {
+  //   reset();
+  // }, [isSubmitSuccessful, reset]);
 
   const validation = {
     firstname: {
@@ -122,6 +152,12 @@ function Addastrologers() {
       required: {
         value: true,
         message: "select Category",
+      },
+    },
+   language: {
+      required: {
+        value: true,
+        message: "select Language",
       },
     },
     lastname: {
@@ -193,43 +229,49 @@ function Addastrologers() {
     },
   };
 
-  const onSubmit = async (data, e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
+
     setIsloading(true);
     if (dob) {
-      // console.log(data);
-      // console.log(dob);
-      // console.log(certificates);
-      // console.log(profilePhoto);
+  
       const astrologerDetails = new FormData();
 
       Object.keys(data).forEach((key) => {
         astrologerDetails.set(key, data[key]);
       });
       astrologerDetails.set("dob", dob);
-      // astrologerDetails.set('profilePic', profilePhoto)
+      astrologerDetails.set('profilePic', profilePhoto)
 
-      // Object.keys(certificates).forEach((key, index) => {
-      //     astrologerDetails.set(`certificates`, certificates[key]);
-      // });
+      Object.keys(certificates).forEach((key, index) => {
+          astrologerDetails.set(`certificates`, certificates[key]);
+      });
 
       const astroID = uuid().slice(0, 6).toUpperCase();
       astrologerDetails.set("astrologerID", astroID);
-      console.log(astrologerDetails);
+      if(!data){
+        console.error('no data');
+        return
+      }else{
+        console.log('lf',astrologerDetails);
+
+      }
       const response = await fetch(
         `${process.env.REACT_APP_URL}/api/v1/astrologer/register`,
         {
           headers: {
-            "Content-type": "multipart/form-data",
+            
             Authorization: `Bearer ${token}`,
           },
-          method: "GET",
+          method: "POST",
           body: astrologerDetails,
         }
       );
+       const jsonResponse = await response.json();
+       console.log('res',jsonResponse);
       if (response.ok === false) {
         alert("Registration Failed");
       } else {
+      
         alert("Registration Successful");
       }
       setIsloading(false);
@@ -241,81 +283,7 @@ function Addastrologers() {
       setIsloading(false);
     }
   };
-  const handleChecked = (key, event) => {
-    categories.find().checked = event.target.checked;
-  };
-  const handleSelectAll = () => {
-    categories.forEach(i => (i.checked = true));
-  };
-  const handleSelectNone = () => {
-    categories.forEach(i => (i.checked = false));
-  };
-
-
-// const CheckboxMenu = React.forwardRef(
-//   (
-//     {
-//       categories,
-//       style,
-//       className,
-//       "aria-labelledby": labeledBy,
-//       onSelectAll,
-//       onSelectNone
-//     },
-//     ref
-//   ) => {
-//     return (
-//       <div
-//         ref={ref}
-//         style={style}
-//         className={`${className} CheckboxMenu`}
-//         aria-labelledby={labeledBy}
-//       >
-//         <div
-//           className="d-flex flex-column"
-//           style={{ maxHeight: "calc(100vh)", overflow: "none" }}
-//         >
-//           <ul
-//             className="list-unstyled flex-shrink mb-0"
-//             style={{ overflow: "auto" }}
-//           >
-//             {categories?.map((cat)=>(
-//               <>
-//               <li>{cat}</li>
-//               </>
-//             ))}
-//           </ul>
-//           <div className="dropdown-item border-top pt-2 pb-0">
-//             <ButtonGroup size="sm">
-//               <Button variant="link" onClick={onSelectAll}>
-//                 Select All
-//               </Button>
-//               <Button variant="link" onClick={onSelectNone}>
-//                 Select None
-//               </Button>
-//             </ButtonGroup>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-// );
-
-// const CheckDropdownItem = React.forwardRef(
-//   ({ categories, id, checked, onChange }, ref) => {
-//     return (
-//       <Form.Group ref={ref} className="dropdown-item mb-0" controlId={id}>
-//         <Form.Check
-//           type="checkbox"
-//           label={categories}
-//           checked={checked}
-//           onChange={onChange && onChange.bind(onChange, id)}
-//         />
-//       </Form.Group>
-//     );
-//   }
-// );
-  return (
+ return (
     <div className="infoContainer">
       <main id="admin-addastro">
         <section className="astro-head">
@@ -634,34 +602,86 @@ function Addastrologers() {
             </article>
             <hr />
             <article className="astroDetails my-3">
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+             
+             
+              <div className="mb-3 threeCol">
+                <div>
+                <p style={{ fontSize: "16px", textDecoration: "underline" }}>
                 Methodology
               </p>
-              <div className="mb-3 oneCol">
               <Dropdown>
                 <Dropdown.Toggle  id="dropdown-basic" >
                   Astrology
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu
-                style={{width:"400px"}}
+                style={{width:"300px"}}
              
                 >
-                  {categories.map((cat) => (
+                  {categories?.map((cat,index) => (
                     <>
-                  <div style={{display:"flex",alignItems:"center",marginLeft:"5px",gap:"4px",padding:"0 3px"}}   className="customDrop">
+                  <div key={index} style={{display:"flex",alignItems:"center",marginLeft:"5px",gap:"4px",padding:"0 5px"}}   className="customDrop">
                       <Form.Check
                        type="checkbox"
-                       onChange={()=>setChecked(!checked)}
-                    />  
-                    <Dropdown.Item className="customDrop">{cat}
-                    </Dropdown.Item>
+                       name="category" 
+                       value={cat.category[0]?.name}
+                       key={index}
+                       onChange={(e)=>setCategories(e.target.value)}
+                       {...register("category")}
+                     
+                    />  {cat.category[0]?.name}
+                    {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
+                    </Dropdown.Item> */}
                     </div>
                     </>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
+              <p className="errormsg">
+                    {errors.category && errors.category.message}
+                  </p>
+                </div>
+                <div>
+                <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+                Language
+              </p>
+              <Dropdown>
+                <Dropdown.Toggle  id="dropdown-basic" >
+                  Languages
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu
+                style={{width:"300px"}}
+             
+                >
+                  {languages?.map((cat,index) => (
+                    <>
+                  <div style={{display:"flex",alignItems:"center",marginLeft:"5px",gap:"4px",padding:"0 5px"}}   className="customDrop">
+                      <Form.Check
+                       type="checkbox"
+                       name="language" 
+                       value={cat?.language[0]?.name}
+                       key={index}
+                       onChange={(e)=>setLanguages(e.target.value)}
+                       {...register("language")}
+                     
+                    />  {cat?.language[0]?.name}
+                    {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
+                    </Dropdown.Item> */}
+                    </div>
+                    </>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <p className="errormsg">
+                    {errors.language && errors.language.message}
+                  </p>
+                </div>
+                
               </div>
+            
+
+
               <p style={{ fontSize: "16px", textDecoration: "underline" }}>
                 Astrology related details
               </p>

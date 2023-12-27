@@ -164,7 +164,13 @@ function ViewProfile() {
                             <h5>Call</h5>
                             <p>{astrologers?.astrologer?.call}</p>
                         </div>
-
+                        <div className="my-4">
+                            <h5>Methodology</h5>
+                            <p>{astrologers?.astrologer?.category}</p>
+                        </div>  <div className="my-4">
+                            <h5>Language</h5>
+                            <p>{astrologers?.astrologer?.language}</p>
+                        </div>
                         <h3 style={{ textDecoration: "underline", marginBottom: "20px" }}>
                             Astrology Related Details
                         </h3>

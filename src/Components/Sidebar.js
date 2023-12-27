@@ -10,8 +10,9 @@ import astrologer from "../Assests/astrologer.jpg"
 import { useRef, useEffect } from "react"
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../Actions/adminActions';
-import { IoIosPricetags } from "react-icons/io";
-
+import { IoLanguageOutline } from "react-icons/io5";
+import { IoWalletOutline } from "react-icons/io5";
+import { CiBoxList } from "react-icons/ci";
 function Sidebar() {
     const dispatch = useDispatch()
 
@@ -62,8 +63,16 @@ function Sidebar() {
                         <span>Users</span>
                     </Link>
                     <Link className="side-link" to="/packages">
-                    <IoIosPricetags style={{fontSize:'20px'}}/>
+                    <IoWalletOutline style={{fontSize:"20px"}}/>
                         <span>Packages</span>
+                    </Link>
+                    <Link className="side-link" to="/methods">
+                    <CiBoxList style={{fontSize:"20px"}} />
+                        <span>Methodology</span>
+                    </Link>
+                    <Link className="side-link" to="/languages">
+                    <IoLanguageOutline  style={{fontSize:'20px'}}/>
+                        <span>Languages</span>
                     </Link>
                 </section>
                 <div className="divider"></div>

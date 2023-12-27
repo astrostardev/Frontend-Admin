@@ -103,7 +103,7 @@ function EditPackage() {
                     <Form.Control
                       type="text"
                       placeholder="Price"
-                      name="packagePrice"
+                      name="fixedPrice"
                       value={packages?.fixedPrice}
                       onChange={handleChange}
                     />

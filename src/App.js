@@ -15,11 +15,20 @@ import Dashboard from './Pages/Dashboard';
 import ViewProfile from './Pages/ViewProfile';
 import ViewUserprofile from './Pages/ViewUserprofile';
 import ViewPackage from './Pages/ViewPackage'
-
 import EditAstrologer from './Pages/EditAstrologer';
 import Packages from './Pages/Packages';
 import AddPackages from './Pages/AddPackages';
 import EditPackage from './Pages/EditPackage';
+import ShowMethodology from './Pages/methodology/ShowMethods'
+import AddMethodology from './Pages/methodology/AddMethods'
+import EditMethodology from './Pages/methodology/EditMethodology'
+import AddLanguage from './Pages/languages/AddLanguage'
+import ShowLanguage from './Pages/languages/ShowLanguage'
+import EditLanguage from './Pages/languages/EditLanguage'
+
+
+
+
 
 function App() {
   const { loading, error, isAuthenticated } = useSelector(state => state.authState)
@@ -45,13 +54,20 @@ function App() {
          
           <Route path='/addastrologers' element={isAuthenticated ? <Addastrologers /> : <Navigate to="/" />} />
           <Route path='/astrologer/:id' element={isAuthenticated ? <ViewProfile /> : <Navigate to="/" />} />
+          <Route path='/editastrologer/:id' element={isAuthenticated ? <EditAstrologer /> : <Navigate to="/" />} />
           <Route path='/user/:id' element={isAuthenticated ? <ViewUserprofile /> : <Navigate to="/" />} />
           <Route path='/packages' element={isAuthenticated ? <Packages /> : <Navigate to="/" />} />
           <Route path='/package/:id' element={isAuthenticated ? <ViewPackage /> : <Navigate to="/" />} />
           <Route path='/editpackage/:id' element={isAuthenticated ? <EditPackage/> : <Navigate to="/" />} />
           <Route path='/addpackages' element={isAuthenticated ? <AddPackages /> : <Navigate to="/" />} />
+          <Route path='/methods' element={isAuthenticated ? <ShowMethodology/> : <Navigate to="/" />} />
+          <Route path='/editmethod/:id' element={isAuthenticated ? <EditMethodology/> : <Navigate to="/" />} />
+          <Route path='/addmethod' element={isAuthenticated ? <AddMethodology/> : <Navigate to="/" />} />
 
-          <Route path='/editastrologer/:id' element={isAuthenticated ? <EditAstrologer /> : <Navigate to="/" />} />
+          <Route path='/languages' element={isAuthenticated ? <ShowLanguage/> : <Navigate to="/" />} />
+          <Route path='/editlanguage/:id' element={isAuthenticated ? <EditLanguage/> : <Navigate to="/" />} />
+          <Route path='/addlanguage' element={isAuthenticated ? <AddLanguage/> : <Navigate to="/" />} />
+
         </Routes>
       </BrowserRouter>
     </div>
