@@ -104,7 +104,7 @@ function Astrologers() {
         {
             field: 'details',
             headerName: 'Details',
-            renderCell: (params) => <Button variant="warning" onClick={() => navigate(`/package/${params?.row._id}`)} >
+            renderCell: (params) => <Button style={{backgroundColor:"rgb(54, 75, 182)",color:"#fff"}} onClick={() => navigate(`/package/${params?.row._id}`)} >
                 View
             </Button>,
             width: 100,

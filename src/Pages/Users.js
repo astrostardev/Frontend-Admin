@@ -97,7 +97,7 @@ function Users() {
         {
             field: 'details',
             headerName: 'Details',
-            renderCell: (params) => <Button variant="warning" onClick={() => navigate(`/user/${params?.row._id}`)} >
+            renderCell: (params) => <Button style={{backgroundColor:"rgb(54, 75, 182)",color:"#fff"}} onClick={() => navigate(`/user/${params?.row._id}`)} >
                 View
             </Button>,
             width: 100,

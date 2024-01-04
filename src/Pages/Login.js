@@ -3,7 +3,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import "../Stylesheets/Login.scss"
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import logo from '../Assests/Logo.png'
+import logo from '../Assests/logo blue.png'
 import { toast } from 'react-toastify'
 import { clearAuthError, login } from '../Actions/adminActions';
 import { useDispatch, useSelector } from 'react-redux'
@@ -122,7 +122,7 @@ function Login() {
                 name='password'
                 onChange={e => setPassword(e.target.value)} />
             </FloatingLabel>
-            <Button type='submit' disabled={loading} style={{ backgroundColor: "#EE721B", border: "transparent" }} className='input mb-4'>Submit</Button>
+            <Button type='submit' disabled={loading} style={{ backgroundColor: "rgb(54, 75, 182)", border: "transparent" }} className='input mb-4'>Submit</Button>
           </Form>
         </div>
       </section>

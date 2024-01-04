@@ -1,4 +1,4 @@
-$bg-color: rgb(172,192,220);
+$bg-color: rgb(54, 75, 182);
 
 /* sidebar */
 #side {
@@ -35,7 +35,8 @@ $bg-color: rgb(172,192,220);
             gap: 20px;
             align-items: center;
             text-decoration: none;
-            color: #000;
+            color:#fff;
+
             transition: all 50ms ease-in 5ms;
             background-color: transparent;
             border: none;

@@ -1,5 +1,5 @@
 import "../Stylesheets/Sidebar.scss"
-import Logo from "../Assests/Logo.png"
+import Logo from "../Assests/logo blue.png"
 import { LuLayoutDashboard } from "react-icons/lu"
 import { TbZodiacLibra } from "react-icons/tb"
 import { FiUsers } from "react-icons/fi"
