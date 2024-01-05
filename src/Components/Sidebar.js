@@ -45,7 +45,7 @@ function Sidebar() {
     return (
         <>
             <aside id="side">
-                <div className="logoContainer">
+                <div className="logoContainer" style={{background:"#fff"}}>
                     <img src={Logo} alt="logo" />
                 </div>
                 <div className="divider"></div>
