@@ -1,6 +1,6 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import "../Stylesheets/Addastrologer.scss";
-
+import MetaData from "../Components/MetaData";
 import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -73,6 +73,8 @@ function EditPackage() {
   };
   return (
     <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+
       <main id="admin-addastro">
         <section className="astro-head">
           <div>

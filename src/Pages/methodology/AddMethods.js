@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import MetaData from "../../Components/MetaData";
 function AddMethods() {
   const [category, setCategory] = useState({
     category:{name:""}
@@ -48,6 +48,8 @@ try{
   };
   return (
     <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+
       <main id="admin-addastro">
         <section className="astro-head">
           <div>

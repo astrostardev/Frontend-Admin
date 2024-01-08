@@ -25,6 +25,7 @@ import EditMethodology from './Pages/methodology/EditMethodology'
 import AddLanguage from './Pages/languages/AddLanguage'
 import ShowLanguage from './Pages/languages/ShowLanguage'
 import EditLanguage from './Pages/languages/EditLanguage'
+import { HelmetProvider } from 'react-helmet-async'
 
 
 
@@ -36,6 +37,8 @@ function App() {
   // const authGuard = true;
   return (
     <div>
+          <HelmetProvider>
+
       <BrowserRouter>
         <ToastContainer theme="dark" />
         <div id='fixedbar'>
@@ -70,6 +73,8 @@ function App() {
 
         </Routes>
       </BrowserRouter>
+      </HelmetProvider>
+
     </div>
   );
 }

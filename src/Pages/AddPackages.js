@@ -3,7 +3,7 @@ import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-
+import MetaData from "../Components/MetaData";
 function AddPackages() {
   const [packageName, setPackageName] = useState("");
   const [fixedPrice, setfixedPrice] = useState("");
@@ -51,6 +51,8 @@ try{
   };
   return (
     <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+
       <main id="admin-addastro">
         <section className="astro-head">
           <div>

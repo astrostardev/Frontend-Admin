@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Spinner } from "react-bootstrap"
 import dayjs from 'dayjs';
 import moment from "moment"
-
+import MetaData from "../Components/MetaData";
 function ViewUserprofile() {
     const [isLoading, setIsloading] = useState(false)
     const [users, setUsers] = useState(null)
@@ -54,6 +54,8 @@ function ViewUserprofile() {
     }
     return (
         <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+            
             {isLoading ?
                 <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
                     <Spinner animation="grow" className="text-center" variant="warning" />

@@ -6,7 +6,7 @@ import { Button, Spinner } from "react-bootstrap"
 import dayjs from 'dayjs';
 import moment from "moment"
 import { useSelector } from "react-redux";
-
+import MetaData from "../Components/MetaData";
 function ViewPackage() {
     const [isLoading, setIsloading] = useState(false)
     const [packages, setPackages] = useState(null)
@@ -47,6 +47,8 @@ function ViewPackage() {
 
     return (
         <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+
             {isLoading ?
                 <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
                     <Spinner animation="grow" className="text-center" variant="warning" />

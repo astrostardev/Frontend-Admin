@@ -13,10 +13,10 @@ import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import moment from "moment";
 import { UseSelector, useSelector } from "react-redux";
-
+import MetaData from "../Components/MetaData";
 function EditAstrologer() {
     const [isLoading, setIsloading] = useState(false)
-    const{token} = useSelector()
+    // const{token} = useSelector()
     const [astrologers, setAstrologers] = useState({
         firstname: "",
         lastname: "",
@@ -212,6 +212,8 @@ function EditAstrologer() {
     })
     return (
         <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+
             <main id="admin-addastro">
                 <section className="astro-head">
                     <div>

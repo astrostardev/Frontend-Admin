@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
-
+import MetaData from "../Components/MetaData";
 function Addastrologers() {
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
@@ -285,6 +285,8 @@ useEffect(() => {
   };
  return (
     <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
+
       <main id="admin-addastro">
         <section className="astro-head">
           <div>

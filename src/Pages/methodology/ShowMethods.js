@@ -7,7 +7,7 @@ import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { grey } from '@mui/material/colors';
 import React from 'react';
 import {useSelector} from "react-redux";
-
+import MetaData from "../../Components/MetaData";
 function Methods() {
     const [isLoading, setIsloading] = useState(true)
     const [methods, setMethods] = useState(null)
@@ -111,6 +111,7 @@ function Methods() {
 
     return (
         <div className="infoContainer">
+        <MetaData title={'Astro5Star-Manager'} />
             <main id="admin-astro">
                 <section className="astro-head">
                     <div>

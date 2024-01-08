@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import { clearAuthError, login } from '../Actions/adminActions';
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-
+import MetaData from '../Components/MetaData'
 function Login() {
 
   const [email, setEmail] = useState("")
@@ -99,8 +99,9 @@ function Login() {
     //     </div>
     //     </div>
     //    </div>
-
     <main id='admin-login'>
+        <MetaData title={'Astro5Star-Manager'} />
+
       <section className='login-nav'>
         <img src={logo} alt='logo' />
       </section>
