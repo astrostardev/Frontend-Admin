@@ -4,21 +4,21 @@ import "./App.css"
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.js';
-import Astrologers from './Pages/Astrologers';
-import Users from './Pages/Users';
-import Addastrologers from './Pages/Addastrologers';
+import Astrologers from './Pages/astrologers/Astrologers';
+import Users from './Pages/users/Users';
+import Addastrologers from './Pages/astrologers/Addastrologers';
 import { ToastContainer } from 'react-toastify';
 import Login from "./Pages/Login"
 import { useSelector } from "react-redux";
 import React from 'react';
 import Dashboard from './Pages/Dashboard';
-import ViewProfile from './Pages/ViewProfile';
-import ViewUserprofile from './Pages/ViewUserprofile';
-import ViewPackage from './Pages/ViewPackage'
-import EditAstrologer from './Pages/EditAstrologer';
-import Packages from './Pages/Packages';
-import AddPackages from './Pages/AddPackages';
-import EditPackage from './Pages/EditPackage';
+import ViewProfile from './Pages/astrologers/ViewProfile';
+import ViewUserprofile from './Pages/users/ViewUserprofile';
+import ViewPackage from './Pages/packages/ViewPackage'
+import EditAstrologer from './Pages/astrologers/EditAstrologer';
+import Packages from './Pages/packages/Packages';
+import AddPackages from './Pages/packages/AddPackages';
+import EditPackage from './Pages/packages/EditPackage';
 import ShowMethodology from './Pages/methodology/ShowMethods'
 import AddMethodology from './Pages/methodology/AddMethods'
 import EditMethodology from './Pages/methodology/EditMethodology'
@@ -26,6 +26,23 @@ import AddLanguage from './Pages/languages/AddLanguage'
 import ShowLanguage from './Pages/languages/ShowLanguage'
 import EditLanguage from './Pages/languages/EditLanguage'
 import { HelmetProvider } from 'react-helmet-async'
+import Products from './Pages/products/Products'
+import AddProduct from './Pages/products/AddProduct'
+import EditProduct from './Pages/products/EditProduct'
+import Courses from './Pages/courses/Courses';
+import AddCourse from './Pages/courses/AddCourses';
+import EditCourse from './Pages/courses/EditCourses';
+import ViewCategory from './Pages/courseCategory/ViewCategory';
+import AddCategory from './Pages/courseCategory/AddCategory';
+import EditCategory from './Pages/courseCategory/EditCategory';
+import EditProductCategory from './Pages/productCategory/EditProductCategory';
+import AddProductCategory from './Pages/productCategory/AddProductCategory';
+import ViewProductCategory from './Pages/productCategory/ViewProductCategory';
+
+
+
+
+
 
 
 
@@ -70,7 +87,19 @@ function App() {
           <Route path='/languages' element={isAuthenticated ? <ShowLanguage/> : <Navigate to="/" />} />
           <Route path='/editlanguage/:id' element={isAuthenticated ? <EditLanguage/> : <Navigate to="/" />} />
           <Route path='/addlanguage' element={isAuthenticated ? <AddLanguage/> : <Navigate to="/" />} />
-
+          <Route path='/products' element={isAuthenticated ? <Products/> : <Navigate to="/" />} />
+          <Route path='/addproduct' element={isAuthenticated ? <AddProduct/> : <Navigate to="/" />} />
+          <Route path='/editproduct/:id' element={isAuthenticated ? <EditProduct/> : <Navigate to="/" />} />
+          <Route path='/courses' element={isAuthenticated ? <Courses/> : <Navigate to="/" />} />
+          <Route path='/editcourse/:id' element={isAuthenticated ? <EditCourse/> : <Navigate to="/" />} />
+          <Route path='/addcourse' element={isAuthenticated ? <AddCourse/> : <Navigate to="/" />} />
+          <Route path='/course_categories' element={isAuthenticated ? <ViewCategory/> : <Navigate to="/" />} />
+          <Route path='/add_course_category' element={isAuthenticated ? <AddCategory/> : <Navigate to="/" />} />
+          <Route path='/edit_course_categories/:id' element={isAuthenticated ? <EditCategory/> : <Navigate to="/" />} />
+          <Route path='/product_categories' element={isAuthenticated ? <ViewProductCategory/> : <Navigate to="/" />} />
+          <Route path='/add_product_category' element={isAuthenticated ? <AddProductCategory/> : <Navigate to="/" />} />
+          <Route path='/edit_product_categories/:id' element={isAuthenticated ? <EditProductCategory/> : <Navigate to="/" />} />
+          
         </Routes>
       </BrowserRouter>
       </HelmetProvider>

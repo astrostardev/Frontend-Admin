@@ -5,7 +5,7 @@ import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-function EditMethod() {
+function EditProductCategory() {
   const [methods, setMethods] = useState({
     category:{name:""}
   });
@@ -18,7 +18,7 @@ function EditMethod() {
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
-        `${process.env.REACT_APP_URL}/api/v1/method/get/${id}`,
+        `${process.env.REACT_APP_URL}/api/v1/category/get/${id}`,
         {
           method: "GET",
           headers: {
@@ -54,7 +54,7 @@ function EditMethod() {
        category:methods
       };
     const response = await fetch(
-      `${process.env.REACT_APP_URL}/api/v1/method/update/${id}`,
+      `${process.env.REACT_APP_URL}/api/v1/category/update/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -67,10 +67,10 @@ function EditMethod() {
 
     );
     if (response.ok === false) {
-      alert(" edit package Failed");
+      alert(" edit category Failed");
     } else {
       alert("Category Updated");
-      navigate("/methods");
+      navigate("/categories");
     }
   };
   return (
@@ -80,7 +80,7 @@ function EditMethod() {
 
         <section className="astro-head">
           <div>
-            <h3>Edit Methodology</h3>
+            <h3>Edit Product Category</h3>
             <div
               style={{
                 height: "3px",
@@ -148,4 +148,4 @@ function EditMethod() {
   );
 }
 
-export default EditMethod;
+export default EditProductCategory;
