@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
 import "../../Stylesheets/Addastrologer.scss";
 import { Box } from "@mui/material";
-import React from 'react'
-import { FloatingLabel, Form, Dropdown,ButtonGroup,Button, Spinner } from "react-bootstrap";
+import React from "react";
+import {
+  FloatingLabel,
+  Form,
+  Dropdown,
+  ButtonGroup,
+  Button,
+  Spinner,
+} from "react-bootstrap";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -14,122 +21,107 @@ import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import MetaData from "../../Components/MetaData";
 function Addastrologers() {
+  const FileUpload = ({ label, onChange, acceptedTypes,name, files, error }) => {
+    const handleFileUpload = (e) => {
+      const selectedFiles = Array.from(e.target.files);
+
+      selectedFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.readyState === 2) {
+            onChange((prevFiles) => [...prevFiles, { type: label, file, name }]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    return (
+      <div className="mb-3">
+        <Form.Group>
+          <FloatingLabel controlId={label}>
+            <div
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                width: "100%",
+              }}
+            >
+              <input
+                type="file"
+                placeholder={`${label} Photo`}
+                name={name}
+                onChange={handleFileUpload}
+                accept={acceptedTypes}
+                className="pic-input"
+              />
+              <label className="pic-label">Choose {label}</label>
+            </div>
+          </FloatingLabel>
+        </Form.Group>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {files.map((uploadedFile, index) => (
+          <p key={index}>
+            {uploadedFile.type} Image {index + 1}: {uploadedFile.file.name}
+          </p>
+        ))}
+      </div>
+    );
+  };
+
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
-  const [certificates, setCertificates] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState([]);
   const [photoErr, setPhotoErr] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [categories, setCategories] = useState(null);
-  const[languages,setLanguages] = useState(null)
-  
+  const [languages, setLanguages] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
- 
   useEffect(() => {
     async function fetchData() {
-        let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/method/show`, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`
-            },   
-        method: "GET",
-        });
-        // console.log(response);
-        let data = await response.json();
-        console.log(data)
-        setIsloading(false)
-        setCategories(data.categories)
-        console.log(categories);
-    }
-    fetchData();
-}, []);
-useEffect(() => {
-  async function fetchData() {
-      let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/language/show`, {
+      let response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/method/show`,
+        {
           headers: {
-              'Content-type': 'multipart/form-data',
-              Authorization: `Bearer ${token}`
-          },   
-      method: "GET",
-      });
+            "Content-type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          method: "GET",
+        }
+      );
       // console.log(response);
       let data = await response.json();
-      console.log(data)
-      setIsloading(false)
-      setLanguages(data.languages)
+      console.log(data);
+      setIsloading(false);
+      setCategories(data.categories);
+      console.log(categories);
+    }
+    fetchData();
+  }, []);
+  useEffect(() => {
+    async function fetchData() {
+      let response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/language/show`,
+        {
+          headers: {
+            "Content-type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+          method: "GET",
+        }
+      );
+      // console.log(response);
+      let data = await response.json();
+      console.log(data);
+      setIsloading(false);
+      setLanguages(data.languages);
       console.log(languages);
-  }
-  fetchData();
-}, []);
+    }
+    fetchData();
+  }, []);
   const { token } = useSelector((state) => state.authState);
 
-  const handleFileUpload = (e) => {
-    const selectedFile = e.target.files[0];
-
-    // // Check if a file is selected
-    // if (!selectedFile) {
-    //     setErrorMessage('Please select a file.');
-    //     return;
-    // }
-
-    // Check file type (pdf or jpeg)
-    const allowedTypes = [
-      "application/pdf",
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-    ];
-    if (!allowedTypes.includes(selectedFile.type)) {
-      setErrorMessage(
-        "File type not allowed. Please select a PDF or JPEG or PNG file."
-      );
-      return;
-    }
-    // Check file size (in bytes)
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
-    if (selectedFile.size > maxSizeInBytes) {
-      setErrorMessage("File size exceeds the maximum allowed size (2MB).");
-      return;
-    }
-
-    // Check the number of files
-    if (certificates.length >= 4) {
-      setErrorMessage("You can only upload up to 4 files.");
-      return;
-    }
-
-    // All checks passed, add the file to the state
-    setCertificates([...certificates, selectedFile]);
-    setErrorMessage("");
-  };
-
-  const handlePhoto = (e) => {
-    const selectedPhoto = e.target.files[0];
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-    if (!allowedTypes.includes(selectedPhoto.type)) {
-      setPhotoErr(
-        "File type not allowed. Please select a PDF or JPEG or PNG file."
-      );
-      return;
-    }
-    // Check file size (in bytes)
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
-    if (selectedPhoto.size > maxSizeInBytes) {
-      setPhotoErr("File size exceeds the maximum allowed size (2MB).");
-      return;
-    }
-
-    // Check the number of files
-    if (profilePhoto?.length >= 1) {
-      setPhotoErr("You can only upload up to 1 files.");
-      return;
-    }
-
-    // All checks passed, add the file to the state
-    setProfilePhoto(selectedPhoto);
-    setPhotoErr("");
-  };
   const {
     register,
     handleSubmit,
@@ -154,7 +146,7 @@ useEffect(() => {
         message: "select Category",
       },
     },
-   language: {
+    language: {
       required: {
         value: true,
         message: "select Language",
@@ -206,6 +198,13 @@ useEffect(() => {
         }
       },
     },
+    biograph: {
+      validate: (value) => {
+        if (value.split(" ").length > 50) {
+          return "Describe in 50 Words";
+        }
+      },
+    },
     astrologyExperience: {
       validate: (value) => {
         if (value.split(" ").length > 50) {
@@ -229,63 +228,66 @@ useEffect(() => {
     },
   };
 
+  const handleFileChange = (files) => {
+    setUploadedFiles(files);
+    console.log('files',uploadedFiles);
+    setPhotoErr("");
+  };
   const onSubmit = async (data) => {
-
     setIsloading(true);
     if (dob) {
-  
       const astrologerDetails = new FormData();
 
       Object.keys(data).forEach((key) => {
         astrologerDetails.set(key, data[key]);
       });
       astrologerDetails.set("dob", dob);
-      astrologerDetails.set('profilePic', profilePhoto)
 
-      Object.keys(certificates).forEach((key, index) => {
-          astrologerDetails.set(`certificates`, certificates[key]);
+      uploadedFiles.forEach((uploadedFile) => {
+        const fieldName = uploadedFile.type.toLowerCase()+'Pic';
+        console.log('feild name',fieldName , 'files', uploadedFile.file);
+        // console.log('file',uploadedFile.file);
+
+        astrologerDetails.append(fieldName, uploadedFile.file);
       });
+
 
       const astroID = uuid().slice(0, 6).toUpperCase();
       astrologerDetails.set("astrologerID", astroID);
-      if(!data){
-        console.error('no data');
-        return
-      }else{
-        console.log('lf',astrologerDetails);
-
+      if (!data) {
+        console.error("no data");
+        return;
+      } else {
+        console.log("lf", astrologerDetails);
       }
       const response = await fetch(
         `${process.env.REACT_APP_URL}/api/v1/astrologer/register`,
         {
           headers: {
-            
             Authorization: `Bearer ${token}`,
           },
           method: "POST",
           body: astrologerDetails,
         }
       );
-       const jsonResponse = await response.json();
-       console.log('res',jsonResponse);
+      const jsonResponse = await response.json();
+      console.log("res", jsonResponse);
       if (response.ok === false) {
         alert("Registration Failed");
       } else {
-      
         alert("Registration Successful");
       }
       setIsloading(false);
       setDob(null);
-      setCertificates([]);
-      setProfilePhoto(null);
+      setUploadedFiles([]);
     } else {
       setDoberr(true);
       setIsloading(false);
     }
   };
- return (
+  return (
     <div className="infoContainer">
-        <MetaData title={'Astro5Star-Manager'} />
+      <MetaData title={"Astro5Star-Manager"} />
 
       <main id="admin-addastro">
         <section className="astro-head">
@@ -344,6 +346,41 @@ useEffect(() => {
                     {errors.lastname && errors.lastname.message}
                   </p>
                 </div>
+                <div className="mb-3">
+                  <FloatingLabel controlId="displayname" label="Display Name">
+                    <Form.Control
+                      type="text"
+                      placeholder="displayname"
+                      name="displayname"
+                      {...register("displayname", validation.displayname)}
+                    />
+                  </FloatingLabel>
+                  <p className="errormsg">
+                    {errors.lastname && errors.lastname.message}
+                  </p>
+                </div>
+              </div>
+
+
+              <div className="threeCol">
+                {/* Dob */}
+                <div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DatePicker"]}>
+                      <DatePicker
+                        label="Date of Birth"
+                        className="mb-3"
+                        value={dob}
+                        onChange={(newValue) => setDob(newValue)}
+                        format="DD-MM-YYYY"
+                        maxDate={dayjs()}
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                  {doberr && <p className="errormsg">Enter DOB</p>}
+                </div>
+
+                {/* isActive */}
                 <div className="mx-2">
                   <Form.Label className="me-3" style={{ display: "block" }}>
                     IsActive
@@ -368,35 +405,15 @@ useEffect(() => {
                     {...register("isActive")}
                   />
                 </div>
-              </div>
-              <div className="threeCol">
-                {/* Dob */}
-                <div>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker
-                        label="Date of Birth"
-                        className="mb-3"
-                        value={dob}
-                        onChange={(newValue) => setDob(newValue)}
-                        format="DD-MM-YYYY"
-                        maxDate={dayjs()}
-                      />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                  {doberr && <p className="errormsg">Enter DOB</p>}
-                </div>
                 {/* Gender */}
                 <div className="mb-3">
-                  <div className="mx-2">
-                    <Form.Label className="me-3" style={{ display: "block" }}>
-                      Select Gender
-                    </Form.Label>
+                  <Form.Label className="me-3">Select Gender</Form.Label>
+                  <div className="check-btn">
                     <Form.Check
                       type="radio"
                       label="Male"
                       name="gender"
-                      inline
+                      // inline
                       id="inline-radio-1"
                       value="male"
                       {...register("gender", validation.gender)}
@@ -405,7 +422,7 @@ useEffect(() => {
                       type="radio"
                       label="Female"
                       name="gender"
-                      inline
+                      // inline
                       id="inline-radio-2"
                       value="female"
                       {...register("gender", validation.gender)}
@@ -414,7 +431,7 @@ useEffect(() => {
                       type="radio"
                       label="Others"
                       name="gender"
-                      inline
+                      // inline
                       id="inline-radio-3"
                       value="others"
                       {...register("gender", validation.gender)}
@@ -424,22 +441,81 @@ useEffect(() => {
                     {errors.gender && errors.gender.message}
                   </p>
                 </div>
+              </div>
 
+              <div className="threeCol">
+                {/* profile image */}
                 <div className="mb-3">
-                  <FloatingLabel controlId="photo" label="Profile Photo">
-                    <Form.Control
-                      type="file"
-                      placeholder="Profile Photo"
-                      name="Profile Photo"
-                      onChange={handlePhoto}
-                      accept="image/png, image/jpeg"
-                    />
-                  </FloatingLabel>
-
-                  {photoErr && <p style={{ color: "red" }}>{photoErr}</p>}
-                  <p>Photo: {profilePhoto?.name}</p>
+                  <Form.Group>
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Profile"
+                        name="profilePic"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Profile"
+                        )}
+                        error={photoErr}
+                      />
+                    </div>
+                  </Form.Group>
+                </div>
+                {/* Aadhar photo */}
+                <div className="mb-3">
+                  <Form.Group>
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Aadhar"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Aadhar"
+                        )}
+                        error={photoErr}
+                      />
+                    </div>
+                  </Form.Group>
+                </div>
+                {/* Pan card Image */}
+                <div className="mb-3">
+                  <Form.Group>
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Pan"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Pan"
+                        )}
+                        error={photoErr}
+                      />
+                    </div>
+                  </Form.Group>
                 </div>
               </div>
+
               <div className="threeCol">
                 {/* Email */}
                 <div className="mb-3">
@@ -495,9 +571,7 @@ useEffect(() => {
                   </p>
                 </div>
               </div>
-              <div>
-               
-              </div>
+
               <div className="twoCol">
                 {/* Education */}
                 <FloatingLabel
@@ -604,85 +678,93 @@ useEffect(() => {
             </article>
             <hr />
             <article className="astroDetails my-3">
-             
-             
               <div className="mb-3 threeCol">
                 <div>
-                <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                Methodology
-              </p>
-              <Dropdown>
-                <Dropdown.Toggle  id="dropdown-basic" >
-                  Astrology
-                </Dropdown.Toggle>
+                  <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+                    Methodology
+                  </p>
+                  <Dropdown>
+                    <Dropdown.Toggle id="dropdown-basic">
+                      Astrology
+                    </Dropdown.Toggle>
 
-                <Dropdown.Menu
-                style={{width:"300px"}}
-             
-                >
-                  {categories?.map((cat,index) => (
-                    <>
-                  <div key={index} style={{display:"flex",alignItems:"center",marginLeft:"5px",gap:"4px",padding:"0 5px"}}   className="customDrop">
-                      <Form.Check
-                       type="checkbox"
-                       name="category" 
-                       value={cat.category[0]?.name}
-                       key={index}
-                       onChange={(e)=>setCategories(e.target.value)}
-                       {...register("category")}
-                     
-                    />  {cat.category[0]?.name}
-                    {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
+                    <Dropdown.Menu style={{ width: "300px" }}>
+                      {categories?.map((cat, index) => (
+                        <>
+                          <div
+                            key={index}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginLeft: "5px",
+                              gap: "4px",
+                              padding: "0 5px",
+                            }}
+                            className="customDrop"
+                          >
+                            <Form.Check
+                              type="checkbox"
+                              name="category"
+                              value={cat.category[0]?.name}
+                              key={index}
+                              onChange={(e) => setCategories(e.target.value)}
+                              {...register("category")}
+                            />{" "}
+                            {cat.category[0]?.name}
+                            {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
                     </Dropdown.Item> */}
-                    </div>
-                    </>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-              <p className="errormsg">
+                          </div>
+                        </>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  <p className="errormsg">
                     {errors.category && errors.category.message}
                   </p>
                 </div>
                 <div>
-                <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                Language
-              </p>
-              <Dropdown>
-                <Dropdown.Toggle  id="dropdown-basic" >
-                  Languages
-                </Dropdown.Toggle>
+                  <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+                    Language
+                  </p>
+                  <Dropdown>
+                    <Dropdown.Toggle id="dropdown-basic">
+                      Languages
+                    </Dropdown.Toggle>
 
-                <Dropdown.Menu
-                style={{width:"300px"}}
-             
-                >
-                  {languages?.map((cat,index) => (
-                    <>
-                  <div style={{display:"flex",alignItems:"center",marginLeft:"5px",gap:"4px",padding:"0 5px"}}   className="customDrop">
-                      <Form.Check
-                       type="checkbox"
-                       name="language" 
-                       value={cat?.language[0]?.name}
-                       key={index}
-                       onChange={(e)=>setLanguages(e.target.value)}
-                       {...register("language")}
-                     
-                    />  {cat?.language[0]?.name}
-                    {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
+                    <Dropdown.Menu style={{ width: "300px" }}>
+                      {languages?.map((cat, index) => (
+                        <>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginLeft: "5px",
+                              gap: "4px",
+                              padding: "0 5px",
+                            }}
+                            className="customDrop"
+                          >
+                            <Form.Check
+                              type="checkbox"
+                              name="language"
+                              value={cat?.language[0]?.name}
+                              key={index}
+                              onChange={(e) => setLanguages(e.target.value)}
+                              {...register("language")}
+                            />{" "}
+                            {cat?.language[0]?.name}
+                            {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
                     </Dropdown.Item> */}
-                    </div>
-                    </>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
-              <p className="errormsg">
+                          </div>
+                        </>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  <p className="errormsg">
                     {errors.language && errors.language.message}
                   </p>
                 </div>
-                
               </div>
-            
-
 
               <p style={{ fontSize: "16px", textDecoration: "underline" }}>
                 Astrology related details
@@ -714,29 +796,46 @@ useEffect(() => {
                   />
                 </FloatingLabel>
                 <div>
-                  <FloatingLabel
-                    controlId="certificates"
-                    label="Course certificates"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="file"
-                      placeholder="certificates"
-                      name="certificates"
-                      onChange={handleFileUpload}
-                      accept="image/png, image/jpeg, .pdf"
-                    />
-                  </FloatingLabel>
-
-                  {errorMessage && (
-                    <p style={{ color: "red" }}>{errorMessage}</p>
-                  )}
-                  {certificates.map((file, index) => (
-                    <p key={index}>
-                      Certificate {index + 1}: {file.name}
-                    </p>
-                  ))}
+                  <div className="mb-3">
+                    <Form.Group>
+                      <div
+                        style={{
+                          position: "relative",
+                          overflow: "hidden",
+                          width: "100%",
+                        }}
+                        className="pic-lable"
+                      >
+                        <FileUpload
+                          label="Certificate"
+                          onChange={handleFileChange}
+                          acceptedTypes="application/pdf, image/png, image/jpeg"
+                          files={uploadedFiles.filter(
+                            (file) => file.type === "Certificate"
+                          )}
+                          error={photoErr}
+                        />
+                      </div>
+                    </Form.Group>
+                  </div>
                 </div>
+              </div>
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-description"
+                  label="Biograph  (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    style={{ height: "100px" }}
+                    placeholder="astrology-description"
+                    name="biograph"
+                    {...register("biograph", validation.biograph)}
+                  />
+                </FloatingLabel>
+                <p className="errormsg">
+                  {errors.biograph && errors.biograph.message}
+                </p>
               </div>
               <div>
                 <div className="mb-3">

@@ -13,11 +13,62 @@ import { useSelector } from "react-redux";
 
 import MetaData from "../../Components/MetaData";
 function EditAstrologer() {
+  const FileUpload = ({ label, onChange, acceptedTypes,name, files, error }) => {
+    const handleFileUpload = (e) => {
+      const selectedFiles = Array.from(e.target.files);
+
+      selectedFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.readyState === 2) {
+            onChange((prevFiles) => [...prevFiles, { type: label, file, name }]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    return (
+      <div className="mb-3">
+        <Form.Group>
+          <FloatingLabel controlId={label}>
+            <div
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                width: "100%",
+              }}
+            >
+              <input
+                type="file"
+                placeholder={`${label} Photo`}
+                name={name}
+                onChange={handleFileUpload}
+                accept={acceptedTypes}
+                className="pic-input"
+              />
+              <label className="pic-label">Choose {label}</label>
+            </div>
+          </FloatingLabel>
+        </Form.Group>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {files.map((uploadedFile, index) => (
+          <p key={index}>
+            {uploadedFile.type} Image {index + 1}: {uploadedFile.file.name}
+          </p>
+        ))}
+      </div>
+    );
+  };
   const [isLoading, setIsloading] = useState(false);
   const [categories, setCategories] = useState(null);
   const [languages, setLanguages] = useState(null);
   const [isActive, setIsActive] = useState(true);
   const { token } = useSelector((state) => state.authState);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [photoErr, setPhotoErr] = useState("");
+
 
   const [astrologers, setAstrologers] = useState({
     firstname: "",
@@ -44,6 +95,7 @@ function EditAstrologer() {
     isActive: "",
     call: "",
     chat: "",
+
   });
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
@@ -199,20 +251,18 @@ function EditAstrologer() {
 
     fetchData();
   }, []);
+  const handleFileChange = (files) => {
+    setUploadedFiles(files);
+    console.log('files',uploadedFiles);
+    setPhotoErr("");
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
 
     if (dob) {
-      // console.log(data);
-      // console.log(dob);
-      // console.log(certificates);
-      // console.log(profilePhoto);
-
-      if (Object.values(errors).every((error) => !error)) {
-        // No errors, submit the data
-        // console.log('Form data submitted:', astrologers);
+   
         const updatedDetails = new FormData();
         updatedDetails.append("firstname", astrologers.firstname);
         updatedDetails.append("lastname", astrologers.lastname);
@@ -248,6 +298,14 @@ function EditAstrologer() {
         );
         updatedDetails.append("knowus", astrologers.knowus);
         updatedDetails.append("maxTime", astrologers.maxTime);
+        uploadedFiles.forEach((uploadedFile) => {
+          const fieldName = uploadedFile.type.toLowerCase()+'Pic';
+          console.log('feild name',fieldName , 'files', uploadedFile.file);
+          // console.log('file',uploadedFile.file);
+  
+          updatedDetails.append(fieldName, uploadedFile.file);
+        });
+  
         console.log("updated details", updatedDetails);
 
         const response = await fetch(
@@ -265,11 +323,7 @@ function EditAstrologer() {
           alert("Updated successfully");
           navigate(`/astrologer/${id}`);
         }
-      } else {
-        // There are errors, handle accordingly (e.g., display an error message)
-        console.log("Form submission failed due to validation errors.");
-        setIsloading(false);
-      }
+     
       // setCertificates([])
       // setProfilePhoto(null)
     } else {
@@ -340,6 +394,42 @@ function EditAstrologer() {
                     <p className="errormsg">{errors.lastname}</p>
                   )}
                 </div>
+                <div className="mb-3">
+                  <FloatingLabel controlId="displayname" label="display Name">
+                    <Form.Control
+                      type="text"
+                      placeholder="displayname"
+                      name="displayname"
+                      value={astrologers?.displayname}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {errors.lastname && (
+                    <p className="errormsg">{errors.lastname}</p>
+                  )}
+                </div>
+              
+              </div>
+            
+              <div className="threeCol">
+                {/* Dob */}
+                <div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={["DatePicker"]}>
+                      <DatePicker
+                        label="Date of Birth"
+                        className="mb-3"
+                        value={dob}
+                        onChange={(newValue) => setDob(newValue)}
+                        format="DD-MM-YYYY"
+                        maxDate={dayjs()}
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                  {doberr && <p className="errormsg">Enter DOB</p>}
+                </div>
+
+                {/* isActive */}
                 <div className="mx-2">
                   <Form.Label className="me-3" style={{ display: "block" }}>
                     IsActive
@@ -350,10 +440,10 @@ function EditAstrologer() {
                     name="isActive"
                     inline
                     id="inline-radio-1"
-                    value={isActive}
-                    checked={astrologers?.isActive == true }
-                    onChange={(e)=>setIsActive(e.target.value)}
+                    value={true}
+                    checked={astrologers?.isActive == true}
 
+                    // {...register("isActive")}
                   />
                   <Form.Check
                     type="radio"
@@ -361,83 +451,143 @@ function EditAstrologer() {
                     name="isActive"
                     inline
                     id="inline-radio-2"
-                    value={!isActive}
-                    checked={astrologers?.isActive == false} 
-                    onChange={(e)=>setIsActive(e.target.value)}
+                    value={false}
+                    checked={astrologers?.isActive == false}
+
+                    // {...register("isActive")}
                   />
-                </div>
-              </div>
-              <div className="threeCol">
-                {/* Dob */}
-                <div>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker
-                        label="Date of Birth"
-                        className="mb-3"
-                        value={dob}
-                        renderInput={(props) => <TextField {...props} />}
-                        onChange={(newValue) => setDob(newValue)}
-                        format="DD-MM-YYYY"
-                        maxDate={dayjs()}
-                      />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                  {doberr && <p className="errormsg">Enter DOB</p>}
                 </div>
                 {/* Gender */}
                 <div className="mb-3">
-                  <div className="mx-2">
-                    <Form.Label className="me-3" style={{ display: "block" }}>
-                      Select Gender
-                    </Form.Label>
+                  <Form.Label className="me-3">Select Gender</Form.Label>
+                  <div className="check-btn">
                     <Form.Check
                       type="radio"
                       label="Male"
                       name="gender"
-                      inline
+                      // inline
                       id="inline-radio-1"
                       value="male"
-                      checked={astrologers?.gender === "male"}
-                      onChange={handleChange}
+                      checked={astrologers?.gender === 'male'}
+                      
+                      // {...register("gender", validation.gender)}
                     />
                     <Form.Check
                       type="radio"
                       label="Female"
                       name="gender"
-                      inline
+                      // inline
                       id="inline-radio-2"
                       value="female"
-                      checked={astrologers?.gender === "female"}
-                      onChange={handleChange}
+                      checked={astrologers?.gender === 'female'}
+                      // {...register("gender", validation.gender)}
                     />
                     <Form.Check
                       type="radio"
                       label="Others"
                       name="gender"
-                      inline
+                      // inline
                       id="inline-radio-3"
                       value="others"
-                      checked={astrologers?.gender === "others"}
-                      onChange={handleChange}
+                      checked={astrologers?.gender === 'others'}
+
+                      // {...register("gender", validation.gender)}
                     />
                   </div>
-                  {errors.gender && <p className="errormsg">{errors.gender}</p>}
+                  <p className="errormsg">
+                    {errors.gender && errors.gender.message}
+                  </p>
                 </div>
-
+              </div>
+              <div className="threeCol">
+                {/* profile image */}
                 <div className="mb-3">
-                  <p>Working...</p>
-                  {/* <FloatingLabel
-                                        controlId="photo"
-                                        label="Profile Photo"
+                  <Form.Group>
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                        display:"flex",
+                        justifyContent:"space-between"
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Profile"
+                        name="profilePic"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Profile"
+                        )}
+                        error={photoErr}
+                      />
+                         {astrologers?.profilePic?.map((pic)=>(
+                      <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
 
-                                    >
-                                        <Form.Control type="file" placeholder="Profile Photo" name="Profile Photo" onChange={handlePhoto} accept="image/png, image/jpeg" />
-                                    </FloatingLabel>
+                      ))}
+                    </div>
+                  </Form.Group>
+                </div>
+                {/* Aadhar photo */}
+                <div className="mb-3">
+                  <Form.Group>
+                  <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                        display:"flex",
+                        justifyContent:"space-between"
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Aadhar"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Aadhar"
+                        )}
+                        error={photoErr}
+                      />
+                         {astrologers?.aadharPic?.map((pic)=>(
+                      <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
 
-                                    {photoErr && <p style={{ color: 'red' }}>{photoErr}</p>} */}
-                  {/* <img src={astrologers?.profilePic[0]?.pic} alt="" style={{width:"130px", height:"150px"}}/> */}
-                  {/* <p>Photo: {profilePhoto?.name}</p> */}
+                      ))}
+                    </div>
+                  </Form.Group>
+                </div>
+                {/* Pan card Image */}
+                <div className="mb-3">
+                  <Form.Group>
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                        display:"flex",
+                        justifyContent:"space-between"
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Pan"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Pan"
+                        )}
+                        error={photoErr}
+                      />
+                      {astrologers?.panPic?.map((pic)=>(
+                      <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
+
+                      ))}
+
+                    </div>
+                  </Form.Group>
                 </div>
               </div>
               <div className="threeCol">
@@ -747,20 +897,34 @@ function EditAstrologer() {
                     onChange={handleChange}
                   />
                 </FloatingLabel>
-                <div>
-                  {/* <FloatingLabel
-                                        controlId="certificates"
-                                        label="Course certificates"
-                                        className="mb-3"
-                                    >
-                                        <Form.Control type="file" placeholder="certificates" name="certificates" onChange={handleFileUpload} accept="image/png, image/jpeg, .pdf" />
-                                    </FloatingLabel>
+                <div className="mb-3">
+                  <Form.Group>
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "100%",
+                        display:"flex",
+                        justifyContent:"space-between"
+                      }}
+                      className="pic-lable"
+                    >
+                      <FileUpload
+                        label="Certificate"
+                        onChange={handleFileChange}
+                        acceptedTypes="image/png, image/jpeg"
+                        files={uploadedFiles.filter(
+                          (file) => file.type === "Certificate"
+                        )}
+                        error={photoErr}
+                      />
+                      {astrologers?.certificatePic?.map((file)=>(
+                      <img src={file.file} alt={file._id} style={{width:"75px",height:"50px"}} />
 
-                                    {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                                    {astrologers?.astrologer?.certificates.map((file, index) => (
-                                        <>  <img key={index} src={file.file} alt="" /> <span><IoMdTrash style={{ fontSize: "18px" }} /> </span></>
-                                    ))} */}
-                  <p>Working...</p>
+                      ))}
+
+                    </div>
+                  </Form.Group>
                 </div>
               </div>
               <div>

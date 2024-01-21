@@ -165,10 +165,12 @@ function  EditProduct() {
     //   // No errors, submit the data
     //   // console.log('Form data submitted:', astrologers);
     const updatedDetails = new FormData();
-    updatedDetails.append("coursename", course.coursename);
+    updatedDetails.append("coursename", course.productname);
     updatedDetails.append("price", course.price);
     updatedDetails.append("isActive", course.isActive);
-    updatedDetails.append("images", image);
+    images.forEach((image) => {
+      updatedDetails.set("images", image);
+    });
     updatedDetails.append("category", selectedCategory);
     updatedDetails.append("description", course.description);
 
@@ -364,7 +366,7 @@ function  EditProduct() {
                     type="text"
                     placeholder="category"
                     name="category"
-                    value={selectedCategory ? selectedCategory : course.category}
+                    value={selectedCategory ? selectedCategory : course?.category}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                   />
                 </FloatingLabel>

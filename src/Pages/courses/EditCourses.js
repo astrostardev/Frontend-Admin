@@ -7,11 +7,12 @@ import { useSelector } from "react-redux";
 
 function EditCourse() {
   const [course, setCourse] = useState({
-    
     coursename: "",
     price: "",
     isActive: "",
     description: "",
+    images: [],
+    category: "",
   });
 
   const [errors, setErrors] = useState({
@@ -24,8 +25,10 @@ function EditCourse() {
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesCleared, setImagesCleared] = useState(false);
-  const [image, setImage] = useState("");
+   const [image, setImage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
+
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -53,6 +56,7 @@ function EditCourse() {
       console.log("usser", data.course);
     }
     fetchData();
+
   }, []);
 
   // const handleChange = (e) => {
@@ -104,29 +108,20 @@ function EditCourse() {
       error = "Description is required";
     }
 
-    if (name === "isActive") {
-      setCourse({
-        ...course,
-        isActive: value === "true",
-      });
-    }
-
     setErrors({
       ...errors,
       [name]: error,
     });
+    console.log('images',images);
+ 
     setCourse({
       ...course,
       [name]: value,
-      category: [
-        {
-          ...course.category[0],
-          name: e.target.value,
-        },
-      ],
+     
+  
     });
   };
-  
+
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
 
@@ -134,9 +129,10 @@ function EditCourse() {
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.readyState === 2) {
-          setImagesPreview((oldArray) => [...oldArray, reader.result]);
-          setImages((oldArray) => [...oldArray, file]);
-         
+        setImagesPreview((prevImages) => (prevImages ? [...prevImages, reader.result] : [reader.result]));
+
+          setImages((prevImages) => [...prevImages, file]);
+
         }
       };
       reader.readAsDataURL(file);
@@ -166,6 +162,23 @@ function EditCourse() {
 
     setImageErr("");
   };
+
+  // const onImagesChange = (e) => {
+  //   const files = Array.from(e.target.files);
+
+  //   files?.forEach((file) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       if (reader.readyState === 2) {
+  //           setImagesPreview((prevImages) => (prevImages ? [...prevImages, reader.result] : [reader.result]));
+
+  //         setImages((prevImages) => [...prevImages, file]);
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   });
+  // };
+
   const clearImagesHandler = () => {
     setImages([]);
     setImagesPreview([]);
@@ -205,9 +218,11 @@ function EditCourse() {
     updatedDetails.append("coursename", course.coursename);
     updatedDetails.append("price", course.price);
     updatedDetails.append("isActive", course.isActive);
-    updatedDetails.append("images", image);
-    updatedDetails.append("category", selectedCategory);
+    updatedDetails.append("category", course.category);
     updatedDetails.append("description", course.description);
+    images?.forEach((image) => {
+      updatedDetails.append("images", image);
+    });
 
     console.log("updated details", updatedDetails);
 
@@ -234,10 +249,21 @@ function EditCourse() {
     // setCertificates([])
     // setProfilePhoto(null)
   };
+  const handleImageSelect = (selectedImage) => {
+    setCourse({
+      ...course,
+      images: selectedImage,
+    });
+    console.log("selected Category", selectedCategory);
+  };
+
 
   const handleDropdownSelect = (selectedCategory) => {
-    setSelectedCategory(selectedCategory);
-    console.log('selected Category',selectedCategory);
+    setCourse({
+      ...course,
+      category: selectedCategory,
+    });
+    console.log("selected Category", selectedCategory);
   };
 
   return (
@@ -267,7 +293,7 @@ function EditCourse() {
           >
             <article className="basicDetails">
               <div className="threeCol">
-                {/* FirstName */}
+                {/* CourseName */}
 
                 <div className="mb-3">
                   <FloatingLabel controlId="coursename" label="Name">
@@ -280,7 +306,7 @@ function EditCourse() {
                     />
                   </FloatingLabel>
                   <p className="errormsg">
-                    {/* {errors.coursename && errors.coursename.message} */}
+                    {errors.coursename && errors.coursename.message}
                   </p>
                 </div>
                 <div className="mb-3">
@@ -299,7 +325,6 @@ function EditCourse() {
                 </div>
 
                 <div className="mx-2">
-                
                   <Form.Label className="me-3" style={{ display: "block" }}>
                     IsActive
                   </Form.Label>
@@ -310,58 +335,71 @@ function EditCourse() {
                     inline
                     id="inline-radio-1"
                     value={true}
-                    checked={course?.isActive==true}
+                    checked={course?.isActive == true}
                     onChange={handleChange}
                   />
                   <Form.Check
-                  // onClick={selectedEvent}
+                    // onClick={selectedEvent}
                     type="radio"
                     label="No"
                     name="isActive"
                     inline
                     id="inline-radio-2"
                     value={false}
-                    checked={course?.isActive==false}
+                    checked={course?.isActive == false}
                     onChange={handleChange}
                   />
                 </div>
-            
               </div>
 
-              <div></div>
-              <div className="threeCol">
+              <div className="two">     
                 <div className="mb-3">
-                  <FloatingLabel controlId="image" label="Image">
+                  <FloatingLabel controlId="images" label="Image">
                     <Form.Control
                       type="file"
                       placeholder="Image"
-                      name="image"
-                      // value={course?.images[0]?.image}
+                      name="images"
+                      eventKey={(e)=>setSelectedImage(e.target.value)}
+                      onClick={handleImageSelect}
                       onChange={onImagesChange}
                       accept="image/png, image/jpeg"
+                      multiple
                     />
                   </FloatingLabel>
-                  <div className="twoCol">
+
+                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
+                </div>
+                {/* {existing Images} */}
+                <div className="mb-4">
                 <div
                   className="img-preview"
                   style={{
-                    width: "100px",
+                    width: "200px",
                     position: "absolute",
                     display: "flex",
                     flexDirection: "row",
                     gap: "20px",
                   }}
-                > 
-                  {imagesPreview?.map((image) => (
+                >    <img
+                  // src={ course?.images[0]?.image ? course?.images[0]?.image : images}
+                 src={selectedImage ? selectedImage : course?.images[0]?.image}
+                  key={image}
+                  alt=""
+                  className="pre-img"
+                  style={{ maxWidth: "100%",height:"60px" }}
+                />
+                  
+                  {/* {imagesPreview?.map((image) => (
                     <img
-                      src={image}
+                    src={image}
+                      // src={selectedImage.image ? selectedImage.image : course?.images[0]?.image}
                       key={image}
                       alt=""
                       className="pre-img"
-                      style={{ maxWidth: "100%" }}
+                      style={{ maxWidth: "100%",height:"60px" }}
                     />
                   ))}
-                  {imagesPreview?.length > 0 && (
+                  {imagesPreview.length > 0 && (
                     <button
                       id="delete-btn"
                       className="btns"
@@ -374,40 +412,46 @@ function EditCourse() {
                       ></i>
                       Delete
                     </button>
-                  )}
+                  )} */}
+                </div>
                 </div>
               </div>
 
-                  {/* {imageErr && <p style={{ color: "red" }}>{imageErr}</p>} */}
+              <div className="threeCol">
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="description"
+                    label="Description"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Description"
+                      name="description"
+                      value={course?.description}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
                 </div>
 
-                <FloatingLabel
-                  controlId="description"
-                  label="Description"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Description"
-                    name="description"
-                    value={course?.description}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                <FloatingLabel
-                  controlId="category"
-                  label="category"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="category"
-                    name="category"
-                    disabled="baned"
-                    value={selectedCategory ? selectedCategory : course.category}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                  />
-                </FloatingLabel>
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="category"
+                    label="category"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="category"
+                      name="category"
+                      disabled="baned"
+                      value={
+                        selectedCategory ? selectedCategory : course?.category
+                      }
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                    />
+                  </FloatingLabel>
+                </div>
 
                 <div className="mb-3 ">
                   <Dropdown onSelect={handleDropdownSelect}>
@@ -427,51 +471,8 @@ function EditCourse() {
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
- 
-           </div>
-                    {/* {existing Images} */}
-              {/* <div className="twoCol">
-                <div
-                  className="img-preview"
-                  style={{
-                    width: "100px",
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "20px",
-                  }}
-                >
-           
-                    <img
-                      src={course?.images[0]?.image}
-                      key={image}
-                      alt=""
-                      className="pre-img"
-                      style={{ maxWidth: "100%" }}
-                    />
-              
-                  {imagesPreview.length > 0 && (
-                    <button
-                      id="delete-btn"
-                      className="btns"
-                      onClick={clearImagesHandler}
-                      style={{ cursor: "pointer", width: "75px" }}
-                    >
-                      <i
-                        className="fa fa-trash"
-                        style={{ marginLeft: "-1rem", marginRight: "1rem" }}
-                      ></i>
-                      Delete
-                    </button>
-                  )}
                 </div>
-              </div> */}
-
-
               </div>
-          
-
-          
             </article>
             <div className="twoCol btnGroup">
               <div style={{ display: "flex", gap: "20px" }}>

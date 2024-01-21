@@ -102,14 +102,31 @@ function ViewProfile() {
                             <p>{astrologers?.astrologer?.lastname}</p>
                         </div>
                         <div className="my-4">
+                            <h5>Display Name</h5>
+                            <p>{astrologers?.astrologer?.displayname}</p>
+                        </div>
+                        <div className="my-4">
                             <h5>Date of Birth</h5>
                             <p>{dayjs(astrologers?.astrologer?.dob).format('DD/MM/YYYY')}</p>
                         </div>
                         <div className="my-4">
                             <h5>Photo</h5>
                             <div className="img">
-                                {/* <img src={astrologers?.astrologer?.profilePic[0]?.pic} alt='' /> */}
+                                <img src={astrologers?.astrologer?.profilePic[0]?.pic} alt='' />
                                 {/* <img src={astrologers?.astrologer?.profilePic[0].pic} alt="" /> */}
+                            </div>
+                        </div>
+                        <div className="my-4">
+                            <h5>Aadhar Image</h5>
+                            <div className="img">
+                                <img src={astrologers?.astrologer?.aadharPic[0]?.pic} alt='' />
+                            </div>
+                        </div>
+                        <div className="my-4">
+                            <h5>Pancard Image</h5>
+                            <div className="img">
+                            <img src={astrologers?.astrologer?.panPic[0]?.pic} alt='' />
+                               
                             </div>
                         </div>
                         <div className="my-4">
@@ -188,13 +205,21 @@ function ViewProfile() {
                         <div className="my-4">
                             <h5>Certificates</h5>
                             <div className="img">
-                                {/* {astrologers?.astrologer?.certificates.map((file) => (
-                                    <img src={file.file} alt="" />
-                                ))} */}
+                            {astrologers?.astrologer?.certificatePic?.map((pic)=>(
+                                   <>
+                                    <img src={pic.file} alt='' />
+                                   </>
+                                  
 
-
-
+                                ))}
                             </div>
+                        </div>
+                        <div className="my-4">
+                            <h5>Biography</h5>
+                            <p>
+                                {astrologers?.astrologer?.biograph}
+
+                            </p>
                         </div>
                         <div className="my-4">
                             <h5>What do you mean by astrology?</h5>

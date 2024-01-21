@@ -351,6 +351,7 @@ function AddCourse() {
                     type="text"
                     placeholder="category"
                     name="category"
+                    disabled
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                   />

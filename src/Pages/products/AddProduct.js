@@ -330,7 +330,7 @@ function AddProduct() {
                             <Form.Check
                               type="checkbox"
                               name="category"
-                              value={cat.category[0]?.name}
+                              value={cat?.category[0]?.name}
                               key={index}
                               onChange={(e) => setCategories(e.target.value)}
                               {...register("category")}
