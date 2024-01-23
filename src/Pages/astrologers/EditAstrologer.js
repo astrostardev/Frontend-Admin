@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import TextField from "@mui/material/TextField";
 import { useSelector } from "react-redux";
-
+import { RiCloseCircleLine } from "react-icons/ri";
 import MetaData from "../../Components/MetaData";
 function EditAstrologer() {
   const FileUpload = ({ label, onChange, acceptedTypes,name, files, error }) => {
@@ -47,7 +47,10 @@ function EditAstrologer() {
                 accept={acceptedTypes}
                 className="pic-input"
               />
+              
+
               <label className="pic-label">Choose {label}</label>
+           
             </div>
           </FloatingLabel>
         </Form.Group>
@@ -256,7 +259,44 @@ function EditAstrologer() {
     console.log('files',uploadedFiles);
     setPhotoErr("");
   };
+  const handleAadharDelete = (name)=>{
+    setUploadedFiles((prevFiles) => prevFiles.filter(file => file.name !== name));
+   setAstrologers((prevAstrologers) => ({
+      ...prevAstrologers,
+      aadharPic: prevAstrologers.aadharPic?.filter(pic => pic.name !== name)
+    }));
+  }
+  const handlePanDelete = (name)=>{
+    setUploadedFiles((prevFiles) => prevFiles.filter(file => file.name !== name));
+    setAstrologers((prevAstrologers) => ({
+      ...prevAstrologers,
+      panPic: prevAstrologers.panPic?.filter(pic => pic.name !== name)
+    }));
+  }
+  const handleCertificateDelete = (name)=>{
+    setAstrologers((prevAstrologers) => ({
+      ...prevAstrologers,
+      certificatePic: prevAstrologers.certificatePic?.filter(pic => pic.name !== name)
+    }));
+  }
+  const handleFileDelete = (name,arrayName) => {
+    // setUploadedFiles((prevFiles) => prevFiles.filter(file => file.name !== name));
+    // setAstrologers((prevAstrologers) => ({
+    //   ...prevAstrologers,
+    //   [arrayName]: prevAstrologers[arrayName]?.filter(pic => pic.name !== name)
+    // }));
 
+    setAstrologers((prevAstrologers) => ({
+      ...prevAstrologers,
+profilePic:[]
+      // profilePic: prevAstrologers.profilePic?.filter(pic => pic.name !== name),
+  
+    }));
+   setUploadedFiles([])
+
+    console.log('deletedfiles', uploadedFiles);
+    setPhotoErr("");
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
@@ -315,6 +355,7 @@ function EditAstrologer() {
             body: updatedDetails,
           }
         );
+     
         console.log(response);
         if (response.ok === false) {
           alert("Updated failed");
@@ -323,14 +364,15 @@ function EditAstrologer() {
           alert("Updated successfully");
           navigate(`/astrologer/${id}`);
         }
+        setUploadedFiles([])
      
-      // setCertificates([])
-      // setProfilePhoto(null)
+   
     } else {
       setDoberr(true);
       setIsloading(false);
     }
   };
+ 
   return (
     <div className="infoContainer">
       <MetaData title={"Astro5Star-Manager"} />
@@ -522,10 +564,15 @@ function EditAstrologer() {
                           (file) => file.type === "Profile"
                         )}
                         error={photoErr}
+                        handleFileDelete={(name) => handleFileDelete(name, "profilePic")}
                       />
-                         {astrologers?.profilePic?.map((pic)=>(
+                         {astrologers?.profilePic?.map((pic,index)=>(
+                          <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
                       <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
-
+                    
+                      <RiCloseCircleLine className="trash" onClick={() => handleFileDelete()}/>
+               
+                    </div>
                       ))}
                     </div>
                   </Form.Group>
@@ -551,10 +598,14 @@ function EditAstrologer() {
                           (file) => file.type === "Aadhar"
                         )}
                         error={photoErr}
+                        handleFileDelete={(name) => handleAadharDelete(name, "aadharPic")}
                       />
-                         {astrologers?.aadharPic?.map((pic)=>(
+                         {astrologers?.aadharPic?.map((pic,index)=>(
+                      <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
                       <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
-
+                    
+                      <RiCloseCircleLine className="trash" onClick={() => handleAadharDelete()}/>
+               </div>
                       ))}
                     </div>
                   </Form.Group>
@@ -580,11 +631,16 @@ function EditAstrologer() {
                           (file) => file.type === "Pan"
                         )}
                         error={photoErr}
+                        handleFileDelete={(name) => handlePanDelete(name, "panPic")}
                       />
-                      {astrologers?.panPic?.map((pic)=>(
-                      <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
-
-                      ))}
+                   {!uploadedFiles.some((file) => file.type === "Pan") &&
+  astrologers?.panPic?.map((pic, index) => (
+    <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
+    <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
+  
+    <RiCloseCircleLine className="trash" onClick={() => handlePanDelete()}/>
+</div>
+  ))}
 
                     </div>
                   </Form.Group>
@@ -917,10 +973,14 @@ function EditAstrologer() {
                           (file) => file.type === "Certificate"
                         )}
                         error={photoErr}
+                        handleFileDelete={(name) => handleCertificateDelete(name, "certificatePic")}
                       />
-                      {astrologers?.certificatePic?.map((file)=>(
-                      <img src={file.file} alt={file._id} style={{width:"75px",height:"50px"}} />
-
+                      {astrologers?.certificatePic?.map((pic,index)=>(
+                     <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
+                     <img src={pic.file} alt="" style={{width:"75px",height:"50px"}} />
+                   
+                     <RiCloseCircleLine className="trash" onClick={() => handleCertificateDelete()}/>
+              </div>
                       ))}
 
                     </div>

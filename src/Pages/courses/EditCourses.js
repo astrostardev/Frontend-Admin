@@ -4,16 +4,10 @@ import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Dropdown, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-
+import { IoMdTrash } from "react-icons/io";
 function EditCourse() {
-  const [course, setCourse] = useState({
-    coursename: "",
-    price: "",
-    isActive: "",
-    description: "",
-    images: [],
-    category: "",
-  });
+
+  
 
   const [errors, setErrors] = useState({
     coursename: "",
@@ -21,14 +15,19 @@ function EditCourse() {
     isActive: "",
     description: "",
   });
+  const[course,setCourse]=useState()
+  const[coursename,setCoursename] = useState("");
+  const[price,setPrice] = useState("");
+  const[isActive,setIsActive] = useState(true);
+  const[category,setCategory]=useState("")
+  const[description,setDescription] = useState("");
   const [imageErr, setImageErr] = useState("");
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesCleared, setImagesCleared] = useState(false);
-   const [image, setImage] = useState("");
+  // const [image, setImage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedImage, setSelectedImage] = useState("");
-
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -56,7 +55,6 @@ function EditCourse() {
       console.log("usser", data.course);
     }
     fetchData();
-
   }, []);
 
   // const handleChange = (e) => {
@@ -98,7 +96,7 @@ function EditCourse() {
     const { name, value } = e.target;
     // Validation logic
     let error = "";
-    if (name === "productname" && value.length === 0) {
+    if (name === "coursename" && value.length === 0) {
       error = "Productname is required";
     } else if (name === "price" && value.length === 0) {
       error = "Price is required";
@@ -112,31 +110,44 @@ function EditCourse() {
       ...errors,
       [name]: error,
     });
-    console.log('images',images);
- 
-    setCourse({
-      ...course,
-      [name]: value,
-     
-  
-    });
+    console.log("images", images);
+
+    // setCourse({
+    //   ...course,
+    //   [name]: value,
+    // });
   };
+  useEffect(()=>{
+    if(course?._id) {
+      setCoursename(course.coursename);
+      setPrice(course.price);
+      setDescription(course.description);
+      setCategory(course.category);
+      
+      let images = [];
+      course.images.forEach( image => {
+          images.push(image.image)
+      });
+      setImagesPreview(images)
+  }
+  },[course])
 
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
-
+  
     selectedPhoto.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
-        if (reader.readyState === 2) {
-        setImagesPreview((prevImages) => (prevImages ? [...prevImages, reader.result] : [reader.result]));
-
-          setImages((prevImages) => [...prevImages, file]);
-
+        if (reader.readyState === FileReader.DONE) {
+          setImagesPreview((oldArray) => [...oldArray, reader.result]);
+          setImages((oldArray) => [...oldArray, file]);
         }
       };
+  
       reader.readAsDataURL(file);
     });
+  
+  
     // const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
     //   if (!allowedTypes.includes(selectedPhoto.type)) {
     //     setImageErr(
@@ -152,39 +163,23 @@ function EditCourse() {
     }
 
     // Check the number of files
-    if (image?.length >= 1) {
+    if (images?.length >= 1) {
       setImageErr("You can only upload up to 1 files.");
       return;
     }
 
     // All checks passed, add the file to the state
-    setImage(selectedPhoto);
+    // setImage(selectedPhoto);
 
     setImageErr("");
   };
 
-  // const onImagesChange = (e) => {
-  //   const files = Array.from(e.target.files);
-
-  //   files?.forEach((file) => {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       if (reader.readyState === 2) {
-  //           setImagesPreview((prevImages) => (prevImages ? [...prevImages, reader.result] : [reader.result]));
-
-  //         setImages((prevImages) => [...prevImages, file]);
-  //       }
-  //     };
-  //     reader.readAsDataURL(file);
-  //   });
-  // };
-
   const clearImagesHandler = () => {
     setImages([]);
     setImagesPreview([]);
-
     setImagesCleared(true);
-  };
+}
+
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -215,14 +210,16 @@ function EditCourse() {
     //   // No errors, submit the data
     //   // console.log('Form data submitted:', astrologers);
     const updatedDetails = new FormData();
-    updatedDetails.append("coursename", course.coursename);
-    updatedDetails.append("price", course.price);
-    updatedDetails.append("isActive", course.isActive);
-    updatedDetails.append("category", course.category);
-    updatedDetails.append("description", course.description);
+    updatedDetails.append("coursename", coursename);
+    updatedDetails.append("price",price);
+    updatedDetails.append("isActive", isActive);
+    updatedDetails.append("category", category);
+    updatedDetails.append("description", description);
+
     images?.forEach((image) => {
       updatedDetails.append("images", image);
     });
+    updatedDetails.append("imagesCleared", imagesCleared);
 
     console.log("updated details", updatedDetails);
 
@@ -254,9 +251,8 @@ function EditCourse() {
       ...course,
       images: selectedImage,
     });
-    console.log("selected Category", selectedCategory);
+    console.log("selected Category", selectedImage);
   };
-
 
   const handleDropdownSelect = (selectedCategory) => {
     setCourse({
@@ -301,8 +297,8 @@ function EditCourse() {
                       type="text"
                       placeholder="Name"
                       name="coursename"
-                      value={course?.coursename}
-                      onChange={handleChange}
+                      onChange={e => setCoursename(e.target.value)}
+                                value={coursename}
                     />
                   </FloatingLabel>
                   <p className="errormsg">
@@ -315,8 +311,8 @@ function EditCourse() {
                       type="text"
                       placeholder="Price"
                       name="price"
-                      value={course?.price}
-                      onChange={handleChange}
+                      onChange={e => setPrice(e.target.value)}
+                      value={price}
                     />
                   </FloatingLabel>
                   <p className="errormsg">
@@ -334,9 +330,10 @@ function EditCourse() {
                     name="isActive"
                     inline
                     id="inline-radio-1"
-                    value={true}
+                    onChange={e => setIsActive(e.target.value)}
+                    value={isActive}
                     checked={course?.isActive == true}
-                    onChange={handleChange}
+                   
                   />
                   <Form.Check
                     // onClick={selectedEvent}
@@ -345,22 +342,23 @@ function EditCourse() {
                     name="isActive"
                     inline
                     id="inline-radio-2"
-                    value={false}
+                    onChange={e => setIsActive(e.target.value)}
+                    value={!isActive}
                     checked={course?.isActive == false}
-                    onChange={handleChange}
+                 
                   />
                 </div>
               </div>
 
-              <div className="two">     
+              <div className="twoCol">
                 <div className="mb-3">
                   <FloatingLabel controlId="images" label="Image">
                     <Form.Control
                       type="file"
                       placeholder="Image"
                       name="images"
-                      eventKey={(e)=>setSelectedImage(e.target.value)}
-                      onClick={handleImageSelect}
+                      // eventKey={(e) => setSelectedImage(e.target.value)}
+                      // onClick={handleImageSelect}
                       onChange={onImagesChange}
                       accept="image/png, image/jpeg"
                       multiple
@@ -370,51 +368,24 @@ function EditCourse() {
                   {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
                 </div>
                 {/* {existing Images} */}
-                <div className="mb-4">
-                <div
-                  className="img-preview"
-                  style={{
-                    width: "200px",
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "20px",
-                  }}
-                >    <img
-                  // src={ course?.images[0]?.image ? course?.images[0]?.image : images}
-                 src={selectedImage ? selectedImage : course?.images[0]?.image}
-                  key={image}
-                  alt=""
-                  className="pre-img"
-                  style={{ maxWidth: "100%",height:"60px" }}
-                />
-                  
-                  {/* {imagesPreview?.map((image) => (
-                    <img
+                {imagesPreview.length > 0 && (
+                  <span
+                    className="mr-2"
+                    onClick={clearImagesHandler}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <IoMdTrash />
+                  </span>
+                )}
+                {imagesPreview.map((image) => (
+                  <img
+                    className="mt-3 mr-2"
+                    key={image}
                     src={image}
-                      // src={selectedImage.image ? selectedImage.image : course?.images[0]?.image}
-                      key={image}
-                      alt=""
-                      className="pre-img"
-                      style={{ maxWidth: "100%",height:"60px" }}
-                    />
-                  ))}
-                  {imagesPreview.length > 0 && (
-                    <button
-                      id="delete-btn"
-                      className="btns"
-                      onClick={clearImagesHandler}
-                      style={{ cursor: "pointer", width: "75px" }}
-                    >
-                      <i
-                        className="fa fa-trash"
-                        style={{ marginLeft: "-1rem", marginRight: "1rem" }}
-                      ></i>
-                      Delete
-                    </button>
-                  )} */}
-                </div>
-                </div>
+                    alt=""
+                    style={{ width: "55px", height: "52px" }}
+                  />
+                ))}
               </div>
 
               <div className="threeCol">
@@ -428,8 +399,8 @@ function EditCourse() {
                       type="text"
                       placeholder="Description"
                       name="description"
-                      value={course?.description}
-                      onChange={handleChange}
+                      onChange={e => setDescription(e.target.value)}
+                      value={description}
                     />
                   </FloatingLabel>
                 </div>
