@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.269107c0.css",
-    "main.js": "/static/js/main.cb38439e.js",
+    "main.js": "/static/js/main.4bfe4599.js",
     "static/js/787.7c188a15.chunk.js": "/static/js/787.7c188a15.chunk.js",
     "static/media/astrologer.jpg": "/static/media/astrologer.fb3e557166462fe193a4.jpg",
     "index.html": "/index.html",
     "main.269107c0.css.map": "/static/css/main.269107c0.css.map",
-    "main.cb38439e.js.map": "/static/js/main.cb38439e.js.map",
+    "main.4bfe4599.js.map": "/static/js/main.4bfe4599.js.map",
     "787.7c188a15.chunk.js.map": "/static/js/787.7c188a15.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.269107c0.css",
-    "static/js/main.cb38439e.js"
+    "static/js/main.4bfe4599.js"
   ]
 }
