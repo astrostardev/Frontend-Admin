@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import "../../Stylesheets/Addastrologer.scss";
 import { Box } from "@mui/material";
 import React from "react";
@@ -10,6 +10,7 @@ import {
   Button,
   Spinner,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,7 +22,14 @@ import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import MetaData from "../../Components/MetaData";
 function Addastrologers() {
-  const FileUpload = ({ label, onChange, acceptedTypes,name, files, error }) => {
+  const FileUpload = ({
+    label,
+    onChange,
+    acceptedTypes,
+    name,
+    files,
+    error,
+  }) => {
     const handleFileUpload = (e) => {
       const selectedFiles = Array.from(e.target.files);
 
@@ -29,7 +37,10 @@ function Addastrologers() {
         const reader = new FileReader();
         reader.onload = () => {
           if (reader.readyState === 2) {
-            onChange((prevFiles) => [...prevFiles, { type: label, file, name }]);
+            onChange((prevFiles) => [
+              ...prevFiles,
+              { type: label, file, name },
+            ]);
           }
         };
         reader.readAsDataURL(file);
@@ -77,6 +88,7 @@ function Addastrologers() {
   const [categories, setCategories] = useState(null);
   const [languages, setLanguages] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -230,7 +242,7 @@ function Addastrologers() {
 
   const handleFileChange = (files) => {
     setUploadedFiles(files);
-    console.log('files',uploadedFiles);
+    console.log("files", uploadedFiles);
     setPhotoErr("");
   };
   const onSubmit = async (data) => {
@@ -244,13 +256,12 @@ function Addastrologers() {
       astrologerDetails.set("dob", dob);
 
       uploadedFiles.forEach((uploadedFile) => {
-        const fieldName = uploadedFile.type.toLowerCase()+'Pic';
-        console.log('feild name',fieldName , 'files', uploadedFile.file);
+        const fieldName = uploadedFile.type.toLowerCase() + "Pic";
+        console.log("feild name", fieldName, "files", uploadedFile.file);
         // console.log('file',uploadedFile.file);
 
         astrologerDetails.append(fieldName, uploadedFile.file);
       });
-
 
       const astroID = uuid().slice(0, 6).toUpperCase();
       astrologerDetails.set("astrologerID", astroID);
@@ -276,6 +287,7 @@ function Addastrologers() {
         alert("Registration Failed");
       } else {
         alert("Registration Successful");
+        navigate("/astrologers");
       }
       setIsloading(false);
       setDob(null);
@@ -360,7 +372,6 @@ function Addastrologers() {
                   </p>
                 </div>
               </div>
-
 
               <div className="threeCol">
                 {/* Dob */}
@@ -672,6 +683,32 @@ function Addastrologers() {
                     placeholder="Call"
                     name="call"
                     {...register("call")}
+                  />
+                </FloatingLabel>
+              </div>
+              <div className="twoCol">
+                <FloatingLabel
+                  controlId="chat charges"
+                  label="Chat charges(display)"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="Chat"
+                    name="displaychat"
+                    {...register("displaychat")}
+                  />
+                </FloatingLabel>
+                <FloatingLabel
+                  controlId="call charges"
+                  label="Call charges(display)"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="tel"
+                    placeholder="Call"
+                    name="displaycall"
+                    {...register("displaycall")}
                   />
                 </FloatingLabel>
               </div>

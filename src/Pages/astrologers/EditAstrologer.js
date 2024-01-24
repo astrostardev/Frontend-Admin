@@ -112,6 +112,8 @@ function EditAstrologer() {
     aadharPic: [],
     panPic: [],
     profilePic: [],
+    displaycall:"",
+    displaychat:""
   });
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
@@ -325,6 +327,8 @@ function EditAstrologer() {
         updatedDetails.append("pincode", astrologers.pincode);
         updatedDetails.append("call", astrologers.call);
         updatedDetails.append("chat", astrologers.chat);
+        updatedDetails.append("displaychat", astrologers.displaychat);
+        updatedDetails.append("displaycall", astrologers.displaycall);
         updatedDetails.append("category", astrologers.category);
         updatedDetails.append("language", astrologers.language);
         updatedDetails.append("institute", astrologers.institute);
@@ -870,6 +874,34 @@ function EditAstrologer() {
                     placeholder="Call"
                     name="call"
                     value={astrologers?.call}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
+              </div>
+              <div className="twoCol">
+                <FloatingLabel
+                  controlId="chat charges"
+                  label="Chat charges(display)"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="Chat"
+                    name="displaychat"
+                    value={astrologers?.displaychat}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
+                <FloatingLabel
+                  controlId="call charges"
+                  label="Call charges(display)"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="text"
+                    placeholder="Call"
+                    name="displaycall"
+                    value={astrologers?.displaycall}
                     onChange={handleChange}
                   />
                 </FloatingLabel>

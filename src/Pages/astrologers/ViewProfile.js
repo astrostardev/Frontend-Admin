@@ -183,6 +183,15 @@ function ViewProfile() {
                             <p>{astrologers?.astrologer?.call}</p>
                         </div>
                         <div className="my-4">
+                            <h5>Dispaly Call Price</h5>
+                            <p>{astrologers?.astrologer?.displaycall}</p>
+                        </div>
+                        <div className="my-4">
+                            <h5>Display Chat Price</h5>
+                            <p>{astrologers?.astrologer?.displaychat}</p>
+                        </div>
+                    
+                        <div className="my-4">
                             <h5>Methodology</h5>
                             <p>{astrologers?.astrologer?.category}</p>
                         </div>  <div className="my-4">
