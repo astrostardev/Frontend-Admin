@@ -1,13 +1,13 @@
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../../Stylesheets/Addastrologer.scss";
 import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Dropdown, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { IoMdTrash } from "react-icons/io";
-function EditCourse() {
+import { RiCloseCircleLine } from "react-icons/ri";
+import {toast} from 'react-toastify';
 
-  
+function EditCourse() {
 
   const [errors, setErrors] = useState({
     coursename: "",
@@ -25,16 +25,15 @@ function EditCourse() {
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesCleared, setImagesCleared] = useState(false);
-  // const [image, setImage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedImage, setSelectedImage] = useState("");
-
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
   const [disable, setDisable] = useState(true);
   const { token } = useSelector((state) => state.authState);
   const [categories, setCategories] = useState(null);
+
+//get course data
 
   useEffect(() => {
     async function fetchData() {
@@ -57,47 +56,14 @@ function EditCourse() {
     fetchData();
   }, []);
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   // Validation logic
-  //   let error = "";
-  //   if (name === "coursename" && value.length === 0) {
-  //     error = "Course name is required";
-  //   } else if (name === "price" && value.length === 0) {
-  //     error = "Price is required";
-  //   } else if (name === "isActive" && !value) {
-  //     error = "Please select status";
-  //   } else if (name === "description" && value.length === 0) {
-  //     error = "Description is required";
-  //   }
-  //   if (name === "isActive") {
-  //     setCourse({
-  //       ...course,
-  //       isActive: value === "true",
-  //     });
-  //   }
+  // for error handling
 
-  //   setErrors({
-  //     ...errors,
-  //     [name]: error,
-  //   });
-  //   setCourse({
-  //     ...course,
-  //     [name]: value,
-  //     // category: [
-  //     //   {
-  //     //     ...course.category[0],
-  //     //     name: e.target.value,
-  //     //   },
-  //     // ],
-  //   });
-  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
     // Validation logic
     let error = "";
     if (name === "coursename" && value.length === 0) {
-      error = "Productname is required";
+      error = "Course name is required";
     } else if (name === "price" && value.length === 0) {
       error = "Price is required";
     } else if (name === "isActive" && !value) {
@@ -110,13 +76,10 @@ function EditCourse() {
       ...errors,
       [name]: error,
     });
-    console.log("images", images);
+   
 
-    // setCourse({
-    //   ...course,
-    //   [name]: value,
-    // });
   };
+  //set course value to field
   useEffect(()=>{
     if(course?._id) {
       setCoursename(course.coursename);
@@ -132,20 +95,26 @@ function EditCourse() {
   }
   },[course])
 
+// uploading files 
+
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
   
-    selectedPhoto.forEach((file) => {
+    selectedPhoto.forEach(file => {
+            
       const reader = new FileReader();
+
       reader.onload = () => {
-        if (reader.readyState === FileReader.DONE) {
-          setImagesPreview((oldArray) => [...oldArray, reader.result]);
-          setImages((oldArray) => [...oldArray, file]);
-        }
-      };
-  
-      reader.readAsDataURL(file);
-    });
+          if(reader.readyState == 2 ) {
+              setImagesPreview(oldArray => [...oldArray, reader.result])
+              setImages(oldArray => [...oldArray, file])
+          }
+      }
+
+      reader.readAsDataURL(file)
+
+
+  })
   
   
     // const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
@@ -174,11 +143,15 @@ function EditCourse() {
     setImageErr("");
   };
 
+//delete images
+
   const clearImagesHandler = () => {
     setImages([]);
+    
     setImagesPreview([]);
     setImagesCleared(true);
 }
+//displaying course category
 
   useEffect(() => {
     async function fetchData() {
@@ -201,58 +174,7 @@ function EditCourse() {
     }
     fetchData();
   }, []);
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setIsloading(true);
-
-    // if (Object.values(errors).every((error) => !error)) {
-    //   // No errors, submit the data
-    //   // console.log('Form data submitted:', astrologers);
-    const updatedDetails = new FormData();
-    updatedDetails.append("coursename", coursename);
-    updatedDetails.append("price",price);
-    updatedDetails.append("isActive", isActive);
-    updatedDetails.append("category", category);
-    updatedDetails.append("description", description);
-
-    images?.forEach((image) => {
-      updatedDetails.append("images", image);
-    });
-    updatedDetails.append("imagesCleared", imagesCleared);
-
-    console.log("updated details", updatedDetails);
-
-    const response = await fetch(
-      `${process.env.REACT_APP_URL}/api/v1/course/update/${id}`,
-      {
-        method: "PUT",
-        body: updatedDetails,
-      }
-    );
-    console.log(response);
-    if (response.ok === false) {
-      alert("Updated failed");
-      setIsloading(false);
-    } else {
-      alert("Updated successfully");
-      navigate("/courses");
-    }
-    // } else {
-    //   // There are errors, handle accordingly (e.g., display an error message)
-    //   console.log("Form submission failed due to validation errors.");
-    //   setIsloading(false);
-    // }
-    // setCertificates([])
-    // setProfilePhoto(null)
-  };
-  const handleImageSelect = (selectedImage) => {
-    setCourse({
-      ...course,
-      images: selectedImage,
-    });
-    console.log("selected Category", selectedImage);
-  };
+  //selected for displaying
 
   const handleDropdownSelect = (selectedCategory) => {
     setCourse({
@@ -261,6 +183,66 @@ function EditCourse() {
     });
     console.log("selected Category", selectedCategory);
   };
+//form submit function
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setIsloading(true);
+    if (coursename && price && description && images.length === 0) {
+      toast('Please fill all the fields', {
+        position: toast.POSITION.TOP_RIGHT,
+        type: 'error',
+      });
+
+    } 
+    try {
+      const updatedDetails = new FormData();
+      updatedDetails.append("coursename", coursename);
+      updatedDetails.append("price", price);
+      updatedDetails.append("isActive", isActive);
+      updatedDetails.append("category", category);
+      updatedDetails.append("description", description);
+  
+      images?.forEach((image) => {
+        updatedDetails.append("images", image);
+      });
+      updatedDetails.append("imagesCleared", imagesCleared);
+  
+      console.log("updated details", images);
+  
+      const response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/course/update/${id}`,
+        {
+          method: "PUT",
+          body: updatedDetails,
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to update course");
+      }
+  
+      alert("Updated successfully");
+      navigate("/courses");
+    } catch (error) {
+      console.error("Error during course update:", error);
+    
+      // Check if the error object has a response or data property
+      const errorMessage = error.response?.data?.message || "Fill all the fields"
+    
+      toast(errorMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+        type:'error'
+      });
+    } finally {
+      setIsloading(false);
+      setImages([])
+    }
+    
+  };
+  
+
+
 
   return (
     <div className="infoContainer">
@@ -298,12 +280,11 @@ function EditCourse() {
                       placeholder="Name"
                       name="coursename"
                       onChange={e => setCoursename(e.target.value)}
-                                value={coursename}
+                      value={coursename}
+                      disabled={disable}
                     />
                   </FloatingLabel>
-                  <p className="errormsg">
-                    {errors.coursename && errors.coursename.message}
-                  </p>
+              
                 </div>
                 <div className="mb-3">
                   <FloatingLabel controlId="price" label="Price">
@@ -313,11 +294,11 @@ function EditCourse() {
                       name="price"
                       onChange={e => setPrice(e.target.value)}
                       value={price}
+                      disabled={disable}
+
                     />
                   </FloatingLabel>
-                  <p className="errormsg">
-                    {/* {errors.price && errors.price.message} */}
-                  </p>
+               
                 </div>
 
                 <div className="mx-2">
@@ -333,10 +314,11 @@ function EditCourse() {
                     onChange={e => setIsActive(e.target.value)}
                     value={isActive}
                     checked={course?.isActive == true}
+                    disabled={disable}
                    
                   />
                   <Form.Check
-                    // onClick={selectedEvent}
+                 
                     type="radio"
                     label="No"
                     name="isActive"
@@ -345,47 +327,55 @@ function EditCourse() {
                     onChange={e => setIsActive(e.target.value)}
                     value={!isActive}
                     checked={course?.isActive == false}
+                    disabled={disable}
+
                  
                   />
                 </div>
               </div>
-
-              <div className="twoCol">
+              <div className="threeCol">
                 <div className="mb-3">
                   <FloatingLabel controlId="images" label="Image">
                     <Form.Control
                       type="file"
                       placeholder="Image"
                       name="images"
-                      // eventKey={(e) => setSelectedImage(e.target.value)}
-                      // onClick={handleImageSelect}
                       onChange={onImagesChange}
                       accept="image/png, image/jpeg"
                       multiple
+                      required
+                      disabled={disable}
+
                     />
                   </FloatingLabel>
 
                   {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
                 </div>
-                {/* {existing Images} */}
-                {imagesPreview.length > 0 && (
-                  <span
-                    className="mr-2"
-                    onClick={clearImagesHandler}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <IoMdTrash />
-                  </span>
-                )}
-                {imagesPreview.map((image) => (
-                  <img
-                    className="mt-3 mr-2"
-                    key={image}
-                    src={image}
-                    alt=""
-                    style={{ width: "55px", height: "52px" }}
-                  />
-                ))}
+                <div className="mb-3">
+                  {imagesPreview.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{ position: "relative", display: "inline-block" }}
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        key={image}
+                        style={{ width: "75px", height: "50px" }}
+                        disabled={disable}
+
+                      />
+
+                      <RiCloseCircleLine
+                        style={{}}
+                        className="trash"
+                        onClick={() => clearImagesHandler()}
+                        disabled={disable}
+
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="threeCol">
@@ -401,6 +391,8 @@ function EditCourse() {
                       name="description"
                       onChange={e => setDescription(e.target.value)}
                       value={description}
+                      disabled={disable}
+
                     />
                   </FloatingLabel>
                 </div>
@@ -426,7 +418,9 @@ function EditCourse() {
 
                 <div className="mb-3 ">
                   <Dropdown onSelect={handleDropdownSelect}>
-                    <Dropdown.Toggle id="dropdown-basic">
+                    <Dropdown.Toggle id="dropdown-basic" 
+                      disabled={disable}
+                      >
                       Category
                     </Dropdown.Toggle>
 

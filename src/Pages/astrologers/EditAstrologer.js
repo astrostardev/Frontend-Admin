@@ -12,8 +12,18 @@ import TextField from "@mui/material/TextField";
 import { useSelector } from "react-redux";
 import { RiCloseCircleLine } from "react-icons/ri";
 import MetaData from "../../Components/MetaData";
+import { toast } from "react-toastify";
+
 function EditAstrologer() {
-  const FileUpload = ({ label, onChange, acceptedTypes,name, files, error }) => {
+  //upload images
+  const FileUpload = ({
+    label,
+    onChange,
+    acceptedTypes,
+    name,
+    files,
+    error,
+  }) => {
     const handleFileUpload = (e) => {
       const selectedFiles = Array.from(e.target.files);
 
@@ -21,7 +31,10 @@ function EditAstrologer() {
         const reader = new FileReader();
         reader.onload = () => {
           if (reader.readyState === 2) {
-            onChange((prevFiles) => [...prevFiles, { type: label, file, name }]);
+            onChange((prevFiles) => [
+              ...prevFiles,
+              { type: label, file, name },
+            ]);
           }
         };
         reader.readAsDataURL(file);
@@ -46,11 +59,10 @@ function EditAstrologer() {
                 onChange={handleFileUpload}
                 accept={acceptedTypes}
                 className="pic-input"
+                // required
               />
-              
 
               <label className="pic-label">Choose {label}</label>
-           
             </div>
           </FloatingLabel>
         </Form.Group>
@@ -71,8 +83,6 @@ function EditAstrologer() {
   const { token } = useSelector((state) => state.authState);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [photoErr, setPhotoErr] = useState("");
-
-
   const [astrologers, setAstrologers] = useState({
     firstname: "",
     lastname: "",
@@ -98,7 +108,10 @@ function EditAstrologer() {
     isActive: "",
     call: "",
     chat: "",
-
+    certificatePic: [],
+    aadharPic: [],
+    panPic: [],
+    profilePic: [],
   });
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
@@ -130,6 +143,7 @@ function EditAstrologer() {
   });
   const { id } = useParams();
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -256,53 +270,44 @@ function EditAstrologer() {
   }, []);
   const handleFileChange = (files) => {
     setUploadedFiles(files);
-    console.log('files',uploadedFiles);
+    console.log("files", uploadedFiles);
     setPhotoErr("");
   };
-  const handleAadharDelete = (name)=>{
-    setUploadedFiles((prevFiles) => prevFiles.filter(file => file.name !== name));
-   setAstrologers((prevAstrologers) => ({
-      ...prevAstrologers,
-      aadharPic: prevAstrologers.aadharPic?.filter(pic => pic.name !== name)
-    }));
-  }
-  const handlePanDelete = (name)=>{
-    setUploadedFiles((prevFiles) => prevFiles.filter(file => file.name !== name));
+  const handleAadharDelete = (name) => {
     setAstrologers((prevAstrologers) => ({
       ...prevAstrologers,
-      panPic: prevAstrologers.panPic?.filter(pic => pic.name !== name)
+      aadharPic: prevAstrologers.aadharPic?.filter((pic) => pic.name !== name),
     }));
-  }
-  const handleCertificateDelete = (name)=>{
+  };
+  const handlePanDelete = (name) => {
     setAstrologers((prevAstrologers) => ({
       ...prevAstrologers,
-      certificatePic: prevAstrologers.certificatePic?.filter(pic => pic.name !== name)
+      panPic: prevAstrologers.panPic?.filter((pic) => pic.name !== name),
     }));
-  }
-  const handleFileDelete = (name,arrayName) => {
-    // setUploadedFiles((prevFiles) => prevFiles.filter(file => file.name !== name));
-    // setAstrologers((prevAstrologers) => ({
-    //   ...prevAstrologers,
-    //   [arrayName]: prevAstrologers[arrayName]?.filter(pic => pic.name !== name)
-    // }));
-
+  };
+  const handleCertificateDelete = (name) => {
     setAstrologers((prevAstrologers) => ({
       ...prevAstrologers,
-profilePic:[]
-      // profilePic: prevAstrologers.profilePic?.filter(pic => pic.name !== name),
-  
+      certificatePic: prevAstrologers.certificatePic?.filter(
+        (pic) => pic.name !== name
+      ),
     }));
-   setUploadedFiles([])
-
-    console.log('deletedfiles', uploadedFiles);
-    setPhotoErr("");
+  };
+  const handleFileDelete = (name) => {
+    const imagesCleared = true;
+    setAstrologers((prevAstrologers) => ({
+      ...prevAstrologers,
+      profilePic: prevAstrologers.profilePic?.filter(
+        (pic) => pic.name !== name
+      ),
+    }));
+    return imagesCleared;
   };
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
-
-    if (dob) {
-   
+    try {
+      if (dob) {
         const updatedDetails = new FormData();
         updatedDetails.append("firstname", astrologers.firstname);
         updatedDetails.append("lastname", astrologers.lastname);
@@ -338,15 +343,20 @@ profilePic:[]
         );
         updatedDetails.append("knowus", astrologers.knowus);
         updatedDetails.append("maxTime", astrologers.maxTime);
+
         uploadedFiles.forEach((uploadedFile) => {
-          const fieldName = uploadedFile.type.toLowerCase()+'Pic';
-          console.log('feild name',fieldName , 'files', uploadedFile.file);
-          // console.log('file',uploadedFile.file);
-  
+          const fieldName = uploadedFile.type.toLowerCase() + "Pic";
+
+          // Create a JSON object with file and imagesCleared
+          const fileData = {
+            // file: uploadedFile.file,
+            imagesCleared: handleFileDelete(uploadedFile.name),
+          };
           updatedDetails.append(fieldName, uploadedFile.file);
+
+          // Convert the JSON object to a string and append it to FormData
+          updatedDetails.append(fieldName, JSON.stringify(fileData));
         });
-  
-        console.log("updated details", updatedDetails);
 
         const response = await fetch(
           `${process.env.REACT_APP_URL}/api/v1/astrologer/update/${id}`,
@@ -355,7 +365,7 @@ profilePic:[]
             body: updatedDetails,
           }
         );
-     
+
         console.log(response);
         if (response.ok === false) {
           alert("Updated failed");
@@ -364,15 +374,25 @@ profilePic:[]
           alert("Updated successfully");
           navigate(`/astrologer/${id}`);
         }
-        setUploadedFiles([])
-     
-   
-    } else {
-      setDoberr(true);
-      setIsloading(false);
+        setUploadedFiles([]);
+      } else {
+        setDoberr(true);
+        setIsloading(false);
+      }
+    } catch (error) {
+      console.error("Error during course update:", error);
+
+      // Check if the error object has a response or data property
+      const errorMessage =
+        error.response?.data?.message || "Fill all the fields";
+
+      toast(errorMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+        type: "error",
+      });
     }
   };
- 
+
   return (
     <div className="infoContainer">
       <MetaData title={"Astro5Star-Manager"} />
@@ -450,9 +470,8 @@ profilePic:[]
                     <p className="errormsg">{errors.lastname}</p>
                   )}
                 </div>
-              
               </div>
-            
+
               <div className="threeCol">
                 {/* Dob */}
                 <div>
@@ -510,8 +529,8 @@ profilePic:[]
                       // inline
                       id="inline-radio-1"
                       value="male"
-                      checked={astrologers?.gender === 'male'}
-                      
+                      checked={astrologers?.gender === "male"}
+
                       // {...register("gender", validation.gender)}
                     />
                     <Form.Check
@@ -521,7 +540,7 @@ profilePic:[]
                       // inline
                       id="inline-radio-2"
                       value="female"
-                      checked={astrologers?.gender === 'female'}
+                      checked={astrologers?.gender === "female"}
                       // {...register("gender", validation.gender)}
                     />
                     <Form.Check
@@ -531,7 +550,7 @@ profilePic:[]
                       // inline
                       id="inline-radio-3"
                       value="others"
-                      checked={astrologers?.gender === 'others'}
+                      checked={astrologers?.gender === "others"}
 
                       // {...register("gender", validation.gender)}
                     />
@@ -550,8 +569,8 @@ profilePic:[]
                         position: "relative",
                         overflow: "hidden",
                         width: "100%",
-                        display:"flex",
-                        justifyContent:"space-between"
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                       className="pic-lable"
                     >
@@ -564,15 +583,29 @@ profilePic:[]
                           (file) => file.type === "Profile"
                         )}
                         error={photoErr}
-                        handleFileDelete={(name) => handleFileDelete(name, "profilePic")}
+                        handleFileDelete={(name) =>
+                          handleFileDelete(name, "profilePic")
+                        }
                       />
-                         {astrologers?.profilePic?.map((pic,index)=>(
-                          <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
-                      <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
-                    
-                      <RiCloseCircleLine className="trash" onClick={() => handleFileDelete()}/>
-               
-                    </div>
+                      {astrologers?.profilePic?.map((pic, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                          }}
+                        >
+                          <img
+                            src={pic.pic}
+                            alt=""
+                            style={{ width: "75px", height: "50px" }}
+                          />
+
+                          <RiCloseCircleLine
+                            className="trash"
+                            onClick={() => handleFileDelete()}
+                          />
+                        </div>
                       ))}
                     </div>
                   </Form.Group>
@@ -580,32 +613,48 @@ profilePic:[]
                 {/* Aadhar photo */}
                 <div className="mb-3">
                   <Form.Group>
-                  <div
+                    <div
                       style={{
                         position: "relative",
                         overflow: "hidden",
                         width: "100%",
-                        display:"flex",
-                        justifyContent:"space-between"
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                       className="pic-lable"
                     >
                       <FileUpload
                         label="Aadhar"
+                        required
                         onChange={handleFileChange}
                         acceptedTypes="image/png, image/jpeg"
                         files={uploadedFiles.filter(
                           (file) => file.type === "Aadhar"
                         )}
                         error={photoErr}
-                        handleFileDelete={(name) => handleAadharDelete(name, "aadharPic")}
+                        handleFileDelete={(name) =>
+                          handleAadharDelete(name, "aadharPic")
+                        }
                       />
-                         {astrologers?.aadharPic?.map((pic,index)=>(
-                      <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
-                      <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
-                    
-                      <RiCloseCircleLine className="trash" onClick={() => handleAadharDelete()}/>
-               </div>
+                      {astrologers?.aadharPic?.map((pic, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                          }}
+                        >
+                          <img
+                            src={pic.pic}
+                            alt=""
+                            style={{ width: "75px", height: "50px" }}
+                          />
+
+                          <RiCloseCircleLine
+                            className="trash"
+                            onClick={() => handleAadharDelete()}
+                          />
+                        </div>
                       ))}
                     </div>
                   </Form.Group>
@@ -618,30 +667,45 @@ profilePic:[]
                         position: "relative",
                         overflow: "hidden",
                         width: "100%",
-                        display:"flex",
-                        justifyContent:"space-between"
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                       className="pic-lable"
                     >
                       <FileUpload
                         label="Pan"
+                        required
                         onChange={handleFileChange}
                         acceptedTypes="image/png, image/jpeg"
                         files={uploadedFiles.filter(
                           (file) => file.type === "Pan"
                         )}
                         error={photoErr}
-                        handleFileDelete={(name) => handlePanDelete(name, "panPic")}
+                        handleFileDelete={(name) =>
+                          handlePanDelete(name, "panPic")
+                        }
                       />
-                   {!uploadedFiles.some((file) => file.type === "Pan") &&
-  astrologers?.panPic?.map((pic, index) => (
-    <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
-    <img src={pic.pic} alt="" style={{width:"75px",height:"50px"}} />
-  
-    <RiCloseCircleLine className="trash" onClick={() => handlePanDelete()}/>
-</div>
-  ))}
+                      {!uploadedFiles.some((file) => file.type === "Pan") &&
+                        astrologers?.panPic?.map((pic, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              position: "relative",
+                              display: "inline-block",
+                            }}
+                          >
+                            <img
+                              src={pic.pic}
+                              alt=""
+                              style={{ width: "75px", height: "50px" }}
+                            />
 
+                            <RiCloseCircleLine
+                              className="trash"
+                              onClick={() => handlePanDelete()}
+                            />
+                          </div>
+                        ))}
                     </div>
                   </Form.Group>
                 </div>
@@ -960,29 +1024,44 @@ profilePic:[]
                         position: "relative",
                         overflow: "hidden",
                         width: "100%",
-                        display:"flex",
-                        justifyContent:"space-between"
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
                       className="pic-lable"
                     >
                       <FileUpload
                         label="Certificate"
                         onChange={handleFileChange}
+                        required
                         acceptedTypes="image/png, image/jpeg"
                         files={uploadedFiles.filter(
                           (file) => file.type === "Certificate"
                         )}
                         error={photoErr}
-                        handleFileDelete={(name) => handleCertificateDelete(name, "certificatePic")}
+                        handleFileDelete={(name) =>
+                          handleCertificateDelete(name, "certificatePic")
+                        }
                       />
-                      {astrologers?.certificatePic?.map((pic,index)=>(
-                     <div  key={index} style={{ position: 'relative', display: 'inline-block' }}>
-                     <img src={pic.file} alt="" style={{width:"75px",height:"50px"}} />
-                   
-                     <RiCloseCircleLine className="trash" onClick={() => handleCertificateDelete()}/>
-              </div>
-                      ))}
+                      {astrologers?.certificatePic?.map((pic, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                          }}
+                        >
+                          <img
+                            src={pic.file}
+                            alt=""
+                            style={{ width: "75px", height: "50px" }}
+                          />
 
+                          <RiCloseCircleLine
+                            className="trash"
+                            onClick={() => handleCertificateDelete()}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </Form.Group>
                 </div>

@@ -4,29 +4,22 @@ import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Dropdown, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { RiCloseCircleLine } from "react-icons/ri";
+import {toast} from 'react-toastify';
 
-function  EditProduct() {
-  const [course, setCourse] = useState({
-    
-    productname: "",
-    price: "",
-    isActive: "",
-    description: "",
-  });
+function EditProduct() {
 
-  const [errors, setErrors] = useState({
-    productname: "",
-    price: "",
-    isActive: "",
-    description: "",
-  });
+  const [product, setProduct] = useState();
+  const [productname, setProductname] = useState("");
+  const [price, setPrice] = useState("");
+  const [isActive, setIsActive] = useState(true);
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [imageErr, setImageErr] = useState("");
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesCleared, setImagesCleared] = useState(false);
-  const [image, setImage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
   const { id } = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
@@ -34,10 +27,12 @@ function  EditProduct() {
   const { token } = useSelector((state) => state.authState);
   const [categories, setCategories] = useState(null);
 
+//  get product detail
+
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
-        `${process.env.REACT_APP_URL}/api/v1/course/get/${id}`,
+        `${process.env.REACT_APP_URL}/api/v1/product/get/${id}`,
         {
           method: "GET",
           headers: {
@@ -49,61 +44,46 @@ function  EditProduct() {
       let data = await response.json();
       console.log(data);
       setIsloading(false);
-      setCourse(data.course);
-      console.log("usser", data.course);
+      setProduct(data.product);
     }
     fetchData();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    // Validation logic
-    let error = "";
-    if (name === "productname" && value.length === 0) {
-      error = "Productname is required";
-    } else if (name === "price" && value.length === 0) {
-      error = "Price is required";
-    } else if (name === "isActive" && !value) {
-      error = "Please select status";
-    } else if (name === "description" && value.length === 0) {
-      error = "Description is required";
-    }
-    if (name === "isActive") {
-      setCourse({
-        ...course,
-        isActive: value === "true",
-      });
-    }
+//  set product detail to states
 
-    setErrors({
-      ...errors,
-      [name]: error,
-    });
-    setCourse({
-      ...course,
-      [name]: value,
-      // category: [
-      //   {
-      //     ...course.category[0],
-      //     name: e.target.value,
-      //   },
-      // ],
-    });
-  };
+    useEffect(() => {
+    if (product?._id) {
+      setProductname(product.productname);
+      setPrice(product.price);
+      setDescription(product.description);
+      setCategory(product.category);
+
+      let images = [];
+      product.images.forEach((image) => {
+        images.push(image.image);
+      });
+      setImagesPreview(images);
+    }
+  }, [product]);
+
+// upload image
+
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
 
     selectedPhoto.forEach((file) => {
       const reader = new FileReader();
+
       reader.onload = () => {
-        if (reader.readyState === 2) {
+        if (reader.readyState == 2) {
           setImagesPreview((oldArray) => [...oldArray, reader.result]);
           setImages((oldArray) => [...oldArray, file]);
-         
         }
       };
+
       reader.readAsDataURL(file);
     });
+
     // const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
     //   if (!allowedTypes.includes(selectedPhoto.type)) {
     //     setImageErr(
@@ -119,22 +99,26 @@ function  EditProduct() {
     }
 
     // Check the number of files
-    if (image?.length >= 1) {
+    if (images?.length >= 1) {
       setImageErr("You can only upload up to 1 files.");
       return;
     }
 
     // All checks passed, add the file to the state
-    setImage(selectedPhoto);
+    // setImage(selectedPhoto);
 
     setImageErr("");
   };
+
+  // delete images
+
   const clearImagesHandler = () => {
     setImages([]);
     setImagesPreview([]);
-
     setImagesCleared(true);
   };
+// display categories
+
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -156,54 +140,76 @@ function  EditProduct() {
     }
     fetchData();
   }, []);
+//  select category function
+
+const handleDropdownSelect = (selectedCategory) => {
+  setProduct({
+    ...product,
+    category: selectedCategory,
+  });
+  console.log("selected Category", selectedCategory);
+};
+  // form submit function
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
+    if (productname && price && description && images.length === 0) {
+      toast('Please fill all the fields', {
+        position: toast.POSITION.TOP_RIGHT,
+        type: 'error',
+      });
 
-    // if (Object.values(errors).every((error) => !error)) {
-    //   // No errors, submit the data
-    //   // console.log('Form data submitted:', astrologers);
-    const updatedDetails = new FormData();
-    updatedDetails.append("coursename", course.productname);
-    updatedDetails.append("price", course.price);
-    updatedDetails.append("isActive", course.isActive);
-    images.forEach((image) => {
-      updatedDetails.set("images", image);
-    });
-    updatedDetails.append("category", selectedCategory);
-    updatedDetails.append("description", course.description);
+    } 
+try{
+  const updatedDetails = new FormData();
+  updatedDetails.append("coursename", productname);
+  updatedDetails.append("price", price);
+  updatedDetails.append("isActive", isActive);
+  updatedDetails.append("category", category);
+  updatedDetails.append("description", description);
 
-    console.log("updated details", updatedDetails);
+  images?.forEach((image) => {
+    updatedDetails.append("images", image);
+  });
+  updatedDetails.append("imagesCleared", imagesCleared);
 
-    const response = await fetch(
-      `${process.env.REACT_APP_URL}/api/v1/course/update/${id}`,
-      {
-        method: "PUT",
-        body: updatedDetails,
-      }
-    );
-    console.log(response);
-    if (response.ok === false) {
-      alert("Updated failed");
-      setIsloading(false);
-    } else {
-      alert("Updated successfully");
-      navigate("/courses");
+  console.log("updated details", images);
+
+  const response = await fetch(
+    `${process.env.REACT_APP_URL}/api/v1/product/update/${id}`,
+    {
+      method: "PUT",
+      body: updatedDetails,
     }
-    // } else {
-    //   // There are errors, handle accordingly (e.g., display an error message)
-    //   console.log("Form submission failed due to validation errors.");
-    //   setIsloading(false);
-    // }
-    // setCertificates([])
-    // setProfilePhoto(null)
+  );
+  console.log(response);
+  if (response.ok === false) {
+    alert("Updated failed");
+    setIsloading(false);
+  } else {
+    alert("Updated successfully");
+    navigate("/products");
+  }
+}
+   
+    catch (error) {
+      console.error("Error during course update:", error);
+    
+      // Check if the error object has a response or data property
+      const errorMessage = error.response?.data?.message || "Fill all the fields"
+    
+      toast(errorMessage, {
+        position: toast.POSITION.TOP_RIGHT,
+        type:'error'
+      });
+    } finally {
+      setIsloading(false);
+      setImages([])
+
+    }
   };
 
-  const handleDropdownSelect = (selectedCategory) => {
-    setSelectedCategory(selectedCategory);
-    console.log('selected Category',selectedCategory);
-  };
 
   return (
     <div className="infoContainer">
@@ -212,7 +218,7 @@ function  EditProduct() {
 
         <section className="astro-head">
           <div>
-            <h3>Edit Course</h3>
+            <h3>Edit Product</h3>
             <div
               style={{
                 height: "3px",
@@ -232,7 +238,7 @@ function  EditProduct() {
           >
             <article className="basicDetails">
               <div className="threeCol">
-                {/* FirstName */}
+                {/* CourseName */}
 
                 <div className="mb-3">
                   <FloatingLabel controlId="coursename" label="Name">
@@ -240,13 +246,13 @@ function  EditProduct() {
                       type="text"
                       placeholder="Name"
                       name="coursename"
-                      value={course?.coursename}
-                      onChange={handleChange}
+                      onChange={(e) => setProductname(e.target.value)}
+                      value={productname}
+                    disabled={disable}
+
                     />
                   </FloatingLabel>
-                  <p className="errormsg">
-                    {/* {errors.coursename && errors.coursename.message} */}
-                  </p>
+                 
                 </div>
                 <div className="mb-3">
                   <FloatingLabel controlId="price" label="Price">
@@ -254,17 +260,16 @@ function  EditProduct() {
                       type="text"
                       placeholder="Price"
                       name="price"
-                      value={course?.price}
-                      onChange={handleChange}
+                      onChange={(e) => setPrice(e.target.value)}
+                      value={price}
+                    disabled={disable}
+
                     />
                   </FloatingLabel>
-                  <p className="errormsg">
-                    {/* {errors.price && errors.price.message} */}
-                  </p>
+              
                 </div>
 
                 <div className="mx-2">
-                
                   <Form.Label className="me-3" style={{ display: "block" }}>
                     IsActive
                   </Form.Label>
@@ -274,106 +279,113 @@ function  EditProduct() {
                     name="isActive"
                     inline
                     id="inline-radio-1"
-                    checked={course?.isActive}
-                    onChange={handleChange}
+                    onChange={(e) => setIsActive(e.target.value)}
+                    value={isActive}
+                    checked={product?.isActive == true}
+                    disabled={disable}
+
                   />
                   <Form.Check
-                  // onClick={selectedEvent}
                     type="radio"
                     label="No"
                     name="isActive"
                     inline
                     id="inline-radio-2"
-                    checked={course?.isActive}
-                    onChange={handleChange}
+                    onChange={(e) => setIsActive(e.target.value)}
+                    value={!isActive}
+                    checked={product?.isActive == false}
+                    disabled={disable}
                   />
                 </div>
-            
               </div>
 
-              <div></div>
               <div className="threeCol">
                 <div className="mb-3">
-                  <FloatingLabel controlId="image" label="Image">
+                  <FloatingLabel controlId="images" label="Image">
                     <Form.Control
                       type="file"
                       placeholder="Image"
-                      name="image"
-                      // value={course?.images[0]?.image}
+                      name="images"
+                      disabled={disable}
                       onChange={onImagesChange}
                       accept="image/png, image/jpeg"
+                      multiple
+                      required
                     />
                   </FloatingLabel>
-                  <div className="twoCol">
-                <div
-                  className="img-preview"
-                  style={{
-                    width: "100px",
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "20px",
-                  }}
-                > 
-                  {imagesPreview.map((image) => (
-                    <img
-                      src={image}
-                      key={image}
-                      alt=""
-                      className="pre-img"
-                      style={{ maxWidth: "100%" }}
-                    />
-                  ))}
-                  {imagesPreview.length > 0 && (
-                    <button
-                      id="delete-btn"
-                      className="btns"
-                      onClick={clearImagesHandler}
-                      style={{ cursor: "pointer", width: "75px" }}
+
+                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
+                </div>
+                <div className="mb-3">
+                  {imagesPreview.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{ position: "relative", display: "inline-block" }}
                     >
-                      <i
-                        className="fa fa-trash"
-                        style={{ marginLeft: "-1rem", marginRight: "1rem" }}
-                      ></i>
-                      Delete
-                    </button>
-                  )}
+                      <img
+                        src={image}
+                        alt=""
+                        key={image}
+                        style={{ width: "75px", height: "50px" }}
+                        disabled={disable}
+                      />
+
+                      <RiCloseCircleLine
+                        className="trash"
+                        onClick={() => clearImagesHandler()}
+                        disabled={disable}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
 
-                  {/* {imageErr && <p style={{ color: "red" }}>{imageErr}</p>} */}
+              <div className="threeCol">
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="description"
+                    label="Description"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Description"
+                      name="description"
+                      onChange={(e) => setDescription(e.target.value)}
+                      value={description}
+                    disabled={disable}
+                 
+
+                    />
+                  </FloatingLabel>
                 </div>
 
-                <FloatingLabel
-                  controlId="description"
-                  label="Description"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Description"
-                    name="description"
-                    value={course?.description}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                <FloatingLabel
-                  controlId="category"
-                  label="category"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="category"
-                    name="category"
-                    value={selectedCategory ? selectedCategory : course?.category}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                  />
-                </FloatingLabel>
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="category"
+                    label="category"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="category"
+                      name="category"
+                      disabled="baned"
+                      value={
+                        selectedCategory ? selectedCategory : product?.category
+                      }
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                
+
+                    />
+                  </FloatingLabel>
+                </div>
 
                 <div className="mb-3 ">
-                  <Dropdown onSelect={handleDropdownSelect}>
-                    <Dropdown.Toggle id="dropdown-basic">
+                      
+                  <Dropdown onSelect={handleDropdownSelect} 
+                     >
+                    <Dropdown.Toggle id="dropdown-basic" disabled={disable}>
                       Category
                     </Dropdown.Toggle>
 
@@ -382,6 +394,7 @@ function  EditProduct() {
                         <Dropdown.Item
                           key={index}
                           name="category"
+
                           eventKey={cat.category[0]?.name}
                         >
                           {cat.category[0]?.name}
@@ -389,51 +402,8 @@ function  EditProduct() {
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
- 
-           </div>
-                    {/* {existing Images} */}
-              {/* <div className="twoCol">
-                <div
-                  className="img-preview"
-                  style={{
-                    width: "100px",
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "20px",
-                  }}
-                >
-           
-                    <img
-                      src={course?.images[0]?.image}
-                      key={image}
-                      alt=""
-                      className="pre-img"
-                      style={{ maxWidth: "100%" }}
-                    />
-              
-                  {imagesPreview.length > 0 && (
-                    <button
-                      id="delete-btn"
-                      className="btns"
-                      onClick={clearImagesHandler}
-                      style={{ cursor: "pointer", width: "75px" }}
-                    >
-                      <i
-                        className="fa fa-trash"
-                        style={{ marginLeft: "-1rem", marginRight: "1rem" }}
-                      ></i>
-                      Delete
-                    </button>
-                  )}
                 </div>
-              </div> */}
-
-
               </div>
-          
-
-          
             </article>
             <div className="twoCol btnGroup">
               <div style={{ display: "flex", gap: "20px" }}>
