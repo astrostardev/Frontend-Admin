@@ -38,6 +38,8 @@ import EditCategory from './Pages/courseCategory/EditCategory';
 import EditProductCategory from './Pages/productCategory/EditProductCategory';
 import AddProductCategory from './Pages/productCategory/AddProductCategory';
 import ViewProductCategory from './Pages/productCategory/ViewProductCategory';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 

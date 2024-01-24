@@ -8,11 +8,13 @@ import { Link } from "react-router-dom"
 import { RiArrowDropDownLine } from "react-icons/ri"
 import astrologer from "../Assests/astrologer.jpg"
 import { useRef, useEffect } from "react"
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { logout } from '../Actions/adminActions';
 import { IoLanguageOutline } from "react-icons/io5";
 import { IoWalletOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
+import { LiaProductHunt } from "react-icons/lia";
+import { SiCoursera } from "react-icons/si";
 function Sidebar() {
     const dispatch = useDispatch()
 
@@ -73,6 +75,14 @@ function Sidebar() {
                     <Link className="side-link" to="/languages">
                     <IoLanguageOutline  style={{fontSize:'20px'}}/>
                         <span>Languages</span>
+                    </Link>
+                    <Link className="side-link" to="/products">
+                    <LiaProductHunt  style={{fontSize:"20px"}}/>
+                        <span>Products</span>
+                    </Link>
+                    <Link className="side-link" to="/courses">
+                    <SiCoursera style={{fontSize:"20px"}} />
+                        <span>Course</span>
                     </Link>
                 </section>
                 <div className="divider"></div>
