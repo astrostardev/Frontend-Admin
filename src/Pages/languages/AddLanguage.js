@@ -7,60 +7,66 @@ import { useNavigate } from "react-router-dom";
 import MetaData from "../../Components/MetaData";
 function AddLanguage() {
   const [language, setLanguage] = useState({
-    language:{name:""}
-  }); 
-  const navigate = useNavigate()
-
+    language: { name: "" },
+  });
+  const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
   const { token } = useSelector((state) => state.authState);
 
+  // add Language function
   const onSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/language/create`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          method: "POST",
+          body: JSON.stringify(language),
+        }
+      );
   
-try{
-  const response = await fetch(
-    `${process.env.REACT_APP_URL}/api/v1/language/create`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      method: "POST",
-      body: JSON.stringify(language),
+      if (!response.ok) {
+        console.error('Failed to create language. Status:', response.status);
+  
+        // Get detailed error message as text
+        const errorText = await response.text();
+        console.error('Error Text:', errorText);  
+        toast('language already exist', {
+          type: 'error',
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        toast('Language added success fully', {
+          type: 'success',
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        // alert("Category created successfully");
+        navigate('/languages');
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('An error occurred:', error);
+  
+      // Display error using toast or alert
+      toast(error.response?.data?.message || 'An error occurred', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
-  );
-  console.log('Response:', response);
-  if (response.ok === false) {
-    alert(" create package Failed");
-  } else {
-    alert("language Created Successful");
-    navigate('/languages')
-  }
-}catch(err){
-  toast(err, {
-    type: 'error',
-    position: toast.POSITION.TOP_RIGHT,
-  });
-}
-   
   };
   return (
     <div className="infoContainer">
-        <MetaData title={'Astro5Star-Manager'} />
+      <MetaData title={"Astro5Star-Manager"} />
 
       <main id="admin-addastro">
         <section className="astro-head">
           <div>
             <h3>Add Language</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -70,8 +76,6 @@ try{
             encType="multipart/form-data"
           >
             <article className="basicDetails">
-            
-
               <div className="twoCol">
                 {/* FirstName */}
 
@@ -83,12 +87,13 @@ try{
                       name="language"
                       required
                       value={language?.name?.language}
-                      onChange={(e) => setLanguage({ language:{name:e.target.value} })}
+                      onChange={(e) =>
+                        setLanguage({ language: { name: e.target.value } })
+                      }
                     />
                   </FloatingLabel>
                 </div>
-
-                </div>
+              </div>
             </article>
             <div className="twoCol btnGroup">
               <div>

@@ -174,7 +174,7 @@ function EditCourse() {
     }
     fetchData();
   }, []);
-  //selected for displaying
+  //selected for category displaying
 
   const handleDropdownSelect = (selectedCategory) => {
     setCourse({
@@ -218,18 +218,24 @@ function EditCourse() {
         }
       );
   
+      const jsonResponse = await response.json();
+      console.log("res", jsonResponse);
       if (!response.ok) {
-        throw new Error("Failed to update course");
+        console.error('Failed to create category. Status:', response.status);
+        toast('Course Name exist', {
+          type: 'error',
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        toast('Course created successfully', {
+          type: 'success',
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        navigate('/courses');
       }
-  
-      alert("Updated successfully");
-      navigate("/courses");
     } catch (error) {
       console.error("Error during course update:", error);
-    
-      // Check if the error object has a response or data property
       const errorMessage = error.response?.data?.message || "Fill all the fields"
-    
       toast(errorMessage, {
         position: toast.POSITION.TOP_RIGHT,
         type:'error'
@@ -333,50 +339,7 @@ function EditCourse() {
                   />
                 </div>
               </div>
-              <div className="threeCol">
-                <div className="mb-3">
-                  <FloatingLabel controlId="images" label="Image">
-                    <Form.Control
-                      type="file"
-                      placeholder="Image"
-                      name="images"
-                      onChange={onImagesChange}
-                      accept="image/png, image/jpeg"
-                      multiple
-                      required
-                      disabled={disable}
 
-                    />
-                  </FloatingLabel>
-
-                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
-                </div>
-                <div className="mb-3">
-                  {imagesPreview.map((image, index) => (
-                    <div
-                      key={index}
-                      style={{ position: "relative", display: "inline-block" }}
-                    >
-                      <img
-                        src={image}
-                        alt=""
-                        key={image}
-                        style={{ width: "75px", height: "50px" }}
-                        disabled={disable}
-
-                      />
-
-                      <RiCloseCircleLine
-                        style={{}}
-                        className="trash"
-                        onClick={() => clearImagesHandler()}
-                        disabled={disable}
-
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               <div className="threeCol">
                 <div className="mb-3">
@@ -436,6 +399,50 @@ function EditCourse() {
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
+                </div>
+              </div>
+              <div className="threeCol">
+                <div className="mb-3">
+                  <FloatingLabel controlId="images" label="Image">
+                    <Form.Control
+                      type="file"
+                      placeholder="Image"
+                      name="images"
+                      onChange={onImagesChange}
+                      accept="image/png, image/jpeg"
+                      multiple
+                      required
+                      disabled={disable}
+
+                    />
+                  </FloatingLabel>
+
+                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
+                </div>
+                <div className="mb-3">
+                  {imagesPreview.map((image, index) => (
+                    <div
+                      key={index}
+                      style={{ position: "relative", display: "inline-block" }}
+                    >
+                      <img
+                        src={image}
+                        alt=""
+                        key={image}
+                        className="image_pre"
+                        disabled={disable}
+
+                      />
+
+                      <RiCloseCircleLine
+                        style={{}}
+                        className="trash"
+                        onClick={() => clearImagesHandler()}
+                        disabled={disable}
+
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             </article>

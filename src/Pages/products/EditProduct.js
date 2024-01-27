@@ -5,10 +5,9 @@ import { FloatingLabel, Form, Dropdown, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RiCloseCircleLine } from "react-icons/ri";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 function EditProduct() {
-
   const [product, setProduct] = useState();
   const [productname, setProductname] = useState("");
   const [price, setPrice] = useState("");
@@ -27,7 +26,7 @@ function EditProduct() {
   const { token } = useSelector((state) => state.authState);
   const [categories, setCategories] = useState(null);
 
-//  get product detail
+  //  get product detail
 
   useEffect(() => {
     async function fetchData() {
@@ -49,9 +48,9 @@ function EditProduct() {
     fetchData();
   }, []);
 
-//  set product detail to states
+  //  set product detail to states
 
-    useEffect(() => {
+  useEffect(() => {
     if (product?._id) {
       setProductname(product.productname);
       setPrice(product.price);
@@ -66,7 +65,7 @@ function EditProduct() {
     }
   }, [product]);
 
-// upload image
+  // upload image
 
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
@@ -117,7 +116,7 @@ function EditProduct() {
     setImagesPreview([]);
     setImagesCleared(true);
   };
-// display categories
+  // display categories
 
   useEffect(() => {
     async function fetchData() {
@@ -140,76 +139,77 @@ function EditProduct() {
     }
     fetchData();
   }, []);
-//  select category function
+  //  select category function
 
-const handleDropdownSelect = (selectedCategory) => {
-  setProduct({
-    ...product,
-    category: selectedCategory,
-  });
-  console.log("selected Category", selectedCategory);
-};
+  const handleDropdownSelect = (selectedCategory) => {
+    setProduct({
+      ...product,
+      category: selectedCategory,
+    });
+    console.log("selected Category", selectedCategory);
+  };
   // form submit function
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
     if (productname && price && description && images.length === 0) {
-      toast('Please fill all the fields', {
+      toast("Please fill all the fields", {
         position: toast.POSITION.TOP_RIGHT,
-        type: 'error',
+        type: "error",
       });
-
-    } 
-try{
-  const updatedDetails = new FormData();
-  updatedDetails.append("coursename", productname);
-  updatedDetails.append("price", price);
-  updatedDetails.append("isActive", isActive);
-  updatedDetails.append("category", category);
-  updatedDetails.append("description", description);
-
-  images?.forEach((image) => {
-    updatedDetails.append("images", image);
-  });
-  updatedDetails.append("imagesCleared", imagesCleared);
-
-  console.log("updated details", images);
-
-  const response = await fetch(
-    `${process.env.REACT_APP_URL}/api/v1/product/update/${id}`,
-    {
-      method: "PUT",
-      body: updatedDetails,
     }
-  );
-  console.log(response);
-  if (response.ok === false) {
-    alert("Updated failed");
-    setIsloading(false);
-  } else {
-    alert("Updated successfully");
-    navigate("/products");
-  }
-}
-   
-    catch (error) {
+    try {
+      const updatedDetails = new FormData();
+      updatedDetails.append("productname", productname);
+      updatedDetails.append("price", price);
+      updatedDetails.append("isActive", isActive);
+      updatedDetails.append("category", category);
+      updatedDetails.append("description", description);
+
+      images?.forEach((image) => {
+        updatedDetails.append("images", image);
+      });
+      updatedDetails.append("imagesCleared", imagesCleared);
+
+      console.log("updated details", images);
+
+      const response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/product/update/${id}`,
+        {
+          method: "PUT",
+          body: updatedDetails,
+        }
+      );
+      console.log(response);
+      const jsonResponse = await response.json();
+      console.log("res", jsonResponse);
+      if (!response.ok) {
+        console.error("Failed to create category. Status:", response.status);
+        toast("Product Name exist", {
+          type: "error",
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        toast("Product Updated", {
+          type: "success",
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        navigate("/products");
+      }
+    } catch (error) {
       console.error("Error during course update:", error);
-    
-      // Check if the error object has a response or data property
-      const errorMessage = error.response?.data?.message || "Fill all the fields"
-    
+      const errorMessage =
+        error.response?.data?.message || "Fill all the fields";
       toast(errorMessage, {
         position: toast.POSITION.TOP_RIGHT,
-        type:'error'
+        type: "error",
       });
     } finally {
       setIsloading(false);
-      setImages([])
-
+      setImages([]);
     }
   };
-
 
   return (
     <div className="infoContainer">
@@ -219,15 +219,7 @@ try{
         <section className="astro-head">
           <div>
             <h3>Edit Product</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -238,21 +230,19 @@ try{
           >
             <article className="basicDetails">
               <div className="threeCol">
-                {/* CourseName */}
+                {/* product Name */}
 
                 <div className="mb-3">
-                  <FloatingLabel controlId="coursename" label="Name">
+                  <FloatingLabel controlId="productname" label="Name">
                     <Form.Control
                       type="text"
                       placeholder="Name"
-                      name="coursename"
+                      name="productname"
                       onChange={(e) => setProductname(e.target.value)}
                       value={productname}
-                    disabled={disable}
-
+                      disabled={disable}
                     />
                   </FloatingLabel>
-                 
                 </div>
                 <div className="mb-3">
                   <FloatingLabel controlId="price" label="Price">
@@ -262,15 +252,13 @@ try{
                       name="price"
                       onChange={(e) => setPrice(e.target.value)}
                       value={price}
-                    disabled={disable}
-
+                      disabled={disable}
                     />
                   </FloatingLabel>
-              
                 </div>
 
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check
@@ -283,7 +271,6 @@ try{
                     value={isActive}
                     checked={product?.isActive == true}
                     disabled={disable}
-
                   />
                   <Form.Check
                     type="radio"
@@ -298,48 +285,6 @@ try{
                   />
                 </div>
               </div>
-
-              <div className="threeCol">
-                <div className="mb-3">
-                  <FloatingLabel controlId="images" label="Image">
-                    <Form.Control
-                      type="file"
-                      placeholder="Image"
-                      name="images"
-                      disabled={disable}
-                      onChange={onImagesChange}
-                      accept="image/png, image/jpeg"
-                      multiple
-                      required
-                    />
-                  </FloatingLabel>
-
-                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
-                </div>
-                <div className="mb-3">
-                  {imagesPreview.map((image, index) => (
-                    <div
-                      key={index}
-                      style={{ position: "relative", display: "inline-block" }}
-                    >
-                      <img
-                        src={image}
-                        alt=""
-                        key={image}
-                        style={{ width: "75px", height: "50px" }}
-                        disabled={disable}
-                      />
-
-                      <RiCloseCircleLine
-                        className="trash"
-                        onClick={() => clearImagesHandler()}
-                        disabled={disable}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               <div className="threeCol">
                 <div className="mb-3">
                   <FloatingLabel
@@ -353,9 +298,7 @@ try{
                       name="description"
                       onChange={(e) => setDescription(e.target.value)}
                       value={description}
-                    disabled={disable}
-                 
-
+                      disabled={disable}
                     />
                   </FloatingLabel>
                 </div>
@@ -375,26 +318,21 @@ try{
                         selectedCategory ? selectedCategory : product?.category
                       }
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                
-
                     />
                   </FloatingLabel>
                 </div>
-
+                {/* select category */}
                 <div className="mb-3 ">
-                      
-                  <Dropdown onSelect={handleDropdownSelect} 
-                     >
+                  <Dropdown onSelect={handleDropdownSelect}>
                     <Dropdown.Toggle id="dropdown-basic" disabled={disable}>
                       Category
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {categories?.map((cat, index) => (
                         <Dropdown.Item
                           key={index}
                           name="category"
-
                           eventKey={cat.category[0]?.name}
                         >
                           {cat.category[0]?.name}
@@ -402,6 +340,44 @@ try{
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
+                </div>
+              </div>
+              <div className="threeCol">
+                <div className="mb-3">
+                  <FloatingLabel controlId="images" label="Image">
+                    <Form.Control
+                      type="file"
+                      placeholder="Image"
+                      name="images"
+                      disabled={disable}
+                      onChange={onImagesChange}
+                      accept="image/png, image/jpeg"
+                      multiple
+                      // required
+                    />
+                  </FloatingLabel>
+
+                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
+                </div>
+                <div className="mb-3">
+                  {imagesPreview.map((image, index) => (
+                    <div key={index} className="image_contain">
+                      <img
+                        src={image}
+                        alt=""
+                        key={image}
+                        disabled={disable}
+                        className="image_pre"
+
+                      />
+
+                      <RiCloseCircleLine
+                        className="trash"
+                        onClick={() => clearImagesHandler()}
+                        disabled={disable}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
             </article>

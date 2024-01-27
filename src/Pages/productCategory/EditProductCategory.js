@@ -4,6 +4,7 @@ import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function EditProductCategory() {
   const [methods, setMethods] = useState({
@@ -15,6 +16,8 @@ function EditProductCategory() {
   const [isLoading, setIsloading] = useState(false);
   const[disable,setDisable]=useState(true)
   const { token } = useSelector((state) => state.authState);
+  
+//  get single category detail
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -47,7 +50,7 @@ function EditProductCategory() {
       ],
     });
   };
-  
+  // update product category
   const onSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
@@ -66,11 +69,20 @@ function EditProductCategory() {
       }
 
     );
-    if (response.ok === false) {
-      alert(" edit category Failed");
+    const jsonResponse = await response.json();
+    console.log("res", jsonResponse);
+    if (!response.ok) {
+      console.error('Failed to create category. Status:', response.status);  
+      toast('Product Category Name exist', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } else {
-      alert("Category Updated");
-      navigate("/categories");
+      toast('Product Category Updated successfully', {
+        type: 'success',
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      navigate('/product_categories');
     }
   };
   return (
@@ -81,15 +93,7 @@ function EditProductCategory() {
         <section className="astro-head">
           <div>
             <h3>Edit Product Category</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">

@@ -1,23 +1,16 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../Stylesheets/Addastrologer.scss";
-import { Box } from "@mui/material";
 import React from "react";
+import {toast} from 'react-toastify';
+
 import {
   FloatingLabel,
   Form,
   Dropdown,
-  ButtonGroup,
-  Button,
   Spinner,
 } from "react-bootstrap";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import dayjs from "dayjs";
-import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import MetaData from "../../Components/MetaData";
 function AddProduct() {
@@ -28,8 +21,9 @@ function AddProduct() {
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesCleared, setImagesCleared] = useState(false);
-
   const navigate = useNavigate();
+
+  // show available categories
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -54,36 +48,8 @@ function AddProduct() {
 
   const { token } = useSelector((state) => state.authState);
 
-  // const handleFileUpload = (e) => {
-  //   const selectedFile = e.target.files[0];
-
-  //   // // Check if a file is selected
-  //   // if (!selectedFile) {
-  //   //     setErrorMessage('Please select a file.');
-  //   //     return;
-  //   // }
-
-  //   // Check file type (pdf or jpeg)
-  //   const allowedTypes = [
-  //     "application/pdf",
-  //     "image/jpeg",
-  //     "image/jpg",
-  //     "image/png",
-  //   ];
-  //   if (!allowedTypes.includes(selectedFile.type)) {
-  //     setErrorMessage(
-  //       "File type not allowed. Please select a PDF or JPEG or PNG file."
-  //     );
-  //     return;
-  //   }
-  //   // Check file size (in bytes)
-  //   const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
-  //   if (selectedFile.size > maxSizeInBytes) {
-  //     setErrorMessage("File size exceeds the maximum allowed size (2MB).");
-  //     return;
-  //   }
-  // }
-
+  
+  // uploading file
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
 
@@ -121,6 +87,7 @@ function AddProduct() {
     setImage(selectedPhoto);
     setImageErr("");
   };
+  // delete image
   const clearImagesHandler = () => {
     setImages([]);
     setImagesPreview([]);
@@ -130,13 +97,13 @@ function AddProduct() {
   const {
     register,
     handleSubmit,
-    // reset,
+    reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
-  // useEffect(() => {
-  //   reset();
-  // }, [isSubmitSuccessful, reset]);
+  useEffect(() => {
+    reset();
+  }, [isSubmitSuccessful, reset]);
 
   const validation = {
     coursename: {
@@ -160,6 +127,7 @@ function AddProduct() {
       },
     },
   };
+  // create new product
   const onSubmit = async (data) => {
     setIsloading(true);
 
@@ -186,16 +154,29 @@ function AddProduct() {
     );
     const jsonResponse = await response.json();
     console.log("res", jsonResponse);
-    if (response.ok === false) {
-      alert("Product create Failed");
+    if (!response.ok) {
+      console.error('Failed to create category. Status:', response.status);
+
+      // Get detailed error message as text
+      // const errorText = await response.text();
+      // console.error('Error Text:', errorText);  
+      toast('Product Name exist', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } else {
-      alert("Product Created Successful");
-      navigate("/products");
+      toast("Product created successfully", {
+        type: 'success',
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      navigate('/products');
     }
+  
     setIsloading(false);
 
-    setImages(null);
+    setImages([]);
   };
+
   return (
     <div className="infoContainer">
       <MetaData title={"Astro5Star-Manager"} />
@@ -204,15 +185,7 @@ function AddProduct() {
         <section className="astro-head">
           <div>
             <h3>Add Product</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -253,7 +226,7 @@ function AddProduct() {
                 </div>
 
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check
@@ -313,18 +286,11 @@ function AddProduct() {
                       Category
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {categories?.map((cat, index) => (
                         <>
                           <div
                             key={index}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginLeft: "5px",
-                              gap: "4px",
-                              padding: "0 5px",
-                            }}
                             className="customDrop"
                           >
                             <Form.Check

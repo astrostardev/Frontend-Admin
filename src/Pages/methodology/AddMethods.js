@@ -16,36 +16,50 @@ function AddMethods() {
 
 
 
-  const onSubmit = async (e) => {
+const onSubmit = async (e) => {
     e.preventDefault();
-    
-try{
-  const response = await fetch(
-    `${process.env.REACT_APP_URL}/api/v1/method/create`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      method: "POST",
-      body: JSON.stringify(category),
-
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/method/create`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          method: "POST",
+          body: JSON.stringify(category),
+        }
+      );
+  
+      if (!response.ok) {
+        console.error('Failed to create category. Status:', response.status);
+  
+        // Get detailed error message as text
+        const errorText = await response.text();
+        console.error('Error Text:', errorText);  
+        toast('category already Registered', {
+          type: 'error',
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        toast("Category created successfully", {
+          type: 'success',
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        navigate('/methods');
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error('An error occurred:', error);
+  
+      // Display error using toast or alert
+      toast(error.response?.data?.message || 'An error occurred', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
-  );
-  if (response.ok === false) {
-    alert(" create package Failed");
-  } else {
-    alert("Category Created Successful");
-    navigate('/methods')
-  }
-}catch(err){
-  toast(err, {
-    type: 'error',
-    position: toast.POSITION.TOP_RIGHT,
-  });
-}
-   
   };
+  
   return (
     <div className="infoContainer">
         <MetaData title={'Astro5Star-Manager'} />
@@ -54,15 +68,7 @@ try{
         <section className="astro-head">
           <div>
             <h3>Add Methodology</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider" ></div>
           </div>
         </section>
         <section className="my-4">
@@ -72,7 +78,7 @@ try{
             encType="multipart/form-data"
           >
             <article className="basicDetails">
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+              <p className="title_addastro">
                 Basic details
               </p>
 

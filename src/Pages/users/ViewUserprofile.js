@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../Stylesheets/ViewProfile.scss";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Spinner } from "react-bootstrap"
+import {useNavigate, useParams } from "react-router-dom";
+import {  Spinner } from "react-bootstrap"
 import moment from "moment"
 import MetaData from "../../Components/MetaData";
 function ViewUserprofile() {
@@ -9,6 +9,7 @@ function ViewUserprofile() {
     const [users, setUsers] = useState(null)
     const navigate = useNavigate()
     const { id } = useParams()
+    //get single user
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -36,7 +37,7 @@ function ViewUserprofile() {
 
         fetchData();
     }, []);
-
+// delete user
     async function handleDelete() {
         setIsloading(true)
         const res = await fetch(`${process.env.REACT_APP_URL}/api/v1/astrologer/delete/${id}`, {
@@ -63,22 +64,14 @@ function ViewUserprofile() {
                     <section className="viewProfile-head">
                         <div>
                             <h3>Profile</h3>
-                            <div
-                                style={{
-                                    height: "3px",
-                                    width: "40px",
-                                    backgroundColor: "#0042ae",
-                                    borderRadius: "10px",
-                                    marginTop: "3px",
-                                }}
-                            ></div>
+                            <div className="title_divider"></div>
                         </div>
                         {/* <div className="btnGroup">
                             <button className="btns" onClick={() => navigate(`/edituser/${users?.user?._id}`)} disabled={isLoading}>Edit</button>
                             <Button variant="danger" onClick={handleDelete} >Delete</Button>
                         </div> */}
                     </section>
-                    <h3 style={{ textDecoration: "underline", marginBottom: "20px", marginTop: "20px" }}>
+                    <h3 className="title_addastro">
                         Basic Details
                     </h3>
 

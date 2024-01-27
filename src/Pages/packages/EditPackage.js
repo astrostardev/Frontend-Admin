@@ -17,6 +17,8 @@ function EditPackage() {
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
   const { token } = useSelector((state) => state.authState);
+
+  // get single package
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -45,6 +47,7 @@ function EditPackage() {
       [name]: value,
     });
   };
+  // update function 
   const onSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
@@ -79,15 +82,7 @@ function EditPackage() {
         <section className="astro-head">
           <div>
             <h3>Edit Packages</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider" ></div>
           </div>
         </section>
         <section className="my-4">
@@ -140,7 +135,7 @@ function EditPackage() {
                   </FloatingLabel>
                 </div>
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check

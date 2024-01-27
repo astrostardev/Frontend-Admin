@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../Stylesheets/ViewProfile.scss";
-
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Spinner } from "react-bootstrap"
-
+import { useNavigate, useParams } from "react-router-dom";
+import { Spinner } from "react-bootstrap"
 import { useSelector } from "react-redux";
 import MetaData from "../../Components/MetaData";
 function ViewPackage() {
@@ -12,7 +10,7 @@ function ViewPackage() {
     const navigate = useNavigate()
     const { id } = useParams()
     const {token} = useSelector(state=>state.authState)
-
+// get single package
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -57,24 +55,14 @@ function ViewPackage() {
                     <section className="viewProfile-head">
                         <div>
                             <h3>Package</h3>
-                            <div
-                                style={{
-                                    height: "3px",
-                                    width: "40px",
-                                    backgroundColor: "#0042ae",
-                                    borderRadius: "10px",
-                                    marginTop: "3px",
-                                }}
-                            ></div>
+                            <div className="title_divider"></div>
                         </div>
                         {/* <div className="btnGroup">
                             <button className="btns" onClick={() => navigate(`/edituser/${users?.user?._id}`)} disabled={isLoading}>Edit</button>
                             <Button variant="danger" onClick={handleDelete} >Delete</Button>
                         </div> */}
                     </section>
-                    <h3 style={{ textDecoration: "underline", marginBottom: "20px", marginTop: "20px" }}>
-                        Basic Details
-                    </h3>
+                  
 
                     <article className="profile_detail">
                      

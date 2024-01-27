@@ -4,6 +4,7 @@ import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function EditMethod() {
   const [methods, setMethods] = useState({
@@ -15,6 +16,8 @@ function EditMethod() {
   const [isLoading, setIsloading] = useState(false);
   const[disable,setDisable]=useState(true)
   const { token } = useSelector((state) => state.authState);
+
+//  get single category
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -47,7 +50,7 @@ function EditMethod() {
       ],
     });
   };
-  
+  // update category
   const onSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
@@ -66,11 +69,23 @@ function EditMethod() {
       }
 
     );
-    if (response.ok === false) {
-      alert(" edit package Failed");
+    if (!response.ok) {
+      console.error('Failed to create language. Status:', response.status);
+
+      // Get detailed error message as text
+      const errorText = await response.text();
+      console.error('Error Text:', errorText);  
+      toast('Method already exists', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } else {
-      alert("Category Updated");
-      navigate("/methods");
+      toast('Method updated successfully', {
+        type: 'success',
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      // alert("language updated successfully");
+      navigate('/methods');
     }
   };
   return (
@@ -81,15 +96,7 @@ function EditMethod() {
         <section className="astro-head">
           <div>
             <h3>Edit Methodology</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">

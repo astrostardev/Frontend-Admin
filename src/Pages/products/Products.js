@@ -13,8 +13,7 @@ function Products() {
     const [products, setProducts] = useState(null)
     const navigate = useNavigate();
     const {token}= useSelector(state=>state.authState)
-    // const token = auth.token
-
+// products listing
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/product/show`, {
@@ -116,9 +115,9 @@ function Products() {
                 <section className="astro-head">
                     <div>
                         <h4>Products</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
-                    <div style={{display:"flex", gap:"10px"}}>
+                    <div className="header_btn">
                         <Link to="/product_categories" className="addAstroLink">Category</Link>
                         <Link to="/addproduct" className="addAstroLink">Add Product</Link>
                     </div>
@@ -128,7 +127,7 @@ function Products() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate_detail">
                         <Box
                             sx={{
                               

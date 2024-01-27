@@ -13,8 +13,7 @@ function Courses() {
     const [courses, setCourses] = useState(null)
     const navigate = useNavigate();
     const {token}= useSelector(state=>state.authState)
-    // const token = auth.token
-
+// get courses
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/course/show`, {
@@ -117,9 +116,9 @@ function Courses() {
                 <section className="astro-head">
                     <div>
                         <h4>Courses</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
-                    <div style={{display:"flex", gap:"10px"}}>
+                    <div className="header_btn">
                         <Link to="/course_categories" className="addAstroLink">Category</Link>
                         <Link to="/addcourse" className="addAstroLink">Add Course</Link>
                     </div>
@@ -129,7 +128,7 @@ function Courses() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate_detail">
                         <Box
                             sx={{
                               

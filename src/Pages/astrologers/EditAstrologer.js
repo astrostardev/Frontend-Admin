@@ -1,6 +1,5 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../Stylesheets/Addastrologer.scss";
-import { Box } from "@mui/material";
 import { FloatingLabel, Form, Spinner, Dropdown } from "react-bootstrap";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -8,14 +7,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import TextField from "@mui/material/TextField";
 import { useSelector } from "react-redux";
 import { RiCloseCircleLine } from "react-icons/ri";
 import MetaData from "../../Components/MetaData";
 import { toast } from "react-toastify";
 
 function EditAstrologer() {
-  //upload images
+  //upload images components
   const FileUpload = ({
     label,
     onChange,
@@ -79,7 +77,10 @@ function EditAstrologer() {
   const [isLoading, setIsloading] = useState(false);
   const [categories, setCategories] = useState(null);
   const [languages, setLanguages] = useState(null);
-  const [isActive, setIsActive] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState([]);
   const { token } = useSelector((state) => state.authState);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [photoErr, setPhotoErr] = useState("");
@@ -112,8 +113,8 @@ function EditAstrologer() {
     aadharPic: [],
     panPic: [],
     profilePic: [],
-    displaycall:"",
-    displaychat:""
+    displaycall: "",
+    displaychat: "",
   });
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
@@ -145,7 +146,7 @@ function EditAstrologer() {
   });
   const { id } = useParams();
   const navigate = useNavigate();
-
+  // uploading file
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -195,7 +196,7 @@ function EditAstrologer() {
       [name]: value,
     });
   };
-
+  // get categories
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -217,6 +218,7 @@ function EditAstrologer() {
     }
     fetchData();
   }, []);
+  //get languages
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -238,6 +240,7 @@ function EditAstrologer() {
     }
     fetchData();
   }, []);
+  // get single astrologer
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -270,23 +273,27 @@ function EditAstrologer() {
 
     fetchData();
   }, []);
+  // uploading images
   const handleFileChange = (files) => {
     setUploadedFiles(files);
     console.log("files", uploadedFiles);
     setPhotoErr("");
   };
+  // delete Aadhar
   const handleAadharDelete = (name) => {
     setAstrologers((prevAstrologers) => ({
       ...prevAstrologers,
       aadharPic: prevAstrologers.aadharPic?.filter((pic) => pic.name !== name),
     }));
   };
+  // delete Pancard
   const handlePanDelete = (name) => {
     setAstrologers((prevAstrologers) => ({
       ...prevAstrologers,
       panPic: prevAstrologers.panPic?.filter((pic) => pic.name !== name),
     }));
   };
+  // delete certificate
   const handleCertificateDelete = (name) => {
     setAstrologers((prevAstrologers) => ({
       ...prevAstrologers,
@@ -295,6 +302,7 @@ function EditAstrologer() {
       ),
     }));
   };
+  // delete profile photo
   const handleFileDelete = (name) => {
     const imagesCleared = true;
     setAstrologers((prevAstrologers) => ({
@@ -305,6 +313,7 @@ function EditAstrologer() {
     }));
     return imagesCleared;
   };
+  // edit astrologer function
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsloading(true);
@@ -329,8 +338,12 @@ function EditAstrologer() {
         updatedDetails.append("chat", astrologers.chat);
         updatedDetails.append("displaychat", astrologers.displaychat);
         updatedDetails.append("displaycall", astrologers.displaycall);
-        updatedDetails.append("category", astrologers.category);
-        updatedDetails.append("language", astrologers.language);
+        selectedLanguages.forEach((lang) => {
+          updatedDetails.append("language", lang);
+        });
+        selectedCategories.forEach((cate) => {
+          updatedDetails.append("category", cate);
+        });
         updatedDetails.append("institute", astrologers.institute);
         updatedDetails.append("experience", astrologers.experience);
         updatedDetails.append(
@@ -350,18 +363,12 @@ function EditAstrologer() {
 
         uploadedFiles.forEach((uploadedFile) => {
           const fieldName = uploadedFile.type.toLowerCase() + "Pic";
-
-          // Create a JSON object with file and imagesCleared
           const fileData = {
-            // file: uploadedFile.file,
             imagesCleared: handleFileDelete(uploadedFile.name),
           };
           updatedDetails.append(fieldName, uploadedFile.file);
-
-          // Convert the JSON object to a string and append it to FormData
           updatedDetails.append(fieldName, JSON.stringify(fileData));
         });
-
         const response = await fetch(
           `${process.env.REACT_APP_URL}/api/v1/astrologer/update/${id}`,
           {
@@ -396,6 +403,49 @@ function EditAstrologer() {
       });
     }
   };
+  //handle change function for selectedCategory to dispaly
+  const handleChangeCategory = (event) => {
+    const categoryName = event.target.name;
+
+    if (selectedCategories.includes(categoryName)) {
+      setSelectedCategories((prevSelectedLanguages) =>
+        prevSelectedLanguages.filter((lang) => lang !== categoryName)
+      );
+    } else {
+      setSelectedCategories((prevSelectedCategories) => [
+        ...prevSelectedCategories,
+        categoryName,
+      ]);
+    }
+  };
+  //selected for displaying
+  const handleDropdownSelectCategory = (selectedCategory) => {
+    setSelectedCategory(selectedCategory);
+    console.log("selected Category", selectedCategory);
+  };
+
+  //handle change function for selectedLanguages dispaly
+  const handleChangeLanguage = (event) => {
+    const languageName = event.target.name;
+
+    if (selectedLanguages.includes(languageName)) {
+      setSelectedLanguages((prevSelectedLanguages) =>
+        prevSelectedLanguages.filter((lang) => lang !== languageName)
+      );
+    } else {
+      setSelectedLanguages((prevSelectedLanguages) => [
+        ...prevSelectedLanguages,
+        languageName,
+      ]);
+    }
+    console.log("languages", selectedLanguages);
+
+    console.log("language name", languageName);
+  };
+  const handleDropdownSelectLanguages = (selectedLanguage) => {
+    setSelectedLanguage(selectedLanguage);
+    console.log("selected Category", selectedLanguage);
+  };
 
   return (
     <div className="infoContainer">
@@ -405,15 +455,7 @@ function EditAstrologer() {
         <section className="astro-head">
           <div>
             <h3>Astrologer Update</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -423,13 +465,10 @@ function EditAstrologer() {
             encType="multipart/form-data"
           >
             <article className="basicDetails">
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                Basic details
-              </p>
-
+              <p className="title_addastro">Basic details</p>
+              {/* name fields */}
               <div className="threeCol">
                 {/* FirstName */}
-
                 <div className="mb-3">
                   <FloatingLabel controlId="firstname" label="First Name">
                     <Form.Control
@@ -444,7 +483,6 @@ function EditAstrologer() {
                     <p className="errormsg">{errors.firstname}</p>
                   )}
                 </div>
-
                 {/* lastName */}
                 <div className="mb-3">
                   <FloatingLabel controlId="lastname" label="Last Name">
@@ -460,6 +498,7 @@ function EditAstrologer() {
                     <p className="errormsg">{errors.lastname}</p>
                   )}
                 </div>
+                {/* display name */}
                 <div className="mb-3">
                   <FloatingLabel controlId="displayname" label="display Name">
                     <Form.Control
@@ -475,7 +514,7 @@ function EditAstrologer() {
                   )}
                 </div>
               </div>
-
+              {/* about astrologer  dob, status and gender*/}
               <div className="threeCol">
                 {/* Dob */}
                 <div>
@@ -493,10 +532,9 @@ function EditAstrologer() {
                   </LocalizationProvider>
                   {doberr && <p className="errormsg">Enter DOB</p>}
                 </div>
-
                 {/* isActive */}
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check
@@ -564,20 +602,12 @@ function EditAstrologer() {
                   </p>
                 </div>
               </div>
+              {/* images filed */}
               <div className="threeCol">
                 {/* profile image */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Profile"
                         name="profilePic"
@@ -592,18 +622,8 @@ function EditAstrologer() {
                         }
                       />
                       {astrologers?.profilePic?.map((pic, index) => (
-                        <div
-                          key={index}
-                          style={{
-                            position: "relative",
-                            display: "inline-block",
-                          }}
-                        >
-                          <img
-                            src={pic.pic}
-                            alt=""
-                            style={{ width: "75px", height: "50px" }}
-                          />
+                        <div key={index} className="image_contain">
+                          <img src={pic.pic} alt=""  className="image_pre" />
 
                           <RiCloseCircleLine
                             className="trash"
@@ -617,16 +637,7 @@ function EditAstrologer() {
                 {/* Aadhar photo */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Aadhar"
                         required
@@ -641,19 +652,8 @@ function EditAstrologer() {
                         }
                       />
                       {astrologers?.aadharPic?.map((pic, index) => (
-                        <div
-                          key={index}
-                          style={{
-                            position: "relative",
-                            display: "inline-block",
-                          }}
-                        >
-                          <img
-                            src={pic.pic}
-                            alt=""
-                            style={{ width: "75px", height: "50px" }}
-                          />
-
+                        <div key={index} className="image_contain">
+                          <img src={pic.pic} alt=""  className="image_pre"/>
                           <RiCloseCircleLine
                             className="trash"
                             onClick={() => handleAadharDelete()}
@@ -666,16 +666,7 @@ function EditAstrologer() {
                 {/* Pan card Image */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Pan"
                         required
@@ -691,19 +682,8 @@ function EditAstrologer() {
                       />
                       {!uploadedFiles.some((file) => file.type === "Pan") &&
                         astrologers?.panPic?.map((pic, index) => (
-                          <div
-                            key={index}
-                            style={{
-                              position: "relative",
-                              display: "inline-block",
-                            }}
-                          >
-                            <img
-                              src={pic.pic}
-                              alt=""
-                              style={{ width: "75px", height: "50px" }}
-                            />
-
+                          <div key={index} className="image_contain">
+                            <img src={pic.pic} alt=""  className="image_pre"/>
                             <RiCloseCircleLine
                               className="trash"
                               onClick={() => handlePanDelete()}
@@ -714,6 +694,7 @@ function EditAstrologer() {
                   </Form.Group>
                 </div>
               </div>
+              {/* contact fields */}
               <div className="threeCol">
                 {/* Email */}
                 <div className="mb-3">
@@ -731,7 +712,7 @@ function EditAstrologer() {
                   </FloatingLabel>
                   {errors.email && <p className="errormsg">{errors.email}</p>}
                 </div>
-                {/* MobileNo */}
+                {/* MobileNo primary */}
                 <div className="mb-3">
                   <FloatingLabel
                     controlId="mobilePrimary"
@@ -749,6 +730,7 @@ function EditAstrologer() {
                     <p className="errormsg">{errors.mobilePrimary}</p>
                   )}
                 </div>
+                {/* MobileNo secondary */}
                 <div className="mb-3">
                   <FloatingLabel
                     controlId="mobileSecondary"
@@ -767,6 +749,7 @@ function EditAstrologer() {
                   )}
                 </div>
               </div>
+              {/* address field */}
               <div className="twoCol">
                 {/* Education */}
                 <FloatingLabel
@@ -799,6 +782,7 @@ function EditAstrologer() {
                 </FloatingLabel>
               </div>
               <div className="twoCol">
+                {/* district */}
                 <FloatingLabel
                   controlId="district"
                   label="District"
@@ -812,6 +796,7 @@ function EditAstrologer() {
                     onChange={handleChange}
                   />
                 </FloatingLabel>
+                {/* district */}
                 <FloatingLabel controlId="state" label="State" className="mb-3">
                   <Form.Control
                     type="text"
@@ -823,6 +808,7 @@ function EditAstrologer() {
                 </FloatingLabel>
               </div>
               <div className="twoCol">
+                {/* country */}
                 <FloatingLabel
                   controlId="country"
                   label="Country"
@@ -836,6 +822,7 @@ function EditAstrologer() {
                     onChange={handleChange}
                   />
                 </FloatingLabel>
+                {/* pincode */}
                 <FloatingLabel
                   controlId="pincode"
                   label="Pincode"
@@ -850,6 +837,7 @@ function EditAstrologer() {
                   />
                 </FloatingLabel>
               </div>
+              {/* charges for call & chat */}
               <div className="twoCol">
                 <FloatingLabel
                   controlId="chat charges"
@@ -906,11 +894,10 @@ function EditAstrologer() {
                   />
                 </FloatingLabel>
               </div>
+              {/* select category */}
               <div className="mb-3 threeCol">
                 <div>
-                  <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                    Methodology
-                  </p>
+                  <p className="title_addastro">Methodology</p>
                   <FloatingLabel
                     controlId="methodolgy"
                     label="Methodology"
@@ -920,35 +907,30 @@ function EditAstrologer() {
                       type="text"
                       placeholder="Methodology"
                       name="methodology"
-                      value={astrologers?.category[0]}
-                      onChange={handleChange}
+                      disabled="baned"
+                      value={
+                        selectedCategories.join(", ")
+                          ? selectedCategories.join(", ")
+                          : astrologers.category
+                      }
+                      onChange={(e) => setSelectedCategory(e.target.value)}
                     />
                   </FloatingLabel>
-                  <Dropdown>
+                  <Dropdown onSelect={handleDropdownSelectCategory}>
                     <Dropdown.Toggle id="dropdown-basic">
                       Astrology
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {categories?.map((cat, index) => (
                         <>
-                          <div
-                            key={index}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginLeft: "5px",
-                              gap: "4px",
-                              padding: "0 5px",
-                            }}
-                            className="customDrop"
-                          >
+                          <div className="customDrop">
                             <Form.Check
                               type="checkbox"
-                              name="category"
-                              value={cat?.category[0]?.name}
+                              name={cat?.category[0]?.name}
+                              eventKey={cat?.category[0]?.name}
                               key={index}
-                              onChange={handleChange}
+                              onChange={handleChangeCategory}
                             />{" "}
                             {cat.category[0]?.name}
                           </div>
@@ -960,10 +942,9 @@ function EditAstrologer() {
                     {errors.category && errors.category.message}
                   </p>
                 </div>
+                {/* languages */}
                 <div>
-                  <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                    Language
-                  </p>
+                  <p className="title_addastro">Language</p>
                   <FloatingLabel
                     controlId="language"
                     label="Language"
@@ -973,34 +954,30 @@ function EditAstrologer() {
                       type="text"
                       placeholder="Language"
                       name="language"
-                      value={astrologers?.language[0]}
-                      onChange={handleChange}
+                      disabled="baned"
+                      value={
+                        selectedLanguages.join(", ")
+                          ? selectedLanguages.join(", ")
+                          : astrologers.language
+                      }
+                      onChange={(e) => setSelectedLanguage(e.target.value)}
                     />
                   </FloatingLabel>
-                  <Dropdown>
+                  <Dropdown onSelect={handleDropdownSelectLanguages}>
                     <Dropdown.Toggle id="dropdown-basic">
                       Languages
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {languages?.map((cat, index) => (
                         <>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginLeft: "5px",
-                              gap: "4px",
-                              padding: "0 5px",
-                            }}
-                            className="customDrop"
-                          >
+                          <div className="customDrop">
                             <Form.Check
                               type="checkbox"
-                              name="language"
+                              name={cat?.language[0]?.name}
                               value={cat?.language[0]?.name}
                               key={index}
-                              onChange={handleChange}
+                              onChange={handleChangeLanguage}
                             />{" "}
                             {cat?.language[0]?.name}
                             {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
@@ -1018,11 +995,9 @@ function EditAstrologer() {
             </article>
             <hr />
             <article className="astroDetails my-3">
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                Astrology related details
-              </p>
-
+              <p className="title_addastro">Astrology related details</p>
               <div className="threeCol">
+                {/* experience */}
                 <FloatingLabel
                   controlId="experience"
                   label="Experience in Yrs"
@@ -1036,6 +1011,7 @@ function EditAstrologer() {
                     onChange={handleChange}
                   />
                 </FloatingLabel>
+                {/* spend time */}
                 <FloatingLabel
                   controlId="maxTime"
                   label="Max time spent in Astro5Star per day (in Hrs)"
@@ -1049,18 +1025,10 @@ function EditAstrologer() {
                     onChange={handleChange}
                   />
                 </FloatingLabel>
+                {/* certificate */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Certificate"
                         onChange={handleFileChange}
@@ -1075,17 +1043,11 @@ function EditAstrologer() {
                         }
                       />
                       {astrologers?.certificatePic?.map((pic, index) => (
-                        <div
-                          key={index}
-                          style={{
-                            position: "relative",
-                            display: "inline-block",
-                          }}
-                        >
+                        <div key={index} className="image_contain">
                           <img
                             src={pic.file}
                             alt=""
-                            style={{ width: "75px", height: "50px" }}
+                            className="image_pre"
                           />
 
                           <RiCloseCircleLine
@@ -1098,101 +1060,101 @@ function EditAstrologer() {
                   </Form.Group>
                 </div>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="institute"
-                    label="Astrology School Name/ Guru Name"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="institute"
-                      name="institute"
-                      value={astrologers?.institute}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                </div>
+              {/* Institute */}
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="institute"
+                  label="Astrology School Name/ Guru Name"
+                >
+                  <Form.Control
+                    as="textarea"
+                    style={{ height: "100px" }}
+                    placeholder="institute"
+                    name="institute"
+                    value={astrologers?.institute}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="astrology-description"
-                    label="What do you mean by Astrology? (Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="astrology-description"
-                      name="astrologyDescription"
-                      value={astrologers?.astrologyDescription}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.astrologyDescription && (
-                    <p className="errormsg">{errors.astrologyDescription}</p>
-                  )}
-                </div>
+              {/* about description */}
+
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-description"
+                  label="What do you mean by Astrology? (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    style={{ height: "100px" }}
+                    placeholder="astrology-description"
+                    name="astrologyDescription"
+                    value={astrologers?.astrologyDescription}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
+                {errors.astrologyDescription && (
+                  <p className="errormsg">{errors.astrologyDescription}</p>
+                )}
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="astrology-experience"
-                    label="Describe about the experience you gained in Astrology? (Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="astrology-experience"
-                      name="astrologyExperience"
-                      value={astrologers?.astrologyExperience}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.astrologyExperience && (
-                    <p className="errormsg">{errors.astrologyExperience}</p>
-                  )}
-                </div>
+
+              {/* astrology experience */}
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-experience"
+                  label="Describe about the experience you gained in Astrology? (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    style={{ height: "100px" }}
+                    placeholder="astrology-experience"
+                    name="astrologyExperience"
+                    value={astrologers?.astrologyExperience}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
+                {errors.astrologyExperience && (
+                  <p className="errormsg">{errors.astrologyExperience}</p>
+                )}
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="astrology-expertise"
-                    label="Describe about your individuality in Astrology? (i.e)Area of Expertise (Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="astrology-expertise"
-                      name="astrologyExpertise"
-                      value={astrologers?.astrologyExpertise}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.astrologyExpertise && (
-                    <p className="errormsg">{errors.astrologyExpertise}</p>
-                  )}
-                </div>
+
+              {/* area of expertise */}
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-expertise"
+                  label="Describe about your individuality in Astrology? (i.e)Area of Expertise (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    style={{ height: "100px" }}
+                    placeholder="astrology-expertise"
+                    name="astrologyExpertise"
+                    value={astrologers?.astrologyExpertise}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
+                {errors.astrologyExpertise && (
+                  <p className="errormsg">{errors.astrologyExpertise}</p>
+                )}
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="Know-us"
-                    label="How do you know about us?(Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="Know-us"
-                      name="knowus"
-                      value={astrologers?.knowus}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.knowus && <p className="errormsg">{errors.knowus}</p>}
-                </div>
+              {/* kown about us */}
+
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="Know-us"
+                  label="How do you know about us?(Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    style={{ height: "100px" }}
+                    placeholder="Know-us"
+                    name="knowus"
+                    value={astrologers?.knowus}
+                    onChange={handleChange}
+                  />
+                </FloatingLabel>
+                {errors.knowus && <p className="errormsg">{errors.knowus}</p>}
               </div>
+              {/* button group */}
 
               <div className="btnGroup">
                 <div>

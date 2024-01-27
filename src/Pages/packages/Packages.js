@@ -13,8 +13,8 @@ function Astrologers() {
     const [packages, setPackages] = useState(null)
     const navigate = useNavigate()
     const {token}= useSelector(state=>state.authState)
-    // const token = auth.token
 
+// get all packages
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/package/show`, {
@@ -129,9 +129,9 @@ function Astrologers() {
                 <section className="astro-head">
                     <div>
                         <h4>Packages</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
-                    <div>
+                    <div  className="header_btn">
                         <Link to="/addpackage" className="addAstroLink">Add Package</Link>
                     </div>
                 </section>
@@ -140,7 +140,7 @@ function Astrologers() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4"  id="cate_detail">
                         <Box
                             sx={{
                               

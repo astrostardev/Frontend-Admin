@@ -1,23 +1,15 @@
-import { Link } from "react-router-dom";
 import "../../Stylesheets/Addastrologer.scss";
-import { Box } from "@mui/material";
 import React from "react";
+import { toast } from "react-toastify";
+
 import {
   FloatingLabel,
   Form,
   Dropdown,
-  ButtonGroup,
-  Button,
   Spinner,
 } from "react-bootstrap";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import dayjs from "dayjs";
-import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import MetaData from "../../Components/MetaData";
 import { useNavigate } from "react-router-dom";
@@ -31,8 +23,10 @@ function AddCourse() {
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesCleared, setImagesCleared] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const { token } = useSelector((state) => state.authState);
   const navigate = useNavigate();
+
+// get category
 
   useEffect(() => {
     async function fetchData() {
@@ -56,65 +50,8 @@ function AddCourse() {
     fetchData();
   }, []);
 
-  const { token } = useSelector((state) => state.authState);
 
-  // const handleFileUpload = (e) => {
-  //   const selectedFile = e.target.files[0];
-
-  //   // // Check if a file is selected
-  //   // if (!selectedFile) {
-  //   //     setErrorMessage('Please select a file.');
-  //   //     return;
-  //   // }
-
-  //   // Check file type (pdf or jpeg)
-  //   const allowedTypes = [
-  //     "application/pdf",
-  //     "image/jpeg",
-  //     "image/jpg",
-  //     "image/png",
-  //   ];
-  //   if (!allowedTypes.includes(selectedFile.type)) {
-  //     setErrorMessage(
-  //       "File type not allowed. Please select a PDF or JPEG or PNG file."
-  //     );
-  //     return;
-  //   }
-  //   // Check file size (in bytes)
-  //   const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
-  //   if (selectedFile.size > maxSizeInBytes) {
-  //     setErrorMessage("File size exceeds the maximum allowed size (2MB).");
-  //     return;
-  //   }
-  // }
-
-  // const handleImage = (e) => {
-  //   const selectedPhoto = e.target.files[0];
-  //   const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
-  //   if (!allowedTypes.includes(selectedPhoto.type)) {
-  //     setImageErr(
-  //       "File type not allowed. Please select a PDF or JPEG or PNG file."
-  //     );
-  //     return;
-  //   }
-  //   // Check file size (in bytes)
-  //   const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
-  //   if (selectedPhoto.size > maxSizeInBytes) {
-  //     setImageErr("File size exceeds the maximum allowed size (2MB).");
-  //     return;
-  //   }
-
-  //   // Check the number of files
-  //   if (image?.length >= 1) {
-  //     setImageErr("You can only upload up to 1 files.");
-  //     return;
-  //   }
-
-  //   // All checks passed, add the file to the state
-  //   setImage(selectedPhoto);
-  //   setImageErr("");
-  // };
-
+  // uploading images
   const onImagesChange = (e) => {
     const selectedPhoto = Array.from(e.target.files);
 
@@ -152,6 +89,7 @@ function AddCourse() {
     setImage(selectedPhoto);
     setImageErr("");
   };
+  // delete images
   const clearImagesHandler = () => {
     setImages([]);
     setImagesPreview([]);
@@ -161,13 +99,13 @@ function AddCourse() {
   const {
     register,
     handleSubmit,
-    // reset,
+    reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
-  // useEffect(() => {
-  //   reset();
-  // }, [isSubmitSuccessful, reset]);
+  useEffect(() => {
+    reset();
+  }, [isSubmitSuccessful, reset]);
 
   const validation = {
     coursename: {
@@ -191,6 +129,7 @@ function AddCourse() {
       },
     },
   };
+  // submit function
   const onSubmit = async (data) => {
     setIsloading(true);
     const courseDetails = new FormData();
@@ -217,20 +156,28 @@ function AddCourse() {
     );
     const jsonResponse = await response.json();
     console.log("res", jsonResponse);
-    if (response.ok === false) {
-      alert("Course create Failed");
+    if (!response.ok) {
+      console.error('Failed to create category. Status:', response.status); 
+      toast('Course Name exist', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } else {
-      alert("Course Created Successful");
-      navigate("/courses");
+      toast('Course created successfully', {
+        type: 'success',
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      navigate('/courses');
     }
     setIsloading(false);
 
     setImages(null);
   };
+  // seleted category
+
   const handleDropdownSelect = (selectedCategory) => {
-    setSelectedCategory(selectedCategory)
+    setSelectedCategory(selectedCategory);
     console.log("Selected category:", selectedCategory);
-    // You can set the selected category to state or perform other actions here
   };
   return (
     <div className="infoContainer">
@@ -240,15 +187,7 @@ function AddCourse() {
         <section className="astro-head">
           <div>
             <h3>Add Product</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -258,6 +197,7 @@ function AddCourse() {
             encType="multipart/form-data"
           >
             <article className="basicDetails">
+
               <div className="threeCol">
                 {/* FirstName */}
 
@@ -289,7 +229,7 @@ function AddCourse() {
                 </div>
 
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check
@@ -314,22 +254,7 @@ function AddCourse() {
                 </div>
               </div>
 
-              <div></div>
               <div className="threeCol">
-                <div className="mb-3">
-                  <FloatingLabel controlId="image" label="Image">
-                    <Form.Control
-                      type="file"
-                      placeholder="Image"
-                      name="image"
-                      onChange={onImagesChange}
-                      accept="image/png, image/jpeg"
-                    />
-                  </FloatingLabel>
-
-                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
-                </div>
-
                 <FloatingLabel
                   controlId="description"
                   label="Description"
@@ -363,7 +288,7 @@ function AddCourse() {
                       Category
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {categories?.map((cat, index) => (
                         <Dropdown.Item
                           key={index}
@@ -380,41 +305,35 @@ function AddCourse() {
                   </p>
                 </div>
               </div>
-
-              <div className="twoCol">
-                <div
-                  className="img-preview"
-                  style={{
-                    width: "100px",
-                    position: "absolute",
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "20px",
-                  }}
-                >
-                  {imagesPreview.map((image) => (
-                    <img
-                      src={image}
-                      key={image}
-                      alt=""
-                      className="pre-img"
-                      style={{ maxWidth: "100%" }}
+              <div className="threeCol">
+                <div className="mb-3">
+                  <FloatingLabel controlId="image" label="Image">
+                    <Form.Control
+                      type="file"
+                      placeholder="Image"
+                      name="image"
+                      onChange={onImagesChange}
+                      accept="image/png, image/jpeg"
                     />
-                  ))}
-                  {imagesPreview.length > 0 && (
-                    <button
-                      id="delete-btn"
-                      className="btns"
-                      onClick={clearImagesHandler}
-                      style={{ cursor: "pointer", width: "75px" }}
-                    >
-                      <i
-                        className="fa fa-trash"
-                        style={{ marginLeft: "-1rem", marginRight: "1rem" }}
-                      ></i>
-                      Delete
-                    </button>
-                  )}
+                  </FloatingLabel>
+
+                  {imageErr && <p style={{ color: "red" }}>{imageErr}</p>}
+                </div>
+                <div className="twoCol">
+                  <div className="img-preview">
+                    {imagesPreview.map((image) => (
+                      <img src={image} key={image} alt="" className="pre-img" />
+                    ))}
+                    {imagesPreview.length > 0 && (
+                      <button
+                        id="delete-btn"
+                        className="btns"
+                        onClick={clearImagesHandler}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </article>

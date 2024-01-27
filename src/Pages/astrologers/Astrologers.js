@@ -130,9 +130,9 @@ function Astrologers() {
                 <section className="astro-head">
                     <div>
                         <h4>Astrologers</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
-                    <div>
+                    <div  className="header_btn">
                         <Link to="/addastrologers" className="addAstroLink">Add Astrologers</Link>
                     </div>
                 </section>
@@ -141,7 +141,7 @@ function Astrologers() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate_detail">
                         <Box
                             sx={{
                               

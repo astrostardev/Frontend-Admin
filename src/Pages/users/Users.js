@@ -13,10 +13,9 @@ import { useSelector } from "react-redux";
 function Users() {
     const [isLoading, setIsloading] = useState(true)
     const [users, setUsers] = useState(null)
-    const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
     const {token} = useSelector(state=>state.authState)
-
+// displaying users
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/user/users`, {
@@ -124,7 +123,7 @@ function Users() {
                 <section className="astro-head">
                     <div>
                         <h4>Users</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
                     {/* <div>
                         <Link to="/addastrologers" className="addAstroLink">Add Astrologers</Link>
@@ -135,7 +134,7 @@ function Users() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate-detail">
                         <Box
                             sx={{
                               

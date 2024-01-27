@@ -11,11 +11,10 @@ import MetaData from "../../Components/MetaData";
 function Languages() {
     const [isLoading, setIsloading] = useState(true)
     const [languages, setLanguages] = useState(null)
-    const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
     const {token}= useSelector(state=>state.authState)
-    // const token = auth.token
 
+// display languages
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/language/show`, {
@@ -83,7 +82,7 @@ function Languages() {
                 <section className="astro-head">
                     <div>
                         <h4>Language</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
                     <div>
                         <Link to="/addlanguage" className="addAstroLink">Add Language</Link>
@@ -94,7 +93,7 @@ function Languages() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate_detail">
                         <Box
                             sx={{
                               

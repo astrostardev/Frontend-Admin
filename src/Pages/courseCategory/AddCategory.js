@@ -29,12 +29,20 @@ try{
       body: JSON.stringify(category),
     }
   );
-  console.log('Response:', response);
-  if (response.ok === false) {
-    alert(" create category Failed");
+  const jsonResponse = await response.json();
+  console.log("res", jsonResponse);
+  if (!response.ok) {
+    console.error('Failed to create category. Status:', response.status);
+    toast('CourseCategory Name exist', {
+      type: 'error',
+      position: toast.POSITION.TOP_RIGHT,
+    });
   } else {
-    alert("category Created Successful");
-    navigate('/course_categories')
+    toast('CourseCategory created successfully', {
+      type: 'success',
+      position: toast.POSITION.TOP_RIGHT,
+    });
+    navigate('/course_categories');
   }
 }catch(err){
   toast(err, {
@@ -52,15 +60,7 @@ try{
         <section className="astro-head">
           <div>
             <h3>Add Category</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider" ></div>
           </div>
         </section>
         <section className="my-4">

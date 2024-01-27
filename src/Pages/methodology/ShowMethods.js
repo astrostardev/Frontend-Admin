@@ -14,8 +14,8 @@ function Methods() {
     const [pageSize, setPageSize] = useState(5);
     const navigate = useNavigate()
     const {token}= useSelector(state=>state.authState)
-    // const token = auth.token
 
+    //  get categories
     useEffect(() => {
         async function fetchData() {
             let response = await fetch(`${process.env.REACT_APP_URL}/api/v1/method/show`, {
@@ -116,9 +116,9 @@ function Methods() {
                 <section className="astro-head">
                     <div>
                         <h4>Methodology</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="divider"></div>
                     </div>
-                    <div>
+                    <div  className="header_btn">
                         <Link to="/addmethod" className="addAstroLink">Add Method</Link>
                     </div>
                 </section>
@@ -127,7 +127,7 @@ function Methods() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate_detail">
                         <Box
                             sx={{
                               

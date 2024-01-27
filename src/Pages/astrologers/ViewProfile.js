@@ -193,10 +193,10 @@ function ViewProfile() {
                     
                         <div className="my-4">
                             <h5>Methodology</h5>
-                            <p>{astrologers?.astrologer?.category}</p>
+                            <p>{astrologers?.astrologer?.category?.join(', ')}</p>
                         </div>  <div className="my-4">
                             <h5>Language</h5>
-                            <p>{astrologers?.astrologer?.language}</p>
+                            <p>{astrologers?.astrologer?.language?.join(', ')}</p>
                         </div>
                         <h3 style={{ textDecoration: "underline", marginBottom: "20px" }}>
                             Astrology Related Details

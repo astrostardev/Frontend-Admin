@@ -47,29 +47,29 @@ function Sidebar() {
     return (
         <>
             <aside id="side">
-                <div className="logoContainer" style={{background:"#fff"}}>
+                <div className="logoContainer">
                     <img src={Logo} alt="logo" />
                 </div>
                 <div className="divider"></div>
                 <section className="side-menu">
                     <Link className="side-link" to="/dashboard">
-                        <LuLayoutDashboard style={{ fontSize: "20px" }} />
+                        <LuLayoutDashboard  className="side_icons"/>
                         <span>Dashboard</span>
                     </Link>
                     <Link className="side-link" to="/astrologers">
-                        <TbZodiacLibra style={{ fontSize: "20px" }} />
+                        <TbZodiacLibra className="side_icons" />
                         <span>Astrologers</span>
                     </Link>
                     <Link className="side-link" to="/users">
-                        <FiUsers style={{ fontSize: "20px" }} />
+                        <FiUsers className="side_icons" />
                         <span>Users</span>
                     </Link>
                     <Link className="side-link" to="/packages">
-                    <IoWalletOutline style={{fontSize:"20px"}}/>
+                    <IoWalletOutline className="side_icons"/>
                         <span>Packages</span>
                     </Link>
                     <Link className="side-link" to="/methods">
-                    <CiBoxList style={{fontSize:"20px"}} />
+                    <CiBoxList className="side_icons" />
                         <span>Methodology</span>
                     </Link>
                     <Link className="side-link" to="/languages">
@@ -77,11 +77,11 @@ function Sidebar() {
                         <span>Languages</span>
                     </Link>
                     <Link className="side-link" to="/products">
-                    <LiaProductHunt  style={{fontSize:"20px"}}/>
+                    <LiaProductHunt  className="side_icons"/>
                         <span>Products</span>
                     </Link>
                     <Link className="side-link" to="/courses">
-                    <SiCoursera style={{fontSize:"20px"}} />
+                    <SiCoursera className="side_icons" />
                         <span>Course</span>
                     </Link>
                 </section>
@@ -92,14 +92,14 @@ function Sidebar() {
                     <article>
                         <h2>Hello <span style={{ color: "#0042ae" }}>Admin</span></h2>
                         {/* <img src={welcome} alt="welcome" className="welcome" /> */}
-                        <MdOutlineAdminPanelSettings style={{ fontSize: "20px" }} />
+                        <MdOutlineAdminPanelSettings className="side_icons" />
                     </article>
                     <div>
                         {/* Profile */}
                         <div className="profileDrop">
                             <button className="dropbtn" onClick={toggledropdown}>
                                 <img src={astrologer} alt="astrologer" className="astrologer" />
-                                <div style={{ marginTop: "5px" }}><RiArrowDropDownLine style={{ fontSize: "25px" }} /></div>
+                                <div className="drop_arrow"><RiArrowDropDownLine className="arrow_icons" /></div>
                             </button>
                             <div className="drop-content" ref={dropTwo}>
                                 <Link to="/adminProfile" className="drop-link" onClick={closedropdown}>Your Profile</Link>

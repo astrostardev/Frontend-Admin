@@ -14,6 +14,7 @@ function AddPackages() {
 
 
 
+// create packages
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -49,6 +50,7 @@ try{
 }
    
   };
+
   return (
     <div className="infoContainer">
         <MetaData title={'Astro5Star-Manager'} />
@@ -57,15 +59,7 @@ try{
         <section className="astro-head">
           <div>
             <h3>Add Packages</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -75,7 +69,7 @@ try{
             encType="multipart/form-data"
           >
             <article className="basicDetails">
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
+              <p  className="title_addastro">
                 Basic details
               </p>
 
@@ -126,7 +120,7 @@ try{
                   </FloatingLabel>
                 </div>
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check

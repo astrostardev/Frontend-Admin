@@ -18,6 +18,7 @@ $bg-color: rgb(54, 75, 182);
         /* margin-top: 10px; */
         margin-left: -25px;
         padding: 15px 20px;
+        background:#fff
     }
 
     .divider {
@@ -42,6 +43,9 @@ $bg-color: rgb(54, 75, 182);
             border: none;
             outline: none;
             cursor: pointer;
+            .side_icons{
+                font-size: 20px
+            }
         }
 
         .side-link:hover {
@@ -144,12 +148,19 @@ $bg-color: rgb(54, 75, 182);
                 margin: 0;
                 display: flex;
                 align-items: center;
+                .drop_arrow{
+                    margin-top: 5px;
+                    .arrow_icons{
+                        font-size: 25px;
+                    }
+                }
 
                 .astrologer {
                     width: 40px;
                     height: 40px;
                     object-fit: cover;
                     border-radius: 50%;
+                    
                 }
             }
 

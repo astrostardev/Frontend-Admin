@@ -15,7 +15,7 @@ function Category() {
     const {token}= useSelector(state=>state.authState)
     // const token = auth.token
 
-
+// show product categories
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -99,9 +99,9 @@ function Category() {
                 <section className="astro-head">
                     <div>
                         <h4>Category</h4>
-                        <div style={{ height: "3px", width: "40px", backgroundColor: "#0042ae", borderRadius: "10px", marginTop: "3px" }}></div>
+                        <div className="title_divider"></div>
                     </div>
-                    <div style={{display:"flex", gap:"10px"}}>
+                    <div  className="header_btn">
                         <Link to="/add_product_category" className="addAstroLink">Add Category</Link>
                         {/* <Link to="/addcourse" className="addAstroLink">Add Course</Link> */}
                     </div>
@@ -111,7 +111,7 @@ function Category() {
                         <Spinner animation="grow" variant="warning" className="text-center" />
                     </div>
                 ) : (
-                    <section className="my-4" style={{ backgroundColor: "#FFFFFF", textAlign: "center" }}>
+                    <section className="my-4" id="cate_detail">
                         <Box
                             sx={{
                               

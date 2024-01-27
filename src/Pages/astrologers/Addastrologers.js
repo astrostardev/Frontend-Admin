@@ -22,6 +22,7 @@ import { v4 as uuid } from "uuid";
 import { useSelector } from "react-redux";
 import MetaData from "../../Components/MetaData";
 function Addastrologers() {
+  // file upload component
   const FileUpload = ({
     label,
     onChange,
@@ -89,6 +90,9 @@ function Addastrologers() {
   const [languages, setLanguages] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const navigate = useNavigate();
+  const { token } = useSelector((state) => state.authState);
+
+  // get category
 
   useEffect(() => {
     async function fetchData() {
@@ -111,6 +115,8 @@ function Addastrologers() {
     }
     fetchData();
   }, []);
+
+  // get languages
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -132,18 +138,17 @@ function Addastrologers() {
     }
     fetchData();
   }, []);
-  const { token } = useSelector((state) => state.authState);
 
   const {
     register,
     handleSubmit,
-    // reset,
+     reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
-  // useEffect(() => {
-  //   reset();
-  // }, [isSubmitSuccessful, reset]);
+  useEffect(() => {
+    reset();
+  }, [isSubmitSuccessful, reset]);
 
   const validation = {
     firstname: {
@@ -239,12 +244,13 @@ function Addastrologers() {
       },
     },
   };
-
+// file upload function
   const handleFileChange = (files) => {
     setUploadedFiles(files);
     console.log("files", uploadedFiles);
     setPhotoErr("");
   };
+  // submit function
   const onSubmit = async (data) => {
     setIsloading(true);
     if (dob) {
@@ -305,15 +311,7 @@ function Addastrologers() {
         <section className="astro-head">
           <div>
             <h3>Astrologer Registration</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
@@ -323,10 +321,8 @@ function Addastrologers() {
             encType="multipart/form-data"
           >
             <article className="basicDetails">
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                Basic details
-              </p>
-
+              <p className="title_addastro">Basic details</p>
+              {/* Name field */}
               <div className="threeCol">
                 {/* FirstName */}
 
@@ -372,7 +368,7 @@ function Addastrologers() {
                   </p>
                 </div>
               </div>
-
+              {/* dob field */}
               <div className="threeCol">
                 {/* Dob */}
                 <div>
@@ -393,7 +389,7 @@ function Addastrologers() {
 
                 {/* isActive */}
                 <div className="mx-2">
-                  <Form.Label className="me-3" style={{ display: "block" }}>
+                  <Form.Label className="me-3" id="display_btn">
                     IsActive
                   </Form.Label>
                   <Form.Check
@@ -453,19 +449,12 @@ function Addastrologers() {
                   </p>
                 </div>
               </div>
-
+              {/* Images Field */}
               <div className="threeCol">
                 {/* profile image */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Profile"
                         name="profilePic"
@@ -482,14 +471,7 @@ function Addastrologers() {
                 {/* Aadhar photo */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Aadhar"
                         onChange={handleFileChange}
@@ -505,14 +487,7 @@ function Addastrologers() {
                 {/* Pan card Image */}
                 <div className="mb-3">
                   <Form.Group>
-                    <div
-                      style={{
-                        position: "relative",
-                        overflow: "hidden",
-                        width: "100%",
-                      }}
-                      className="pic-lable"
-                    >
+                    <div className="pic-lable">
                       <FileUpload
                         label="Pan"
                         onChange={handleFileChange}
@@ -526,7 +501,7 @@ function Addastrologers() {
                   </Form.Group>
                 </div>
               </div>
-
+              {/* contact field */}
               <div className="threeCol">
                 {/* Email */}
                 <div className="mb-3">
@@ -582,7 +557,7 @@ function Addastrologers() {
                   </p>
                 </div>
               </div>
-
+              {/* Address field */}
               <div className="twoCol">
                 {/* Education */}
                 <FloatingLabel
@@ -660,6 +635,7 @@ function Addastrologers() {
                   />
                 </FloatingLabel>
               </div>
+              {/* charges */}
               <div className="twoCol">
                 <FloatingLabel
                   controlId="chat charges"
@@ -686,6 +662,7 @@ function Addastrologers() {
                   />
                 </FloatingLabel>
               </div>
+              {/* display charges */}
               <div className="twoCol">
                 <FloatingLabel
                   controlId="chat charges"
@@ -715,30 +692,19 @@ function Addastrologers() {
             </article>
             <hr />
             <article className="astroDetails my-3">
+              {/* select methods and language */}
               <div className="mb-3 threeCol">
                 <div>
-                  <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                    Methodology
-                  </p>
+                  <p className="title_addastro">Methodology</p>
                   <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic">
                       Astrology
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {categories?.map((cat, index) => (
                         <>
-                          <div
-                            key={index}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginLeft: "5px",
-                              gap: "4px",
-                              padding: "0 5px",
-                            }}
-                            className="customDrop"
-                          >
+                          <div key={index} className="customDrop">
                             <Form.Check
                               type="checkbox"
                               name="category"
@@ -760,27 +726,16 @@ function Addastrologers() {
                   </p>
                 </div>
                 <div>
-                  <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                    Language
-                  </p>
+                  <p className="title_addastro">Language</p>
                   <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic">
                       Languages
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu style={{ width: "300px" }}>
+                    <Dropdown.Menu className="drop_menu">
                       {languages?.map((cat, index) => (
                         <>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginLeft: "5px",
-                              gap: "4px",
-                              padding: "0 5px",
-                            }}
-                            className="customDrop"
-                          >
+                          <div className="customDrop">
                             <Form.Check
                               type="checkbox"
                               name="language"
@@ -802,10 +757,8 @@ function Addastrologers() {
                   </p>
                 </div>
               </div>
-
-              <p style={{ fontSize: "16px", textDecoration: "underline" }}>
-                Astrology related details
-              </p>
+              {/* Astrologer details */}
+              <p className="title_addastro">Astrology related details</p>
 
               <div className="threeCol">
                 <FloatingLabel
@@ -822,7 +775,7 @@ function Addastrologers() {
                 </FloatingLabel>
                 <FloatingLabel
                   controlId="maxTime"
-                  label="Max time spent in Astro5Star per day (in Hrs)"
+                  label="Max time spent in Astro5Star per day (Hrs)"
                   className="mb-3"
                 >
                   <Form.Control
@@ -835,14 +788,7 @@ function Addastrologers() {
                 <div>
                   <div className="mb-3">
                     <Form.Group>
-                      <div
-                        style={{
-                          position: "relative",
-                          overflow: "hidden",
-                          width: "100%",
-                        }}
-                        className="pic-lable"
-                      >
+                      <div className="pic-lable">
                         <FileUpload
                           label="Certificate"
                           onChange={handleFileChange}
@@ -857,6 +803,7 @@ function Addastrologers() {
                   </div>
                 </div>
               </div>
+              {/* biography */}
               <div className="mb-3">
                 <FloatingLabel
                   controlId="astrology-description"
@@ -864,7 +811,7 @@ function Addastrologers() {
                 >
                   <Form.Control
                     as="textarea"
-                    style={{ height: "100px" }}
+                    className="area_height"
                     placeholder="astrology-description"
                     name="biograph"
                     {...register("biograph", validation.biograph)}
@@ -874,109 +821,108 @@ function Addastrologers() {
                   {errors.biograph && errors.biograph.message}
                 </p>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="institute"
-                    label="Astrology School Name/ Guru Name"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="institute"
-                      name="institute"
-                      {...register("institute")}
-                    />
-                  </FloatingLabel>
-                </div>
+              {/* institute */}
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="institute"
+                  label="Astrology School Name/ Guru Name"
+                >
+                  <Form.Control
+                    as="textarea"
+                    className="area_height"
+                    placeholder="institute"
+                    name="institute"
+                    {...register("institute")}
+                  />
+                </FloatingLabel>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="astrology-description"
-                    label="What do you mean by Astrology? (Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="astrology-description"
-                      name="astrologyDescription"
-                      {...register(
-                        "astrologyDescription",
-                        validation.astrologyDescription
-                      )}
-                    />
-                  </FloatingLabel>
-                  <p className="errormsg">
-                    {errors.astrologyDescription &&
-                      errors.astrologyDescription.message}
-                  </p>
-                </div>
+              {/* description */}
+
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-description"
+                  label="What do you mean by Astrology? (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    className="area_height"
+                    placeholder="astrology-description"
+                    name="astrologyDescription"
+                    {...register(
+                      "astrologyDescription",
+                      validation.astrologyDescription
+                    )}
+                  />
+                </FloatingLabel>
+                <p className="errormsg">
+                  {errors.astrologyDescription &&
+                    errors.astrologyDescription.message}
+                </p>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="astrology-experience"
-                    label="Describe about the experience you gained in Astrology? (Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="astrology-experience"
-                      name="astrologyExperience"
-                      {...register(
-                        "astrologyExperience",
-                        validation.astrologyExperience
-                      )}
-                    />
-                  </FloatingLabel>
-                  <p className="errormsg">
-                    {errors.astrologyExperience &&
-                      errors.astrologyExperience.message}
-                  </p>
-                </div>
+              {/* experience */}
+
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-experience"
+                  label="Describe about the experience you gained in Astrology? (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    className="area_height"
+                    placeholder="astrology-experience"
+                    name="astrologyExperience"
+                    {...register(
+                      "astrologyExperience",
+                      validation.astrologyExperience
+                    )}
+                  />
+                </FloatingLabel>
+                <p className="errormsg">
+                  {errors.astrologyExperience &&
+                    errors.astrologyExperience.message}
+                </p>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="astrology-expertise"
-                    label="Describe about your individuality in Astrology? (i.e)Area of Expertise (Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="astrology-expertise"
-                      name="astrologyExpertise"
-                      {...register(
-                        "astrologyExpertise",
-                        validation.astrologyExpertise
-                      )}
-                    />
-                  </FloatingLabel>
-                  <p className="errormsg">
-                    {errors.astrologyExpertise &&
-                      errors.astrologyExpertise.message}
-                  </p>
-                </div>
+              {/* area expertise */}
+
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="astrology-expertise"
+                  label="Describe about your individuality in Astrology? (i.e)Area of Expertise (Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    className="area_height"
+                    placeholder="astrology-expertise"
+                    name="astrologyExpertise"
+                    {...register(
+                      "astrologyExpertise",
+                      validation.astrologyExpertise
+                    )}
+                  />
+                </FloatingLabel>
+                <p className="errormsg">
+                  {errors.astrologyExpertise &&
+                    errors.astrologyExpertise.message}
+                </p>
               </div>
-              <div>
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="Know-us"
-                    label="How do you know about us?(Max 50 words)"
-                  >
-                    <Form.Control
-                      as="textarea"
-                      style={{ height: "100px" }}
-                      placeholder="Know-us"
-                      name="knowus"
-                      {...register("knowus", validation.knowus)}
-                    />
-                  </FloatingLabel>
-                  <p className="errormsg">
-                    {errors.knowus && errors.knowus.message}
-                  </p>
-                </div>
+
+              {/* how do u know us */}
+              <div className="mb-3">
+                <FloatingLabel
+                  controlId="Know-us"
+                  label="How do you know about us?(Max 50 words)"
+                >
+                  <Form.Control
+                    as="textarea"
+                    className="area_height"
+                    placeholder="Know-us"
+                    name="knowus"
+                    {...register("knowus", validation.knowus)}
+                  />
+                </FloatingLabel>
+                <p className="errormsg">
+                  {errors.knowus && errors.knowus.message}
+                </p>
               </div>
 
               <div className="btnGroup">

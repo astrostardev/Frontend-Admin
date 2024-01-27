@@ -4,6 +4,8 @@ import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
 
 function EditLanguage() {
   const [language, setLanguage] = useState({
@@ -16,6 +18,7 @@ function EditLanguage() {
   const[disable,setDisable]=useState(true)
   const [isLoading, setIsloading] = useState(false);
   const { token } = useSelector((state) => state.authState);
+  // get single language
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
@@ -46,7 +49,7 @@ function EditLanguage() {
       ],
     });
   };
-  
+  // edit language function
   const onSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
@@ -63,11 +66,23 @@ function EditLanguage() {
         body: JSON.stringify(requestBody),
       }
     );
-    if (response.ok === false) {
-      alert(" edit Language Failed");
+    if (!response.ok) {
+      console.error('Failed to create language. Status:', response.status);
+
+      // Get detailed error message as text
+      const errorText = await response.text();
+      console.error('Error Text:', errorText);  
+      toast('language already exists', {
+        type: 'error',
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } else {
-      alert("Language Updated");
-      navigate("/languages");
+      toast('language updated successfully', {
+        type: 'success',
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      // alert("language updated successfully");
+      navigate('/languages');
     }
   };
   return (
@@ -78,15 +93,7 @@ function EditLanguage() {
         <section className="astro-head">
           <div>
             <h3>Edit Language</h3>
-            <div
-              style={{
-                height: "3px",
-                width: "40px",
-                backgroundColor: "#0042ae",
-                borderRadius: "10px",
-                marginTop: "3px",
-              }}
-            ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">
