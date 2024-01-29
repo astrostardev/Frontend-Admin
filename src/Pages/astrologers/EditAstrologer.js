@@ -266,6 +266,7 @@ function EditAstrologer() {
         setAstrologers(data?.astrologer);
         console.log("astro", astrologers);
         setDob(dayjs(data?.astrologer?.dob));
+        setIsloading(false)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -458,728 +459,738 @@ function EditAstrologer() {
             <div className="title_divider"></div>
           </div>
         </section>
-        <section className="my-4">
-          <Form
-            className="reg-form"
-            onSubmit={onSubmit}
-            encType="multipart/form-data"
-          >
-            <article className="basicDetails">
-              <p className="title_addastro">Basic details</p>
-              {/* name fields */}
-              <div className="threeCol">
-                {/* FirstName */}
-                <div className="mb-3">
-                  <FloatingLabel controlId="firstname" label="First Name">
-                    <Form.Control
-                      type="text"
-                      placeholder="firstname"
-                      name="firstname"
-                      value={astrologers?.firstname}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.firstname && (
-                    <p className="errormsg">{errors.firstname}</p>
-                  )}
-                </div>
-                {/* lastName */}
-                <div className="mb-3">
-                  <FloatingLabel controlId="lastname" label="Last Name">
-                    <Form.Control
-                      type="text"
-                      placeholder="lastname"
-                      name="lastname"
-                      value={astrologers?.lastname}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.lastname && (
-                    <p className="errormsg">{errors.lastname}</p>
-                  )}
-                </div>
-                {/* display name */}
-                <div className="mb-3">
-                  <FloatingLabel controlId="displayname" label="display Name">
-                    <Form.Control
-                      type="text"
-                      placeholder="displayname"
-                      name="displayname"
-                      value={astrologers?.displayname}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.lastname && (
-                    <p className="errormsg">{errors.lastname}</p>
-                  )}
-                </div>
-              </div>
-              {/* about astrologer  dob, status and gender*/}
-              <div className="threeCol">
-                {/* Dob */}
-                <div>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker
-                        label="Date of Birth"
-                        className="mb-3"
-                        value={dob}
-                        onChange={(newValue) => setDob(newValue)}
-                        format="DD-MM-YYYY"
-                        maxDate={dayjs()}
+        {isLoading ? (
+          <div className="loading">
+            <Spinner
+              animation="grow"
+              variant="warning"
+              className="text-center"
+            />
+          </div>
+        ) : (
+          <section className="my-4">
+            <Form
+              className="reg-form"
+              onSubmit={onSubmit}
+              encType="multipart/form-data"
+            >
+              <article className="basicDetails">
+                <p className="title_addastro">Basic details</p>
+                {/* name fields */}
+                <div className="threeCol">
+                  {/* FirstName */}
+                  <div className="mb-3">
+                    <FloatingLabel controlId="firstname" label="First Name">
+                      <Form.Control
+                        type="text"
+                        placeholder="firstname"
+                        name="firstname"
+                        value={astrologers.firstname}
+                        onChange={handleChange}
                       />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                  {doberr && <p className="errormsg">Enter DOB</p>}
+                    </FloatingLabel>
+                    {errors.firstname && (
+                      <p className="errormsg">{errors.firstname}</p>
+                    )}
+                  </div>
+                  {/* lastName */}
+                  <div className="mb-3">
+                    <FloatingLabel controlId="lastname" label="Last Name">
+                      <Form.Control
+                        type="text"
+                        placeholder="lastname"
+                        name="lastname"
+                        value={astrologers.lastname}
+                        onChange={handleChange}
+                      />
+                    </FloatingLabel>
+                    {errors.lastname && (
+                      <p className="errormsg">{errors.lastname}</p>
+                    )}
+                  </div>
+                  {/* display name */}
+                  <div className="mb-3">
+                    <FloatingLabel controlId="displayname" label="display Name">
+                      <Form.Control
+                        type="text"
+                        placeholder="displayname"
+                        name="displayname"
+                        value={astrologers.displayname}
+                        onChange={handleChange}
+                      />
+                    </FloatingLabel>
+                    {errors.lastname && (
+                      <p className="errormsg">{errors.lastname}</p>
+                    )}
+                  </div>
                 </div>
-                {/* isActive */}
-                <div className="mx-2">
-                  <Form.Label className="me-3" id="display_btn">
-                    IsActive
-                  </Form.Label>
-                  <Form.Check
-                    type="radio"
-                    label="Yes"
-                    name="isActive"
-                    inline
-                    id="inline-radio-1"
-                    value={true}
-                    checked={astrologers?.isActive == true}
-
-                    // {...register("isActive")}
-                  />
-                  <Form.Check
-                    type="radio"
-                    label="No"
-                    name="isActive"
-                    inline
-                    id="inline-radio-2"
-                    value={false}
-                    checked={astrologers?.isActive == false}
-
-                    // {...register("isActive")}
-                  />
-                </div>
-                {/* Gender */}
-                <div className="mb-3">
-                  <Form.Label className="me-3">Select Gender</Form.Label>
-                  <div className="check-btn">
+                {/* about astrologer  dob, status and gender*/}
+                <div className="threeCol">
+                  {/* Dob */}
+                  <div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={["DatePicker"]}>
+                        <DatePicker
+                          label="Date of Birth"
+                          className="mb-3"
+                          value={dob}
+                          onChange={(newValue) => setDob(newValue)}
+                          format="DD-MM-YYYY"
+                          maxDate={dayjs()}
+                        />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                    {doberr && <p className="errormsg">Enter DOB</p>}
+                  </div>
+                  {/* isActive */}
+                  <div className="mx-2">
+                    <Form.Label className="me-3" id="display_btn">
+                      IsActive
+                    </Form.Label>
                     <Form.Check
                       type="radio"
-                      label="Male"
-                      name="gender"
-                      // inline
+                      label="Yes"
+                      name="isActive"
+                      inline
                       id="inline-radio-1"
-                      value="male"
-                      checked={astrologers?.gender === "male"}
+                      value={true}
+                      checked={astrologers.isActive == true}
 
-                      // {...register("gender", validation.gender)}
+                      // {...register("isActive")}
                     />
                     <Form.Check
                       type="radio"
-                      label="Female"
-                      name="gender"
-                      // inline
+                      label="No"
+                      name="isActive"
+                      inline
                       id="inline-radio-2"
-                      value="female"
-                      checked={astrologers?.gender === "female"}
-                      // {...register("gender", validation.gender)}
-                    />
-                    <Form.Check
-                      type="radio"
-                      label="Others"
-                      name="gender"
-                      // inline
-                      id="inline-radio-3"
-                      value="others"
-                      checked={astrologers?.gender === "others"}
+                      value={false}
+                      checked={astrologers.isActive == false}
 
-                      // {...register("gender", validation.gender)}
+                      // {...register("isActive")}
                     />
                   </div>
-                  <p className="errormsg">
-                    {errors.gender && errors.gender.message}
-                  </p>
-                </div>
-              </div>
-              {/* images filed */}
-              <div className="threeCol">
-                {/* profile image */}
-                <div className="mb-3">
-                  <Form.Group>
-                    <div className="pic-lable">
-                      <FileUpload
-                        label="Profile"
-                        name="profilePic"
-                        onChange={handleFileChange}
-                        acceptedTypes="image/png, image/jpeg"
-                        files={uploadedFiles.filter(
-                          (file) => file.type === "Profile"
-                        )}
-                        error={photoErr}
-                        handleFileDelete={(name) =>
-                          handleFileDelete(name, "profilePic")
-                        }
-                      />
-                      {astrologers?.profilePic?.map((pic, index) => (
-                        <div key={index} className="image_contain">
-                          <img src={pic.pic} alt=""  className="image_pre" />
+                  {/* Gender */}
+                  <div className="mb-3">
+                    <Form.Label className="me-3">Select Gender</Form.Label>
+                    <div className="check-btn">
+                      <Form.Check
+                        type="radio"
+                        label="Male"
+                        name="gender"
+                        // inline
+                        id="inline-radio-1"
+                        value="male"
+                        checked={astrologers.gender === "male"}
 
-                          <RiCloseCircleLine
-                            className="trash"
-                            onClick={() => handleFileDelete()}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </Form.Group>
-                </div>
-                {/* Aadhar photo */}
-                <div className="mb-3">
-                  <Form.Group>
-                    <div className="pic-lable">
-                      <FileUpload
-                        label="Aadhar"
-                        required
-                        onChange={handleFileChange}
-                        acceptedTypes="image/png, image/jpeg"
-                        files={uploadedFiles.filter(
-                          (file) => file.type === "Aadhar"
-                        )}
-                        error={photoErr}
-                        handleFileDelete={(name) =>
-                          handleAadharDelete(name, "aadharPic")
-                        }
+                        // {...register("gender", validation.gender)}
                       />
-                      {astrologers?.aadharPic?.map((pic, index) => (
-                        <div key={index} className="image_contain">
-                          <img src={pic.pic} alt=""  className="image_pre"/>
-                          <RiCloseCircleLine
-                            className="trash"
-                            onClick={() => handleAadharDelete()}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </Form.Group>
-                </div>
-                {/* Pan card Image */}
-                <div className="mb-3">
-                  <Form.Group>
-                    <div className="pic-lable">
-                      <FileUpload
-                        label="Pan"
-                        required
-                        onChange={handleFileChange}
-                        acceptedTypes="image/png, image/jpeg"
-                        files={uploadedFiles.filter(
-                          (file) => file.type === "Pan"
-                        )}
-                        error={photoErr}
-                        handleFileDelete={(name) =>
-                          handlePanDelete(name, "panPic")
-                        }
+                      <Form.Check
+                        type="radio"
+                        label="Female"
+                        name="gender"
+                        // inline
+                        id="inline-radio-2"
+                        value="female"
+                        checked={astrologers.gender === "female"}
+                        // {...register("gender", validation.gender)}
                       />
-                      {!uploadedFiles.some((file) => file.type === "Pan") &&
-                        astrologers?.panPic?.map((pic, index) => (
+                      <Form.Check
+                        type="radio"
+                        label="Others"
+                        name="gender"
+                        // inline
+                        id="inline-radio-3"
+                        value="others"
+                        checked={astrologers.gender === "others"}
+
+                        // {...register("gender", validation.gender)}
+                      />
+                    </div>
+                    <p className="errormsg">
+                      {errors.gender && errors.gender.message}
+                    </p>
+                  </div>
+                </div>
+                {/* images filed */}
+                <div className="threeCol">
+                  {/* profile image */}
+                  <div className="mb-3">
+                    <Form.Group>
+                      <div className="pic-lable">
+                        <FileUpload
+                          label="Profile"
+                          name="profilePic"
+                          onChange={handleFileChange}
+                          acceptedTypes="image/png, image/jpeg"
+                          files={uploadedFiles.filter(
+                            (file) => file.type === "Profile"
+                          )}
+                          error={photoErr}
+                          handleFileDelete={(name) =>
+                            handleFileDelete(name, "profilePic")
+                          }
+                        />
+                        {astrologers.profilePic.map((pic, index) => (
                           <div key={index} className="image_contain">
-                            <img src={pic.pic} alt=""  className="image_pre"/>
+                            <img src={pic.pic} alt="" className="image_pre" />
+
                             <RiCloseCircleLine
                               className="trash"
-                              onClick={() => handlePanDelete()}
+                              onClick={() => handleFileDelete()}
                             />
                           </div>
                         ))}
-                    </div>
-                  </Form.Group>
-                </div>
-              </div>
-              {/* contact fields */}
-              <div className="threeCol">
-                {/* Email */}
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="floatingInput"
-                    label="Email address"
-                  >
-                    <Form.Control
-                      type="email"
-                      placeholder="name@example.com"
-                      name="email"
-                      value={astrologers?.email}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.email && <p className="errormsg">{errors.email}</p>}
-                </div>
-                {/* MobileNo primary */}
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="mobilePrimary"
-                    label="Primary Mobile No."
-                  >
-                    <Form.Control
-                      type="tel"
-                      placeholder="mobilePrimary"
-                      name="mobilePrimary"
-                      value={astrologers?.mobilePrimary}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.mobilePrimary && (
-                    <p className="errormsg">{errors.mobilePrimary}</p>
-                  )}
-                </div>
-                {/* MobileNo secondary */}
-                <div className="mb-3">
-                  <FloatingLabel
-                    controlId="mobileSecondary"
-                    label="Secondary Mobile No."
-                  >
-                    <Form.Control
-                      type="tel"
-                      placeholder="mobileSecondary"
-                      name="mobileSecondary"
-                      value={astrologers?.mobileSecondary}
-                      onChange={handleChange}
-                    />
-                  </FloatingLabel>
-                  {errors.mobileSecondary && (
-                    <p className="errormsg">{errors.mobileSecondary}</p>
-                  )}
-                </div>
-              </div>
-              {/* address field */}
-              <div className="twoCol">
-                {/* Education */}
-                <FloatingLabel
-                  controlId="qualifications"
-                  label="Educational Qualifications"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="qualifications"
-                    name="qualifications"
-                    value={astrologers?.qualifications}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-
-                {/* Address */}
-                <FloatingLabel
-                  controlId="address"
-                  label="Address"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="address"
-                    name="address"
-                    value={astrologers?.address}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </div>
-              <div className="twoCol">
-                {/* district */}
-                <FloatingLabel
-                  controlId="district"
-                  label="District"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="District"
-                    name="district"
-                    value={astrologers?.district}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {/* district */}
-                <FloatingLabel controlId="state" label="State" className="mb-3">
-                  <Form.Control
-                    type="text"
-                    placeholder="State"
-                    name="state"
-                    value={astrologers?.state}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </div>
-              <div className="twoCol">
-                {/* country */}
-                <FloatingLabel
-                  controlId="country"
-                  label="Country"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Country"
-                    name="country"
-                    value={astrologers?.country}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {/* pincode */}
-                <FloatingLabel
-                  controlId="pincode"
-                  label="Pincode"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="tel"
-                    placeholder="Pincode"
-                    name="pincode"
-                    value={astrologers?.pincode}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </div>
-              {/* charges for call & chat */}
-              <div className="twoCol">
-                <FloatingLabel
-                  controlId="chat charges"
-                  label="Chat charges"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Chat"
-                    name="chat"
-                    value={astrologers?.chat}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                <FloatingLabel
-                  controlId="call charges"
-                  label="Call charges"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Call"
-                    name="call"
-                    value={astrologers?.call}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </div>
-              <div className="twoCol">
-                <FloatingLabel
-                  controlId="chat charges"
-                  label="Chat charges(display)"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Chat"
-                    name="displaychat"
-                    value={astrologers?.displaychat}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                <FloatingLabel
-                  controlId="call charges"
-                  label="Call charges(display)"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Call"
-                    name="displaycall"
-                    value={astrologers?.displaycall}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </div>
-              {/* select category */}
-              <div className="mb-3 threeCol">
-                <div>
-                  <p className="title_addastro">Methodology</p>
-                  <FloatingLabel
-                    controlId="methodolgy"
-                    label="Methodology"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="text"
-                      placeholder="Methodology"
-                      name="methodology"
-                      disabled="baned"
-                      value={
-                        selectedCategories.join(", ")
-                          ? selectedCategories.join(", ")
-                          : astrologers.category
-                      }
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                    />
-                  </FloatingLabel>
-                  <Dropdown onSelect={handleDropdownSelectCategory}>
-                    <Dropdown.Toggle id="dropdown-basic">
-                      Astrology
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu className="drop_menu">
-                      {categories?.map((cat, index) => (
-                        <>
-                          <div className="customDrop">
-                            <Form.Check
-                              type="checkbox"
-                              name={cat?.category[0]?.name}
-                              eventKey={cat?.category[0]?.name}
-                              key={index}
-                              onChange={handleChangeCategory}
-                            />{" "}
-                            {cat.category[0]?.name}
+                      </div>
+                    </Form.Group>
+                  </div>
+                  {/* Aadhar photo */}
+                  <div className="mb-3">
+                    <Form.Group>
+                      <div className="pic-lable">
+                        <FileUpload
+                          label="Aadhar"
+                          required
+                          onChange={handleFileChange}
+                          acceptedTypes="image/png, image/jpeg"
+                          files={uploadedFiles.filter(
+                            (file) => file.type === "Aadhar"
+                          )}
+                          error={photoErr}
+                          handleFileDelete={(name) =>
+                            handleAadharDelete(name, "aadharPic")
+                          }
+                        />
+                        {astrologers.aadharPic.map((pic, index) => (
+                          <div key={index} className="image_contain">
+                            <img src={pic.pic} alt="" className="image_pre" />
+                            <RiCloseCircleLine
+                              className="trash"
+                              onClick={() => handleAadharDelete()}
+                            />
                           </div>
-                        </>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  <p className="errormsg">
-                    {errors.category && errors.category.message}
-                  </p>
+                        ))}
+                      </div>
+                    </Form.Group>
+                  </div>
+                  {/* Pan card Image */}
+                  <div className="mb-3">
+                    <Form.Group>
+                      <div className="pic-lable">
+                        <FileUpload
+                          label="Pan"
+                          required
+                          onChange={handleFileChange}
+                          acceptedTypes="image/png, image/jpeg"
+                          files={uploadedFiles.filter(
+                            (file) => file.type === "Pan"
+                          )}
+                          error={photoErr}
+                          handleFileDelete={(name) =>
+                            handlePanDelete(name, "panPic")
+                          }
+                        />
+                        {!uploadedFiles.some((file) => file.type === "Pan") &&
+                          astrologers.panPic.map((pic, index) => (
+                            <div key={index} className="image_contain">
+                              <img src={pic.pic} alt="" className="image_pre" />
+                              <RiCloseCircleLine
+                                className="trash"
+                                onClick={() => handlePanDelete()}
+                              />
+                            </div>
+                          ))}
+                      </div>
+                    </Form.Group>
+                  </div>
                 </div>
-                {/* languages */}
-                <div>
-                  <p className="title_addastro">Language</p>
-                  <FloatingLabel
-                    controlId="language"
-                    label="Language"
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="text"
-                      placeholder="Language"
-                      name="language"
-                      disabled="baned"
-                      value={
-                        selectedLanguages.join(", ")
-                          ? selectedLanguages.join(", ")
-                          : astrologers.language
-                      }
-                      onChange={(e) => setSelectedLanguage(e.target.value)}
-                    />
-                  </FloatingLabel>
-                  <Dropdown onSelect={handleDropdownSelectLanguages}>
-                    <Dropdown.Toggle id="dropdown-basic">
-                      Languages
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu className="drop_menu">
-                      {languages?.map((cat, index) => (
-                        <>
-                          <div className="customDrop">
-                            <Form.Check
-                              type="checkbox"
-                              name={cat?.language[0]?.name}
-                              value={cat?.language[0]?.name}
-                              key={index}
-                              onChange={handleChangeLanguage}
-                            />{" "}
-                            {cat?.language[0]?.name}
-                            {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
-                    </Dropdown.Item> */}
-                          </div>
-                        </>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  <p className="errormsg">
-                    {errors.language && errors.language.message}
-                  </p>
-                </div>
-              </div>
-            </article>
-            <hr />
-            <article className="astroDetails my-3">
-              <p className="title_addastro">Astrology related details</p>
-              <div className="threeCol">
-                {/* experience */}
-                <FloatingLabel
-                  controlId="experience"
-                  label="Experience in Yrs"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="number"
-                    placeholder="experience"
-                    name="experience"
-                    value={astrologers?.experience}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {/* spend time */}
-                <FloatingLabel
-                  controlId="maxTime"
-                  label="Max time spent in Astro5Star per day (in Hrs)"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="number"
-                    placeholder="maxTime"
-                    name="maxTime"
-                    value={astrologers?.maxTime}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {/* certificate */}
-                <div className="mb-3">
-                  <Form.Group>
-                    <div className="pic-lable">
-                      <FileUpload
-                        label="Certificate"
-                        onChange={handleFileChange}
-                        required
-                        acceptedTypes="image/png, image/jpeg"
-                        files={uploadedFiles.filter(
-                          (file) => file.type === "Certificate"
-                        )}
-                        error={photoErr}
-                        handleFileDelete={(name) =>
-                          handleCertificateDelete(name, "certificatePic")
-                        }
+                {/* contact fields */}
+                <div className="threeCol">
+                  {/* Email */}
+                  <div className="mb-3">
+                    <FloatingLabel
+                      controlId="floatingInput"
+                      label="Email address"
+                    >
+                      <Form.Control
+                        type="email"
+                        placeholder="name@example.com"
+                        name="email"
+                        value={astrologers.email}
+                        onChange={handleChange}
                       />
-                      {astrologers?.certificatePic?.map((pic, index) => (
-                        <div key={index} className="image_contain">
-                          <img
-                            src={pic.file}
-                            alt=""
-                            className="image_pre"
-                          />
-
-                          <RiCloseCircleLine
-                            className="trash"
-                            onClick={() => handleCertificateDelete()}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </Form.Group>
-                </div>
-              </div>
-              {/* Institute */}
-              <div className="mb-3">
-                <FloatingLabel
-                  controlId="institute"
-                  label="Astrology School Name/ Guru Name"
-                >
-                  <Form.Control
-                    as="textarea"
-                    style={{ height: "100px" }}
-                    placeholder="institute"
-                    name="institute"
-                    value={astrologers?.institute}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-              </div>
-              {/* about description */}
-
-              <div className="mb-3">
-                <FloatingLabel
-                  controlId="astrology-description"
-                  label="What do you mean by Astrology? (Max 50 words)"
-                >
-                  <Form.Control
-                    as="textarea"
-                    style={{ height: "100px" }}
-                    placeholder="astrology-description"
-                    name="astrologyDescription"
-                    value={astrologers?.astrologyDescription}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {errors.astrologyDescription && (
-                  <p className="errormsg">{errors.astrologyDescription}</p>
-                )}
-              </div>
-
-              {/* astrology experience */}
-              <div className="mb-3">
-                <FloatingLabel
-                  controlId="astrology-experience"
-                  label="Describe about the experience you gained in Astrology? (Max 50 words)"
-                >
-                  <Form.Control
-                    as="textarea"
-                    style={{ height: "100px" }}
-                    placeholder="astrology-experience"
-                    name="astrologyExperience"
-                    value={astrologers?.astrologyExperience}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {errors.astrologyExperience && (
-                  <p className="errormsg">{errors.astrologyExperience}</p>
-                )}
-              </div>
-
-              {/* area of expertise */}
-              <div className="mb-3">
-                <FloatingLabel
-                  controlId="astrology-expertise"
-                  label="Describe about your individuality in Astrology? (i.e)Area of Expertise (Max 50 words)"
-                >
-                  <Form.Control
-                    as="textarea"
-                    style={{ height: "100px" }}
-                    placeholder="astrology-expertise"
-                    name="astrologyExpertise"
-                    value={astrologers?.astrologyExpertise}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {errors.astrologyExpertise && (
-                  <p className="errormsg">{errors.astrologyExpertise}</p>
-                )}
-              </div>
-              {/* kown about us */}
-
-              <div className="mb-3">
-                <FloatingLabel
-                  controlId="Know-us"
-                  label="How do you know about us?(Max 50 words)"
-                >
-                  <Form.Control
-                    as="textarea"
-                    style={{ height: "100px" }}
-                    placeholder="Know-us"
-                    name="knowus"
-                    value={astrologers?.knowus}
-                    onChange={handleChange}
-                  />
-                </FloatingLabel>
-                {errors.knowus && <p className="errormsg">{errors.knowus}</p>}
-              </div>
-              {/* button group */}
-
-              <div className="btnGroup">
-                <div>
-                  <button
-                    type="submit"
-                    id="submitBtn"
-                    className="btns"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <Spinner animation="grow" className="text-center" />
-                    ) : (
-                      <>Submit</>
+                    </FloatingLabel>
+                    {errors.email && <p className="errormsg">{errors.email}</p>}
+                  </div>
+                  {/* MobileNo primary */}
+                  <div className="mb-3">
+                    <FloatingLabel
+                      controlId="mobilePrimary"
+                      label="Primary Mobile No."
+                    >
+                      <Form.Control
+                        type="tel"
+                        placeholder="mobilePrimary"
+                        name="mobilePrimary"
+                        value={astrologers.mobilePrimary}
+                        onChange={handleChange}
+                      />
+                    </FloatingLabel>
+                    {errors.mobilePrimary && (
+                      <p className="errormsg">{errors.mobilePrimary}</p>
                     )}
-                  </button>
+                  </div>
+                  {/* MobileNo secondary */}
+                  <div className="mb-3">
+                    <FloatingLabel
+                      controlId="mobileSecondary"
+                      label="Secondary Mobile No."
+                    >
+                      <Form.Control
+                        type="tel"
+                        placeholder="mobileSecondary"
+                        name="mobileSecondary"
+                        value={astrologers.mobileSecondary}
+                        onChange={handleChange}
+                      />
+                    </FloatingLabel>
+                    {errors.mobileSecondary && (
+                      <p className="errormsg">{errors.mobileSecondary}</p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <button type="reset" id="clearBtn" className="btns">
-                    Reset
-                  </button>
+                {/* address field */}
+                <div className="twoCol">
+                  {/* Education */}
+                  <FloatingLabel
+                    controlId="qualifications"
+                    label="Educational Qualifications"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="qualifications"
+                      name="qualifications"
+                      value={astrologers.qualifications}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+
+                  {/* Address */}
+                  <FloatingLabel
+                    controlId="address"
+                    label="Address"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="address"
+                      name="address"
+                      value={astrologers.address}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
                 </div>
-              </div>
-            </article>
-          </Form>
-        </section>
+                <div className="twoCol">
+                  {/* district */}
+                  <FloatingLabel
+                    controlId="district"
+                    label="District"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="District"
+                      name="district"
+                      value={astrologers.district}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {/* district */}
+                  <FloatingLabel
+                    controlId="state"
+                    label="State"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="State"
+                      name="state"
+                      value={astrologers.state}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                </div>
+                <div className="twoCol">
+                  {/* country */}
+                  <FloatingLabel
+                    controlId="country"
+                    label="Country"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Country"
+                      name="country"
+                      value={astrologers.country}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {/* pincode */}
+                  <FloatingLabel
+                    controlId="pincode"
+                    label="Pincode"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="tel"
+                      placeholder="Pincode"
+                      name="pincode"
+                      value={astrologers.pincode}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                </div>
+                {/* charges for call & chat */}
+                <div className="twoCol">
+                  <FloatingLabel
+                    controlId="chat charges"
+                    label="Chat charges"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Chat"
+                      name="chat"
+                      value={astrologers.chat}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  <FloatingLabel
+                    controlId="call charges"
+                    label="Call charges"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Call"
+                      name="call"
+                      value={astrologers.call}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                </div>
+                <div className="twoCol">
+                  <FloatingLabel
+                    controlId="chat charges"
+                    label="Chat charges(display)"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Chat"
+                      name="displaychat"
+                      value={astrologers.displaychat}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  <FloatingLabel
+                    controlId="call charges"
+                    label="Call charges(display)"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Call"
+                      name="displaycall"
+                      value={astrologers.displaycall}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                </div>
+                {/* select category */}
+                <div className="mb-3 threeCol">
+                  <div>
+                    <p className="title_addastro">Methodology</p>
+                    <FloatingLabel
+                      controlId="methodolgy"
+                      label="Methodology"
+                      className="mb-3"
+                    >
+                      <Form.Control
+                        type="text"
+                        placeholder="Methodology"
+                        name="methodology"
+                        disabled="baned"
+                        value={
+                          selectedCategories.join(", ")
+                            ? selectedCategories.join(", ")
+                            : astrologers.category
+                        }
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                      />
+                    </FloatingLabel>
+                    <Dropdown onSelect={handleDropdownSelectCategory}>
+                      <Dropdown.Toggle id="dropdown-basic">
+                        Astrology
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu className="drop_menu">
+                        {categories?.map((cat, index) => (
+                          <>
+                            <div className="customDrop">
+                              <Form.Check
+                                type="checkbox"
+                                name={cat?.category[0]?.name}
+                                eventKey={cat?.category[0]?.name}
+                                key={index}
+                                onChange={handleChangeCategory}
+                              />{" "}
+                              {cat?.category[0]?.name}
+                            </div>
+                          </>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    <p className="errormsg">
+                      {errors.category && errors.category.message}
+                    </p>
+                  </div>
+                  {/* languages */}
+                  <div>
+                    <p className="title_addastro">Language</p>
+                    <FloatingLabel
+                      controlId="language"
+                      label="Language"
+                      className="mb-3"
+                    >
+                      <Form.Control
+                        type="text"
+                        placeholder="Language"
+                        name="language"
+                        disabled="baned"
+                        value={
+                          selectedLanguages.join(", ")
+                            ? selectedLanguages.join(", ")
+                            : astrologers.language
+                        }
+                        onChange={(e) => setSelectedLanguage(e.target.value)}
+                      />
+                    </FloatingLabel>
+                    <Dropdown onSelect={handleDropdownSelectLanguages}>
+                      <Dropdown.Toggle id="dropdown-basic">
+                        Languages
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu className="drop_menu">
+                        {languages?.map((cat, index) => (
+                          <>
+                            <div className="customDrop">
+                              <Form.Check
+                                type="checkbox"
+                                name={cat?.language[0]?.name}
+                                value={cat?.language[0]?.name}
+                                key={index}
+                                onChange={handleChangeLanguage}
+                              />{" "}
+                              {cat?.language[0]?.name}
+                              {/* <Dropdown.Item className="customDrop" value={category}  {...register("category", validation.category)}>
+                    </Dropdown.Item> */}
+                            </div>
+                          </>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    <p className="errormsg">
+                      {errors.language && errors.language.message}
+                    </p>
+                  </div>
+                </div>
+              </article>
+              <hr />
+              <article className="astroDetails my-3">
+                <p className="title_addastro">Astrology related details</p>
+                <div className="threeCol">
+                  {/* experience */}
+                  <FloatingLabel
+                    controlId="experience"
+                    label="Experience in Yrs"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="number"
+                      placeholder="experience"
+                      name="experience"
+                      value={astrologers.experience}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {/* spend time */}
+                  <FloatingLabel
+                    controlId="maxTime"
+                    label="Max time spent in Astro5Star per day (in Hrs)"
+                    className="mb-3"
+                  >
+                    <Form.Control
+                      type="number"
+                      placeholder="maxTime"
+                      name="maxTime"
+                      value={astrologers.maxTime}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {/* certificate */}
+                  <div className="mb-3">
+                    <Form.Group>
+                      <div className="pic-lable">
+                        <FileUpload
+                          label="Certificate"
+                          onChange={handleFileChange}
+                          required
+                          acceptedTypes="image/png, image/jpeg"
+                          files={uploadedFiles.filter(
+                            (file) => file.type === "Certificate"
+                          )}
+                          error={photoErr}
+                          handleFileDelete={(name) =>
+                            handleCertificateDelete(name, "certificatePic")
+                          }
+                        />
+                        {astrologers?.certificatePic?.map((pic, index) => (
+                          <div key={index} className="image_contain">
+                            <img src={pic.file} alt="" className="image_pre" />
+
+                            <RiCloseCircleLine
+                              className="trash"
+                              onClick={() => handleCertificateDelete()}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </Form.Group>
+                  </div>
+                </div>
+                {/* Institute */}
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="institute"
+                    label="Astrology School Name/ Guru Name"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      style={{ height: "100px" }}
+                      placeholder="institute"
+                      name="institute"
+                      value={astrologers.institute}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                </div>
+                {/* about description */}
+
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="astrology-description"
+                    label="What do you mean by Astrology? (Max 50 words)"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      style={{ height: "100px" }}
+                      placeholder="astrology-description"
+                      name="astrologyDescription"
+                      value={astrologers.astrologyDescription}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {errors.astrologyDescription && (
+                    <p className="errormsg">{errors.astrologyDescription}</p>
+                  )}
+                </div>
+
+                {/* astrology experience */}
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="astrology-experience"
+                    label="Describe about the experience you gained in Astrology? (Max 50 words)"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      style={{ height: "100px" }}
+                      placeholder="astrology-experience"
+                      name="astrologyExperience"
+                      value={astrologers.astrologyExperience}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {errors.astrologyExperience && (
+                    <p className="errormsg">{errors.astrologyExperience}</p>
+                  )}
+                </div>
+
+                {/* area of expertise */}
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="astrology-expertise"
+                    label="Describe about your individuality in Astrology? (i.e)Area of Expertise (Max 50 words)"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      style={{ height: "100px" }}
+                      placeholder="astrology-expertise"
+                      name="astrologyExpertise"
+                      value={astrologers.astrologyExpertise}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {errors.astrologyExpertise && (
+                    <p className="errormsg">{errors.astrologyExpertise}</p>
+                  )}
+                </div>
+                {/* kown about us */}
+
+                <div className="mb-3">
+                  <FloatingLabel
+                    controlId="Know-us"
+                    label="How do you know about us?(Max 50 words)"
+                  >
+                    <Form.Control
+                      as="textarea"
+                      style={{ height: "100px" }}
+                      placeholder="Know-us"
+                      name="knowus"
+                      value={astrologers.knowus}
+                      onChange={handleChange}
+                    />
+                  </FloatingLabel>
+                  {errors.knowus && <p className="errormsg">{errors.knowus}</p>}
+                </div>
+                {/* button group */}
+
+                <div className="btnGroup">
+                  <div>
+                    <button
+                      type="submit"
+                      id="submitBtn"
+                      className="btns"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <Spinner animation="grow" className="text-center" />
+                      ) : (
+                        <>Submit</>
+                      )}
+                    </button>
+                  </div>
+                  <div>
+                    <button type="reset" id="clearBtn" className="btns">
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </Form>
+          </section>
+        )}
       </main>
     </div>
   );

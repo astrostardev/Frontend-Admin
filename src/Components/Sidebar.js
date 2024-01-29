@@ -15,9 +15,10 @@ import { IoWalletOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
 import { LiaProductHunt } from "react-icons/lia";
 import { SiCoursera } from "react-icons/si";
+import { useNavigate } from "react-router-dom"
 function Sidebar() {
     const dispatch = useDispatch()
-
+    const navigate = useNavigate()
     function toggledropdown() {
         let content = document.querySelector(".drop-content")
         content.classList.toggle("toggle-content")
@@ -43,6 +44,7 @@ function Sidebar() {
         let content = document.querySelector(".drop-content")
         content.classList.remove("toggle-content")
         dispatch(logout)
+        navigate("/")
     }
     return (
         <>
@@ -104,7 +106,8 @@ function Sidebar() {
                             <div className="drop-content" ref={dropTwo}>
                                 <Link to="/adminProfile" className="drop-link" onClick={closedropdown}>Your Profile</Link>
                                 <hr />
-                                <Link to="#" className="drop-link" onClick={handleLogout}>Logout</Link>
+                                <p className="drop-link" onClick={handleLogout}> Logout</p>
+                                {/* <Link to="/" className="drop-link" onClick={handleLogout}>Logout</Link> */}
                             </div>
                         </div>
                     </div>

@@ -10,7 +10,7 @@ import Addastrologers from './Pages/astrologers/Addastrologers';
 import { ToastContainer } from 'react-toastify';
 import Login from "./Pages/Login"
 import { useSelector } from "react-redux";
-import React from 'react';
+import React,{Suspense} from 'react';
 import Dashboard from './Pages/Dashboard';
 import ViewProfile from './Pages/astrologers/ViewProfile';
 import ViewUserprofile from './Pages/users/ViewUserprofile';
@@ -40,20 +40,9 @@ import AddProductCategory from './Pages/productCategory/AddProductCategory';
 import ViewProductCategory from './Pages/productCategory/ViewProductCategory';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
-
-
-
-
-
-
-
-
 function App() {
-  const { loading, error, isAuthenticated } = useSelector(state => state.authState)
-  // const authGuard = Boolean(useSelector((state) => state.isAuthendicated));
-  // const authGuard = true;
+  const { isAuthenticated } = useSelector(state => state.authState)
+const Astrologer = React.lazy(()=> import("./Pages/astrologers/Astrologers"))
   return (
     <div>
           <HelmetProvider>
@@ -71,6 +60,7 @@ function App() {
         </Routes>
         <Routes>
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
+        
           <Route path='/astrologers' element={isAuthenticated ? <Astrologers /> : <Navigate to="/" />} />
           <Route path='/users' element={isAuthenticated ? <Users /> : <Navigate to="/" />} />
          

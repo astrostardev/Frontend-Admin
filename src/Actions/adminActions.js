@@ -46,7 +46,7 @@ export const register = (userData) => async (dispatch) => {
 export const logout =  async (dispatch) => {
 
     try {
-        const {data} = await axios.get(`https://shy-gold-sawfish-robe.cyclic.app/api/v1/admin/logout`)
+        const {data} = await axios.get(`${process.env.REACT_APP_URL}/api/v1/admin/logout`)
         dispatch(logoutSuccess(data))
     } catch (error) {
         dispatch(logoutFail())
