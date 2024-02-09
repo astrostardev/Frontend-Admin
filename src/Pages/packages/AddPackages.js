@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import MetaData from "../../Components/MetaData";
+import { useForm } from "react-hook-form";
+
 function AddPackages() {
   const [packageName, setPackageName] = useState("");
   const [fixedPrice, setfixedPrice] = useState("");
@@ -12,48 +14,55 @@ function AddPackages() {
   const [isLoading, setIsloading] = useState(false);
   const { token } = useSelector((state) => state.authState);
 
+  const reset = () => {
+    setPackageName("");
+    setfixedPrice("");
+    setPackageDetail("");
+  };
 
-
-// create packages
+  // create packages
 
   const onSubmit = async (e) => {
     e.preventDefault();
     const packageDetails = {
-        fixedPrice: fixedPrice,
-        packageName: packageName,
-        packageDetail: packageDetail,
-        isActive: isActive,
-      };
-      console.log(packageDetails);
-try{
-  const response = await fetch(
-    `${process.env.REACT_APP_URL}/api/v1/package/create`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      method: "POST",
-      body:JSON.stringify(packageDetails)
+      fixedPrice: fixedPrice,
+      packageName: packageName,
+      packageDetail: packageDetail,
+      isActive: isActive,
+    };
+    console.log(packageDetails);
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/package/create`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(packageDetails),
+        }
+      );
+      if (response.status === 409) {
+        toast("Package already exist", {
+          type: "error",
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        alert("Package Created Successful");
+        reset();
+      }
+    } catch (err) {
+      toast(err, {
+        type: "error",
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
-  );
-  if (response.ok === false) {
-    alert(" create package Failed");
-  } else {
-    alert("Package Created Successful");
-  }
-}catch(err){
-  toast(err, {
-    type: 'error',
-    position: toast.POSITION.TOP_RIGHT,
-  });
-}
-   
   };
 
   return (
     <div className="infoContainer">
-        <MetaData title={'Astro5Star-Manager'} />
+      <MetaData title={"Astro5Star-Manager"} />
 
       <main id="admin-addastro">
         <section className="astro-head">
@@ -69,9 +78,7 @@ try{
             encType="multipart/form-data"
           >
             <article className="basicDetails">
-              <p  className="title_addastro">
-                Basic details
-              </p>
+              <p className="title_addastro">Basic details</p>
 
               <div className="threeCol">
                 {/* FirstName */}
@@ -102,7 +109,6 @@ try{
                     />
                   </FloatingLabel>
                 </div>
-      
 
                 <div className="mb-3">
                   <FloatingLabel

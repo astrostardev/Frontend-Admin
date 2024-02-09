@@ -1,0 +1,46 @@
+
+  #trans_tbl {
+    overflow: auto;
+  }
+  .table_row{
+    width:300px;
+    border-bottom: 0.5px solid rgb(209, 209, 209,0.5);
+    background-color: white;
+
+  }
+  .table_col{
+    display: flex;
+    flex-direction: column;
+
+  }
+  .table_col > th{
+    text-align: center;
+    background-color: #f3f3f3;
+    padding:15px 10px;
+    border-bottom: 0.5px solid rgb(209, 209, 209,0.5);
+
+  }
+  .table_col > td{
+    border-bottom: 0.5px solid rgb(209, 209, 209,0.5);
+
+  }
+  .table_col > td:hover{
+    background-color: #f3f3f3;
+
+  }
+  .wallet-container{
+    display: grid;
+    grid-template-columns: 32px auto auto;
+    grid-template-rows: 32px auto auto;
+    column-gap: 1.5rem;
+    padding:20px;
+    margin:3px 0;
+    overflow:auto;
+    /* border-radius:10px; */
+  }
+  .wallet-container:hover{
+    background-color: gray;
+    cursor: pointer;
+  
+  }
+  

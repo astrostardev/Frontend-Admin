@@ -38,6 +38,7 @@ import EditCategory from './Pages/courseCategory/EditCategory';
 import EditProductCategory from './Pages/productCategory/EditProductCategory';
 import AddProductCategory from './Pages/productCategory/AddProductCategory';
 import ViewProductCategory from './Pages/productCategory/ViewProductCategory';
+import Bonus from './Pages/Bonus/Bonus'
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
@@ -60,38 +61,47 @@ const Astrologer = React.lazy(()=> import("./Pages/astrologers/Astrologers"))
         </Routes>
         <Routes>
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} />
-        
-          <Route path='/astrologers' element={isAuthenticated ? <Astrologers /> : <Navigate to="/" />} />
+            {/* users */}
           <Route path='/users' element={isAuthenticated ? <Users /> : <Navigate to="/" />} />
-         
+          <Route path='/user/:id' element={isAuthenticated ? <ViewUserprofile /> : <Navigate to="/" />} />
+           {/* astrologer */}
+          <Route path='/astrologers' element={isAuthenticated ? <Astrologers /> : <Navigate to="/" />} />
           <Route path='/addastrologers' element={isAuthenticated ? <Addastrologers /> : <Navigate to="/" />} />
           <Route path='/astrologer/:id' element={isAuthenticated ? <ViewProfile /> : <Navigate to="/" />} />
           <Route path='/editastrologer/:id' element={isAuthenticated ? <EditAstrologer /> : <Navigate to="/" />} />
-          <Route path='/user/:id' element={isAuthenticated ? <ViewUserprofile /> : <Navigate to="/" />} />
+           {/* packages */}
           <Route path='/packages' element={isAuthenticated ? <Packages /> : <Navigate to="/" />} />
           <Route path='/package/:id' element={isAuthenticated ? <ViewPackage /> : <Navigate to="/" />} />
           <Route path='/editpackage/:id' element={isAuthenticated ? <EditPackage/> : <Navigate to="/" />} />
           <Route path='/addpackages' element={isAuthenticated ? <AddPackages /> : <Navigate to="/" />} />
+           {/* methodology */}
           <Route path='/methods' element={isAuthenticated ? <ShowMethodology/> : <Navigate to="/" />} />
           <Route path='/editmethod/:id' element={isAuthenticated ? <EditMethodology/> : <Navigate to="/" />} />
           <Route path='/addmethod' element={isAuthenticated ? <AddMethodology/> : <Navigate to="/" />} />
-
+           {/* languages */}
           <Route path='/languages' element={isAuthenticated ? <ShowLanguage/> : <Navigate to="/" />} />
           <Route path='/editlanguage/:id' element={isAuthenticated ? <EditLanguage/> : <Navigate to="/" />} />
           <Route path='/addlanguage' element={isAuthenticated ? <AddLanguage/> : <Navigate to="/" />} />
+           {/* products */}
           <Route path='/products' element={isAuthenticated ? <Products/> : <Navigate to="/" />} />
           <Route path='/addproduct' element={isAuthenticated ? <AddProduct/> : <Navigate to="/" />} />
           <Route path='/editproduct/:id' element={isAuthenticated ? <EditProduct/> : <Navigate to="/" />} />
+           {/* product_category */}
+           <Route path='/product_categories' element={isAuthenticated ? <ViewProductCategory/> : <Navigate to="/" />} />
+           <Route path='/add_product_category' element={isAuthenticated ? <AddProductCategory/> : <Navigate to="/" />} />
+           <Route path='/edit_product_categories/:id' element={isAuthenticated ? <EditProductCategory/> : <Navigate to="/" />} />
+           {/* courses */}
           <Route path='/courses' element={isAuthenticated ? <Courses/> : <Navigate to="/" />} />
           <Route path='/editcourse/:id' element={isAuthenticated ? <EditCourse/> : <Navigate to="/" />} />
           <Route path='/addcourse' element={isAuthenticated ? <AddCourse/> : <Navigate to="/" />} />
+           {/* course_category */}
           <Route path='/course_categories' element={isAuthenticated ? <ViewCategory/> : <Navigate to="/" />} />
           <Route path='/add_course_category' element={isAuthenticated ? <AddCategory/> : <Navigate to="/" />} />
           <Route path='/edit_course_categories/:id' element={isAuthenticated ? <EditCategory/> : <Navigate to="/" />} />
-          <Route path='/product_categories' element={isAuthenticated ? <ViewProductCategory/> : <Navigate to="/" />} />
-          <Route path='/add_product_category' element={isAuthenticated ? <AddProductCategory/> : <Navigate to="/" />} />
-          <Route path='/edit_product_categories/:id' element={isAuthenticated ? <EditProductCategory/> : <Navigate to="/" />} />
-          
+          {/* bonus modal */}
+          <Route path='/bonus' element={isAuthenticated ? <Bonus/> : <Navigate to="/" />} />
+          {/* <Route path='/bonus' element={<Bonus/>} /> */}
+  
         </Routes>
       </BrowserRouter>
       </HelmetProvider>

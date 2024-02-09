@@ -4,6 +4,7 @@ import MetaData from "../../Components/MetaData";
 import { FloatingLabel, Form, Spinner } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function EditPackage() {
   const [packages, setPackages] = useState({
@@ -47,42 +48,53 @@ function EditPackage() {
       [name]: value,
     });
   };
-  // update function 
+  // update function
   const onSubmit = async (e) => {
     e.preventDefault();
     const requestBody = {
-        packageName: packages.packageName,
-        fixedPrice: packages.fixedPrice,
-        packageDetail: packages.packageDetail,
-        isActive: packages.isActive,
-      };
-    const response = await fetch(
-      `${process.env.REACT_APP_URL}/api/v1/package/update/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        method: "PATCH",
-        body: JSON.stringify(requestBody),
+      packageName: packages.packageName,
+      fixedPrice: packages.fixedPrice,
+      packageDetail: packages.packageDetail,
+      isActive: packages.isActive,
+    };
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_URL}/api/v1/package/update/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          method: "PUT",
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      if (response.status === 409) {
+        toast("Package already exist", {
+          type: "error",
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } else {
+        alert("Package Updated");
+        navigate("/packages");
       }
-    );
-    if (response.ok === false) {
-      alert(" edit package Failed");
-    } else {
-      alert("Package Updated");
-      navigate("/packages");
+    } catch (error) {
+      toast(error, {
+        type: "error",
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
   };
   return (
     <div className="infoContainer">
-        <MetaData title={'Astro5Star-Manager'} />
+      <MetaData title={"Astro5Star-Manager"} />
 
       <main id="admin-addastro">
         <section className="astro-head">
           <div>
             <h3>Edit Packages</h3>
-            <div className="title_divider" ></div>
+            <div className="title_divider"></div>
           </div>
         </section>
         <section className="my-4">

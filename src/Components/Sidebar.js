@@ -15,6 +15,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { CiBoxList } from "react-icons/ci";
 import { LiaProductHunt } from "react-icons/lia";
 import { SiCoursera } from "react-icons/si";
+import { FcMoneyTransfer } from "react-icons/fc";
 import { useNavigate } from "react-router-dom"
 function Sidebar() {
     const dispatch = useDispatch()
@@ -86,8 +87,12 @@ function Sidebar() {
                     <SiCoursera className="side_icons" />
                         <span>Course</span>
                     </Link>
+                    <Link className="side-link" to="/bonus">
+                    <FcMoneyTransfer className="side_icons" />
+                        <span>Bonus</span>
+                    </Link>
                 </section>
-                <div className="divider"></div>
+                {/* <div className="divider"></div> */}
             </aside>
             <main>
                 <header id="head">

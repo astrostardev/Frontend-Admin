@@ -155,12 +155,12 @@ function AddProduct() {
     const jsonResponse = await response.json();
     console.log("res", jsonResponse);
     if (!response.ok) {
-      console.error('Failed to create category. Status:', response.status);
+      // console.error('Failed to create category. Status:', response.status);
 
       // Get detailed error message as text
       // const errorText = await response.text();
       // console.error('Error Text:', errorText);  
-      toast('Product Name exist', {
+      toast(response.data.error.message, {
         type: 'error',
         position: toast.POSITION.TOP_RIGHT,
       });

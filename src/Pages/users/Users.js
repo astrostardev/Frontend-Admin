@@ -69,7 +69,15 @@ function Users() {
             align: "center"
 
         },
-        
+        {
+            field: 'referralCode',
+            headerName: 'Referral Code',
+            width: 200,
+            editable: true,
+            headerClassName: 'super-app-theme--header',
+            align: "center",
+            headerAlign: 'center',
+        },
     
         {
             field: 'loginTime',
@@ -150,6 +158,7 @@ function Users() {
                             <DataGrid
                                 rows={rows}
                                 columns={columns}
+                                // Toolbar={GridToolbar}
                                 getRowId={row => row._id}
                                 initialState={{
                                     ...users.initialState,

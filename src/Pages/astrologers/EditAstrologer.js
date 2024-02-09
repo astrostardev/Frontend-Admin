@@ -119,6 +119,7 @@ function EditAstrologer() {
   const [dob, setDob] = useState(null);
   const [doberr, setDoberr] = useState(false);
   const [errors, setErrors] = useState({
+    
     firstname: "",
     lastname: "",
     gender: "",
@@ -249,7 +250,7 @@ function EditAstrologer() {
           {
             headers: {
               "Content-type": "multipart/form-data",
-              // Authorization: `Bearer ${token}`
+               Authorization: `Bearer ${token}`
             },
             method: "GET",
           }

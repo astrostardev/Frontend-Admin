@@ -132,7 +132,7 @@ function Astrologers() {
                         <div className="title_divider"></div>
                     </div>
                     <div  className="header_btn">
-                        <Link to="/addpackage" className="addAstroLink">Add Package</Link>
+                        <Link to="/addpackages" className="addAstroLink">Add Package</Link>
                     </div>
                 </section>
                 {isLoading ? (

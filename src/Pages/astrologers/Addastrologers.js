@@ -503,6 +503,7 @@ function Addastrologers() {
               </div>
               {/* contact field */}
               <div className="threeCol">
+                
                 {/* Email */}
                 <div className="mb-3">
                   <FloatingLabel
