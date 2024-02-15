@@ -91,6 +91,7 @@ function Sidebar() {
                     <FcMoneyTransfer className="side_icons" />
                         <span>Bonus</span>
                     </Link>
+                   
                 </section>
                 {/* <div className="divider"></div> */}
             </aside>

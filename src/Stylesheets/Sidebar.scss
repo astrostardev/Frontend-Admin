@@ -10,6 +10,7 @@ $bg-color: rgb(54, 75, 182);
     z-index: 1;
     background-color: $bg-color;
     text-align: justify;
+    overflow: scroll;
 
     .logoContainer {
         display: flex;
