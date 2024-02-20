@@ -57,8 +57,8 @@ function Bonus() {
       let data = await response.json();
       console.log(data);
       setIsloading(false);
-      setReferralBonus(data.user);
-      setRefCount(data.referralCount)
+      setReferralBonus(data.users);
+  
 
     }
     fetchData();
@@ -73,9 +73,9 @@ function Bonus() {
             <h4>Bonus</h4>
             <div className="title_divider"></div>
           </div>
-          {/* <div>
-                        <Link to="/addastrologers" className="addAstroLink">Add Astrologers</Link>
-                    </div> */}
+          <div>
+            <Link to="/add_bonus" className="addAstroLink">Settings</Link>
+          </div>
         </section>
         {isLoading ? (
           <div className="loading">
@@ -87,40 +87,7 @@ function Bonus() {
           </div>
         ) : (
           <section className="my-4" id="cate-detail">
-            {/* <Box
-                            sx={{
-                              
-                                width: '100%',
-                                '& .super-app-theme--header': {
-                                    // backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                                    // color: 'rgba(255,255,255,1)',
-                                    fontWeight: "400"
-
-                                },
-                            }}
-                        >
-                           <DataGrid
-    rows={refUserRows}
-    columns={columns}
-    // Toolbar={GridToolbar}
-    getRowId={row => row._id}
-    initialState={{
-        pagination: { paginationModel: { pageSize: 5 } }, // You can adjust pagination settings here
-    }}
-    pageSizeOptions={[0, 5, 10, 25]}
-    disableRowSelectionOnClick
-    getRowSpacing={getRowSpacing}
-    sx={{
-        [`& .${gridClasses.row}`]: {
-            bgcolor: (theme) =>
-                theme.palette.mode === 'light' ? grey[200] : grey[900],
-        },
-    }}
-/>
-
-                         
-                     
-                        </Box> */}
+          
 
             <table class="table" id="trans_tbl">
               <tbody style={{ display: "flex" }}>
@@ -153,7 +120,7 @@ function Bonus() {
                     <th>Referral Bonus</th>
                     {referralBonus?.map((data,index) => (
                          <td className="wallet-container" id="data">
-                         <p >{index+1}</p><p>{data?.name}({refCount})</p>
+                         <p >{index+1}</p><p>{data?.name}({data.referedUsersCount})</p>
                          </td>
                     ))}
                   </div>

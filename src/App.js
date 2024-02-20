@@ -40,6 +40,7 @@ import AddProductCategory from './Pages/productCategory/AddProductCategory';
 import ViewProductCategory from './Pages/productCategory/ViewProductCategory';
 import Bonus from './Pages/Bonus/Bonus'
 import 'react-toastify/dist/ReactToastify.css';
+import Settings from './Pages/Bonus/Settings';
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.authState)
@@ -100,6 +101,9 @@ const Astrologer = React.lazy(()=> import("./Pages/astrologers/Astrologers"))
           <Route path='/edit_course_categories/:id' element={isAuthenticated ? <EditCategory/> : <Navigate to="/" />} />
           {/* bonus modal */}
           <Route path='/bonus' element={isAuthenticated ? <Bonus/> : <Navigate to="/" />} />
+          <Route path='/add_bonus' element={isAuthenticated ? <Settings/> : <Navigate to="/" />} />
+
+
           {/* <Route path='/bonus' element={<Bonus/>} /> */}
   
         </Routes>
