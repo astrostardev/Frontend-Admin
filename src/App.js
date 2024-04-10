@@ -41,6 +41,7 @@ import ViewProductCategory from './Pages/productCategory/ViewProductCategory';
 import Bonus from './Pages/Bonus/Bonus'
 import 'react-toastify/dist/ReactToastify.css';
 import Settings from './Pages/Bonus/Settings';
+import PaidToAstrologers from './Pages/astrologers/PaidToAstrologer';
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.authState)
@@ -67,6 +68,8 @@ const Astrologer = React.lazy(()=> import("./Pages/astrologers/Astrologers"))
           <Route path='/user/:id' element={isAuthenticated ? <ViewUserprofile /> : <Navigate to="/" />} />
            {/* astrologer */}
           <Route path='/astrologers' element={isAuthenticated ? <Astrologers /> : <Navigate to="/" />} />
+          <Route path='/pay_to_astrologers' element={isAuthenticated ? <PaidToAstrologers /> : <Navigate to="/" />} />
+
           <Route path='/addastrologers' element={isAuthenticated ? <Addastrologers /> : <Navigate to="/" />} />
           <Route path='/astrologer/:id' element={isAuthenticated ? <ViewProfile /> : <Navigate to="/" />} />
           <Route path='/editastrologer/:id' element={isAuthenticated ? <EditAstrologer /> : <Navigate to="/" />} />

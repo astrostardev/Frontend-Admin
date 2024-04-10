@@ -16,7 +16,8 @@ import { CiBoxList } from "react-icons/ci";
 import { LiaProductHunt } from "react-icons/lia";
 import { SiCoursera } from "react-icons/si";
 import { FcMoneyTransfer } from "react-icons/fc";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { MdManageAccounts } from "react-icons/md";
 function Sidebar() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -90,6 +91,11 @@ function Sidebar() {
                     <Link className="side-link" to="/bonus">
                     <FcMoneyTransfer className="side_icons" />
                         <span>Bonus</span>
+                    </Link>
+                    <Link className="side-link" to="/pay_to_astrologers">
+                    <MdManageAccounts  className="side_icons"/>
+
+                        <span>Accounts</span>
                     </Link>
                    
                 </section>
